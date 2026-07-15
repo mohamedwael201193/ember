@@ -1,0 +1,44 @@
+# Secrets and local env — NEVER commit
+.env
+.env.*
+!.env.example
+.cursor/
+.cursor/mcp.json
+
+# Private keys / key material
+*.pem
+*.p12
+id_rsa
+id_ed25519
+
+# Dependencies and build
+node_modules/
+dist/
+build/
+coverage/
+.turbo/
+.pnpm-store/
+
+# Foundry artifacts
+contracts/out/
+contracts/cache/
+contracts/broadcast/**/dry-run/
+cache/
+
+# Runtime journals (local / ephemeral)
+runtime/
+services/**/runtime/
+*.ndjson
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Temp
+tmp/
+temp/
+.env.bak
