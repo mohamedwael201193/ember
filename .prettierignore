@@ -1,0 +1,10 @@
+node_modules
+**/dist
+coverage
+contracts/lib
+contracts/out
+contracts/cache
+contracts/broadcast
+services/**/runtime
+docs/evidence/*.json
+pnpm-lock.yaml
