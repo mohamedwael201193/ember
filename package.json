@@ -1,0 +1,35 @@
+{
+  "name": "ember",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "pnpm --filter @ember/mission-core build && pnpm --filter @ember/kh-client build && pnpm --filter @ember/receipt-checker build && pnpm --recursive --if-present run typecheck",
+    "test": "pnpm --filter @ember/receipt-checker build && vitest run",
+    "build": "pnpm --recursive --if-present run build",
+    "format:check": "prettier --check \"packages/**/*.{ts,js,mjs,json}\" \"services/**/*.{ts,js,mjs,json}\" \"scripts/**/*.{ts,js,mjs}\" \".github/**/*.{yml,yaml}\" \"docs/openapi/**/*.{yml,yaml}\" render.yaml package.json \"*.config.{js,ts,mjs}\"",
+    "security:secrets": "node scripts/check-secrets.mjs",
+    "validate-env": "tsx scripts/validate-env.ts",
+    "test:live": "tsx scripts/smoke-kh.ts",
+    "test:anchor-recovery": "node --env-file=.env --import tsx scripts/verify-anchor-recovery.ts",
+    "test:post-fix-drills": "node --env-file=.env --import tsx scripts/verify-post-fix-drills.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.5.0",
+    "prettier": "^3.7.4",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.1",
+    "viem": "^2.55.5",
+    "vitest": "^4.0.16"
+  }
+}
