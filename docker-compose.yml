@@ -1,0 +1,43 @@
+services:
+  payday:
+    build:
+      context: .
+      dockerfile: services/payday/Dockerfile
+    env_file: .env
+    environment:
+      PORT: ${PAYDAY_PORT:-8789}
+      RESCUE_JOURNAL_DIR: /var/lib/ember/payday
+    ports:
+      - "${PAYDAY_PORT:-8789}:${PAYDAY_PORT:-8789}"
+    volumes:
+      - ember-payday:/var/lib/ember/payday
+    restart: unless-stopped
+
+  primary-observer:
+    build:
+      context: .
+      dockerfile: services/primary-observer/Dockerfile
+    env_file: .env
+    environment:
+      PORT: ${PRIMARY_OBSERVER_PORT}
+    ports:
+      - "${PRIMARY_OBSERVER_PORT}:${PRIMARY_OBSERVER_PORT}"
+    restart: unless-stopped
+
+  sentinel:
+    build:
+      context: .
+      dockerfile: services/sentinel/Dockerfile
+    env_file: .env
+    environment:
+      PORT: ${SENTINEL_PORT}
+      RESCUE_JOURNAL_DIR: /var/lib/ember/rescues
+    ports:
+      - "${SENTINEL_PORT}:${SENTINEL_PORT}"
+    volumes:
+      - ember-rescues:/var/lib/ember/rescues
+    restart: unless-stopped
+
+volumes:
+  ember-payday:
+  ember-rescues:
