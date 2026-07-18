@@ -1,0 +1,29 @@
+﻿{
+    "drill":  "sentinel_kill_resume",
+    "dockerSubstitute":  "Stop-Process on port 8787",
+    "stop":  {
+                 "action":  "stopped",
+                 "service":  "sentinel",
+                 "ok":  true,
+                 "at":  "2026-07-22T02:35:43.6913043Z",
+                 "pids":  [
+                              31636
+                          ],
+                 "port":  8787
+             },
+    "start":  {
+                  "ok":  true,
+                  "pid":  32560,
+                  "service":  "sentinel",
+                  "action":  "started",
+                  "at":  "2026-07-22T02:35:46.8933987Z"
+              },
+    "rescueId":  "live2slots",
+    "httpStatus":  200,
+    "journalStatus":  "COMPLETED",
+    "journalUpdatedAt":  "2026-07-22T02:15:23.869Z",
+    "replayCount":  2,
+    "expected":  "COMPLETED journal returned; no new replays appended for completed rescueId",
+    "pass":  true,
+    "at":  "2026-07-22T02:35:47.6504733Z"
+}

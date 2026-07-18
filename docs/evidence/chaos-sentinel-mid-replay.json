@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "drill": "sentinel-mid-replay-process-kill",
+  "network": "base-sepolia",
+  "at": "2026-07-22T04:26:41.6341800Z",
+  "pass": true,
+  "rescueId": "80b28b0bf1b75bc2a8c9c5b90a674d7e37588fdbb8d2ee0b3171c3b3e4938d1d",
+  "observedIntentState": "EXECUTING",
+  "stoppedPids": [23244],
+  "restartedPid": 32136,
+  "slots": [1784687214, 1784687514],
+  "replayExecutionIds": ["zg5dak9o0uu1x4lcnhrxr", "bu6v5l97wxvloulzfn3xf"],
+  "replayTxHashes": [
+    "0xd7e090b04e9c9cabd847c1d35ad37205bd6f59022642b3bebb93a1a97b5f9e4d",
+    "0x772b5a0e7d8e41687eb2db632f8f08103b168e01ea1cf9420dce3b4b2602963f"
+  ],
+  "proofCid": "QmT24473GGyPxoFyC2xhrEMUhgjtpYezkkxowWyLWP5eQ1",
+  "proofHash": "0x9836decddff21d81ca56988ac80497b530832578431b9bd11acc7dd14765b92d",
+  "anchorExecutionId": "29n7pbxjjnd6b7duab5n8",
+  "anchorTxHash": "0x4656a5f00f4b80d293c229fe644c1fce9bc0259f5707df14753db2bd47f1fff6",
+  "completedUpdatedAt": "2026-07-22T04:26:40.849Z",
+  "rerunUpdatedAt": "2026-07-22T04:26:40.849Z"
+}

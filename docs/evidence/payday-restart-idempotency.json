@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "missionId": "1",
+  "slot": 1784689614,
+  "idempotencyKey": "ember-payday-1-1784689614",
+  "firstInvocation": {
+    "executionId": "2hopjtrfc5wknq8gutgs6",
+    "transactionHash": "0x47465f069fce41effa7d1a0e85d48b29a94fecd94a58b34f7cb8a80ede79c1db",
+    "status": "success"
+  },
+  "restartInvocation": {
+    "executionId": "2hopjtrfc5wknq8gutgs6",
+    "transactionHash": "0x47465f069fce41effa7d1a0e85d48b29a94fecd94a58b34f7cb8a80ede79c1db",
+    "status": "success"
+  },
+  "duplicateTransactionCreated": false,
+  "receiptVerification": {
+    "ok": true,
+    "blockNumber": "44460685",
+    "blockTimestamp": 1784689658,
+    "confirmations": "61"
+  },
+  "processKillEvidence": "docs/evidence/chaos-payday-kill.json",
+  "verifiedAt": "2026-07-22T03:08:26.338Z"
+}
