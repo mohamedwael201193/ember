@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "network": "base-sepolia",
+  "chainId": 84532,
+  "missionId": "1",
+  "validatedAt": "2026-07-22T04:22:30Z",
+  "pass": true,
+  "summary": {
+    "drills": 3,
+    "replayedSlots": 6,
+    "uniqueReplayTransactions": 6,
+    "proofsPinnedAndRehashed": 3,
+    "proofsAnchored": 3,
+    "explicitRerunsStable": 3
+  },
+  "drills": [
+    {
+      "rescueId": "21ec0bdbeb9f7ed7a5a9fb16b42c5c5d9a0dd9a55ebeaaec623ca49b59a5b433",
+      "slots": [1784684514, 1784684814],
+      "replayExecutionIds": ["5f3vkq7btz1g5ms7qwkh7", "rs2gc0hlv18wc2u0j8itq"],
+      "replayTxHashes": [
+        "0x46ec8f9dab5672385c1bc962dcb8b5fd0db6740e2fe8e8be6d800bd0f2d8eeba",
+        "0x434f8aa0ff3c122a67f022b263e7d3fa86b5d617b46dcaeb75c6bb3a5b9e37bb"
+      ],
+      "proofHash": "0x8aef11b2e58910533c1d82dd214528fac26a1bee9d7528f9c8eb2fe827476da0",
+      "cid": "QmXfEWko4MKwUmsinHEmskvnME1emumhShSQZ7dyezH9xh",
+      "anchorExecutionId": "6flqj38t1n3ghkrp9x7b3",
+      "anchorTxHash": "0xc1be8a7098677af45e821d1402c19683746cadba4ad6415d689077c605e65aa4",
+      "updatedAt": "2026-07-22T04:18:40.795Z",
+      "rerunUpdatedAt": "2026-07-22T04:18:40.795Z"
+    },
+    {
+      "rescueId": "807f31a790c88a7fb788510a6b32bfa7388f37819af81e02b34a70beb9204624",
+      "slots": [1784685414, 1784686314],
+      "replayExecutionIds": ["jxqnbokz3kfcsw0adw01h", "0wkw35z1bbv5kxweu37gr"],
+      "replayTxHashes": [
+        "0xa5cdfaefbb06a6a8d0e03e757ceaae7c1579aae516f48631113874b2c17e1c7f",
+        "0x47caac9d1299d3d531baa81ee35557e276f2ac77777ef01c4e77e7bfcd7438b1"
+      ],
+      "proofHash": "0x201646a51a9ade409ec4cbf702566d13e6d505ff9cad5d158d6943c449017de4",
+      "cid": "QmRRkbnS9KTjyW8jbqw4HD2EtU97iFNbs7mzmxJodVaxpi",
+      "anchorExecutionId": "y5objngz28ajxmvo0ypic",
+      "anchorTxHash": "0xb678a3d3f3973010ad785d1ed01eba81b399b6422404d5c207bbac8b692ba0f2",
+      "updatedAt": "2026-07-22T04:19:56.498Z",
+      "rerunUpdatedAt": "2026-07-22T04:19:56.498Z"
+    },
+    {
+      "rescueId": "6deef373c0f0cb0879346d56ee6d5239ffdfa0310d2504f8b462392b70a0ce55",
+      "slots": [1784686614, 1784686914],
+      "replayExecutionIds": ["91ywj6eh5lw3jg7y0fmq6", "qt2gbsw4in95338fahupl"],
+      "replayTxHashes": [
+        "0xf83344f3d5b96a9b082842bbf987f48bfc6dfd97dc7c9068fb919e7bda6b6159",
+        "0x1399d78e9792457c046039f4083d61de5053f09c26f79ff6475cadae54bd5ddc"
+      ],
+      "proofHash": "0x3af3961c701f1b690a6087091ca36681436663a5bb3f461086060ca9a1fcbc46",
+      "cid": "QmfQ2NeXxzhDeK4e4z8hH6JX5XUk3fXnnHiqUpAxHM7E2N",
+      "anchorExecutionId": "8tl17lq96816dcdzy2q8u",
+      "anchorTxHash": "0xa83727e71d270bdf42bd6cfb6ef03db7dc3bdf6d712ad06e4c9e64f86d20a91c",
+      "updatedAt": "2026-07-22T04:21:59.142Z",
+      "rerunUpdatedAt": "2026-07-22T04:21:59.142Z"
+    }
+  ]
+}

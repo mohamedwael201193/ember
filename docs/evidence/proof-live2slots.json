@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "missionId": "1",
+  "rescueId": "live2slots",
+  "proofHash": "0x0661310941447722638179bd59a063dfb75cea13a0dca98a884eb2e76b759493",
+  "sha256": "0661310941447722638179bd59a063dfb75cea13a0dca98a884eb2e76b759493",
+  "cid": "Qmaq9qJ8KEcvR4yv8JitRXLwViDDdm5mnH8AkrMzrvzE6P",
+  "ipfsUri": "ipfs://Qmaq9qJ8KEcvR4yv8JitRXLwViDDdm5mnH8AkrMzrvzE6P",
+  "missedRuns": 2,
+  "replayedRuns": 2,
+  "feeMode": "ESCROW_FALLBACK",
+  "receiptChecks": [
+    {
+      "slot": 1784683914,
+      "txHash": "0x698ddc0afe9a34cc27a878e9b1bffe31c5b2cd26a433a5102a6dca71a02f2695",
+      "ok": true
+    },
+    {
+      "slot": 1784684214,
+      "txHash": "0x5701a6a01aeb557376f6014a1db6df49003ddbc44b134f2b389a256400c293dc",
+      "ok": true
+    }
+  ],
+  "bundle": {
+    "version": 1,
+    "missionId": "1",
+    "rescueId": "live2slots",
+    "detectedAt": "2026-07-22T02:15:01.038Z",
+    "missedSlots": [
+      1784683914,
+      1784684214
+    ],
+    "receiptChecks": [
+      {
+        "slot": 1784683914,
+        "txHash": "0x698ddc0afe9a34cc27a878e9b1bffe31c5b2cd26a433a5102a6dca71a02f2695",
+        "ok": true
+      },
+      {
+        "slot": 1784684214,
+        "txHash": "0x5701a6a01aeb557376f6014a1db6df49003ddbc44b134f2b389a256400c293dc",
+        "ok": true
+      }
+    ],
+    "replays": [
+      {
+        "slot": 1784683914,
+        "executionId": "sbpn2qcben82zpqe0y3xs",
+        "txHash": "0x698ddc0afe9a34cc27a878e9b1bffe31c5b2cd26a433a5102a6dca71a02f2695"
+      },
+      {
+        "slot": 1784684214,
+        "executionId": "3ff5ehupoejl6rublgfzk",
+        "txHash": "0x5701a6a01aeb557376f6014a1db6df49003ddbc44b134f2b389a256400c293dc"
+      }
+    ],
+    "feeMode": "ESCROW_FALLBACK"
+  },
+  "fetchedBackAndRehashed": true,
+  "verifiedAt": "2026-07-22T02:53:45.508Z",
+  "anchor": {
+    "executionId": "2bzbh77l318kr8hr67zsa",
+    "transactionHash": "0xad0fe495639b4222cf80d25bbf434dccfa42f023cf145339afd9702d401ed87b",
+    "transactionLink": "https://sepolia.basescan.org/tx/0xad0fe495639b4222cf80d25bbf434dccfa42f023cf145339afd9702d401ed87b",
+    "status": "success",
+    "contractAddress": "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
+    "rescueId": "0x2ea5d9d71a3998cdfd8f7893efd2961ddefa319d3334a2e6c99974eebee20131",
+    "sponsored": true,
+    "storedProof": {
+      "proofHash": "0x0661310941447722638179bd59a063dfb75cea13a0dca98a884eb2e76b759493",
+      "ipfsUri": "ipfs://Qmaq9qJ8KEcvR4yv8JitRXLwViDDdm5mnH8AkrMzrvzE6P",
+      "missedRuns": 2,
+      "replayedRuns": 2,
+      "feeMode": 3,
+      "feeReference": "escrow-fallback",
+      "feeClaimed": false
+    },
+    "eventFound": true,
+    "verifiedAt": "2026-07-22T02:55:12.818Z"
+  }
+}
