@@ -1,0 +1,182 @@
+openapi: 3.1.0
+info:
+  title: EMBER control-plane services
+  version: 0.2.0
+  description: |
+    HMAC-authenticated Observer and Sentinel APIs.
+    KeeperHub traffic uses Authorization Bearer kh_ keys separately (never X-API-Key).
+servers:
+  - url: http://127.0.0.1:8788
+    description: Primary Observer
+  - url: http://127.0.0.1:8787
+    description: Sentinel
+components:
+  securitySchemes:
+    EmberHmac:
+      type: apiKey
+      in: header
+      name: x-ember-signature
+      description: Companion headers x-ember-timestamp, x-ember-nonce, x-ember-body-sha256 required.
+    PaydayControl:
+      type: http
+      scheme: bearer
+      description: Optional PAYDAY control token. Route is absent when the token is not configured.
+  schemas:
+    MissionHealthState:
+      type: string
+      enum: [WARMING_UP, OK, DEGRADED, MISSION_DOWN, RESCUING, RECOVERED]
+    CheckResponse:
+      type: object
+      properties:
+        missionId: { type: string, nullable: true }
+        state: { $ref: "#/components/schemas/MissionHealthState" }
+        missedSlots:
+          type: array
+          items: { type: integer }
+        receiptBacked: { type: boolean }
+        receiptVerifiedPayments: { type: integer }
+    RescueJournal:
+      type: object
+      properties:
+        version: { type: integer, enum: [1] }
+        missionId: { type: string }
+        rescueId: { type: string }
+        status: { type: string, enum: [IN_PROGRESS, COMPLETED, ABORTED] }
+        unpaidSlots:
+          type: array
+          items: { type: integer }
+        replayIntents:
+          type: array
+          items:
+            type: object
+            required: [slot, idempotencyKey, state]
+            properties:
+              slot: { type: integer }
+              idempotencyKey: { type: string }
+              executionId: { type: string }
+              txHash: { type: string }
+              state: { type: string, enum: [INTENT, EXECUTING, CONFIRMED, FAILED] }
+        replays:
+          type: array
+          items:
+            type: object
+            properties:
+              slot: { type: integer }
+              executionId: { type: string }
+              txHash: { type: string }
+        proofHash: { type: string }
+        proofSha256: { type: string }
+        proofCid: { type: string }
+        proofIpfsUri: { type: string }
+        anchorRescueId: { type: string }
+        anchorIdempotencyKey: { type: string }
+        anchorExecutionId: { type: string }
+        anchorTxHash: { type: string }
+        anchorRecoveredFromChain: { type: boolean }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string }
+paths:
+  /healthz:
+    get:
+      summary: Process liveness
+      responses:
+        "200":
+          description: Process is alive
+  /readyz:
+    get:
+      summary: Configuration and shutdown readiness
+      responses:
+        "200":
+          description: Service is ready
+        "503":
+          description: Required configuration is absent or shutdown started
+  /metrics:
+    get:
+      summary: Prometheus text metrics
+      responses:
+        "200":
+          description: Prometheus text format
+          content:
+            text/plain:
+              schema: { type: string }
+  /v1/executions:
+    get:
+      servers: [{ url: http://127.0.0.1:8788 }]
+      summary: List Org A W1 executions (observer isolation boundary)
+      security: [{ EmberHmac: [] }]
+      responses:
+        "200":
+          description: Execution list
+        "401":
+          description: HMAC failure
+        "413":
+          description: Request body exceeds the service limit
+        "429":
+          description: Rate limit exceeded
+  /check:
+    post:
+      servers: [{ url: http://127.0.0.1:8787 }]
+      summary: Receipt-backed mission health check
+      security: [{ EmberHmac: [] }]
+      responses:
+        "200":
+          description: Detector result
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CheckResponse" }
+        "401":
+          description: HMAC failure
+        "413":
+          description: Request body exceeds the service limit
+        "429":
+          description: Rate limit exceeded
+        "502":
+          description: Observer, KeeperHub, or receipt verification failed
+  /rescue:
+    post:
+      servers: [{ url: http://127.0.0.1:8787 }]
+      summary: Idempotent restore-and-replay pipeline
+      security: [{ EmberHmac: [] }]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rescueId: { type: string, pattern: "^[A-Za-z0-9_-]{1,64}$" }
+                maxReplaySlots: { type: integer, minimum: 1, maximum: 12 }
+                dryRun: { type: boolean }
+      responses:
+        "200":
+          description: Rescue journal
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RescueJournal" }
+        "409":
+          description: Rescue lock held
+        "413":
+          description: Request body exceeds the service limit
+        "429":
+          description: Rate limit exceeded
+        "502":
+          description: Rescue dependency or execution failed
+  /run-once:
+    post:
+      servers: [{ url: http://127.0.0.1:8789 }]
+      summary: Optional authenticated PAYDAY single cadence tick
+      security: [{ PaydayControl: [] }]
+      responses:
+        "200":
+          description: Tick completed or the existing slot execution was returned
+        "401":
+          description: Invalid control token
+        "404":
+          description: Manual control is disabled
+        "429":
+          description: Rate limit exceeded
+        "502":
+          description: KeeperHub execution failed
