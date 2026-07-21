@@ -1,0 +1,19 @@
+{
+  "name": "@ember/sentinel",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@ember/kh-client": "workspace:*",
+    "@ember/mission-core": "workspace:*",
+    "@ember/receipt-checker": "workspace:*",
+    "viem": "^2.38.6"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.16"
+  }
+}
