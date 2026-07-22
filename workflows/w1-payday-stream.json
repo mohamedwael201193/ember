@@ -1,0 +1,47 @@
+{
+  "id": "x08xy6zyy5ne5xkr93mtf",
+  "name": "payday-stream",
+  "description": "EMBER W1: manual Org A USDC payroll transfer on Base Sepolia",
+  "enabled": false,
+  "nodes": [
+    {
+      "id": "trigger-1",
+      "type": "trigger",
+      "position": { "x": 0, "y": 0 },
+      "data": {
+        "type": "trigger",
+        "label": "Manual Trigger",
+        "status": "idle",
+        "config": { "triggerType": "Manual" }
+      }
+    },
+    {
+      "id": "transfer-usdc",
+      "type": "action",
+      "position": { "x": 252, "y": 0 },
+      "data": {
+        "type": "action",
+        "label": "Pay Employee USDC",
+        "status": "idle",
+        "config": {
+          "actionType": "web3/transfer-token",
+          "network": "84532",
+          "amount": "0.01",
+          "recipientAddress": "0x230640f6508c7a1086444c5ba62d230f395ba0e1",
+          "tokenConfig": "{\"mode\":\"custom\",\"customToken\":{\"address\":\"0x036CbD53842c5426634e7929541eC2318f3dCF7e\",\"symbol\":\"USDC\"}}",
+          "integrationId": "jq31igp9un4exkxl4z7wu"
+        }
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e1", "source": "trigger-1", "target": "transfer-usdc" }
+  ],
+  "evidence": {
+    "firstExecutionId": "45kkvgnap0ytc15e6piwt",
+    "firstTransactionHash": "0x31b011871deb5de1ffd400f9cc9961089d42943d63044869a49169d817127b34",
+    "explorer": "https://sepolia.basescan.org/tx/0x31b011871deb5de1ffd400f9cc9961089d42943d63044869a49169d817127b34",
+    "amountRaw": "10000",
+    "sponsored": true
+  }
+}
