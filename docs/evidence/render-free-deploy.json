@@ -1,61 +1,32 @@
 {
-  "version": 1,
-  "at": "2026-07-22T05:04:44.157Z",
-  "repo": "https://github.com/james32135/ember",
-  "ownerId": "tea-d8es2vjeo5us73cqkav0",
-  "results": [
-    {
-      "name": "ember-primary-observer",
-      "action": "updated_and_redeployed",
-      "id": "srv-d9g4m9bbc2fs73a42rsg",
-      "url": "https://ember-primary-observer.onrender.com",
-      "deployId": "dep-d9g4ueurnols73a2mprg",
-      "repo": "https://github.com/james32135/ember"
-    },
-    {
-      "name": "ember-payday",
-      "action": "updated_and_redeployed",
-      "id": "srv-d9g4maernols73a26mc0",
-      "url": "https://ember-payday.onrender.com",
-      "deployId": "dep-d9g4ufflk1mc739v9170",
-      "repo": "https://github.com/james32135/ember"
-    },
-    {
-      "name": "ember-sentinel",
-      "action": "updated_and_redeployed",
-      "id": "srv-d9g4mb3rjlhs73bmjuug",
-      "url": "https://ember-sentinel.onrender.com",
-      "deployId": "dep-d9g4ufnlk1mc739v936g",
-      "repo": "https://github.com/james32135/ember"
-    }
-  ],
+  "version": 2,
+  "at": "2026-07-22T14:46:46.544Z",
+  "mode": "single_web_service_reuse",
+  "serviceId": "srv-d93aj1ernols73b8a170",
+  "serviceName": "ember",
+  "url": "https://meridian-backend-ikx8.onrender.com",
+  "dashboard": "https://dashboard.render.com/web/srv-d93aj1ernols73b8a170",
   "health": {
-    "ember-primary-observer": {
+    "ok": true,
+    "attempt": 4,
+    "status": 200,
+    "body": {
       "ok": true,
-      "attempt": 2,
-      "status": 200,
-      "body": {
-        "ok": true,
-        "service": "primary-observer"
+      "service": "ember-runtime",
+      "children": {
+        "observer": true,
+        "payday": true,
+        "sentinel": true
       }
     },
-    "ember-payday": {
-      "ok": true,
-      "attempt": 2,
-      "status": 200,
-      "body": {
-        "ok": true,
-        "service": "payday"
-      }
-    },
-    "ember-sentinel": {
-      "ok": true,
-      "attempt": 1,
-      "status": 200,
-      "body": {
-        "ok": true,
-        "service": "sentinel"
-      }
+    "deployStatus": "live",
+    "probes": {
+      "/readyz": 200,
+      "/status": 200,
+      "/observer/healthz": 200,
+      "/payday/healthz": 200,
+      "/sentinel/healthz": 200,
+      "/v1/executions": 401
     }
   },
   "pass": true

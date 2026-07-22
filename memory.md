@@ -1,6 +1,6 @@
 # EMBER session memory
 
-Last updated: 2026-07-22 17:25 UTC+3  
+Last updated: 2026-07-22 17:48 UTC+3  
 Mode: **Autonomous backend delivery loop** (self-pacing)
 
 Secrets live in `.env` (gitignored). Never paste private keys into chat.
@@ -23,23 +23,25 @@ Bearer-only KH auth · Sepolia-only · No Docker (process-kill chaos) · No fron
 | 09 Chaos | **PASS** | `drill-sentinel-kill.ps1` → pass=true |
 | 10 Proof | **PASS** | Real Pinata CID, fetch-back hash, KeeperHub anchor, event/storage verified |
 | 11 Fee / marketplace | PENDING | Blocked on agentic wallet 500 for paid listing |
-| 12 Runtime | **Consolidating to 1 Render web** | Combined `ember` runtime; local soak ~9.8h / 12h clean |
+| 12 Runtime | **LIVE — 1 Render web** | Combined runtime healthy; local soak ~10h / 12h clean |
 
 ---
 
 ## 2. This tick
 
-- Correct `mohamedwael201193` PAT + Render key confirmed from `.env` (file
-  token; ignore stale shell env overrides).
-- Force-push dated history to https://github.com/mohamedwael201193/ember
-- Collapse three free Render services → one `ember` web service via
-  `scripts/start-ember-runtime.mjs` (Observer+PAYDAY+Sentinel children).
-- Local soak still running clean (~569 checks at last sample).
-- Continuity bytecode still present on Base Sepolia mission `1`.
+- Force-pushed **88 commits** to https://github.com/mohamedwael201193/ember
+- Single Render service `ember` (reused suspended `meridian-backend` — free
+  create quota exhausted): Observer+PAYDAY+Sentinel via
+  `scripts/start-ember-runtime.mjs`
+- Public `/healthz` `/readyz` `/status` + child healthz = 200; `/v1/executions`
+  = 401 (expected unauthenticated)
+- Local soak still clean (~584 checks at last sample)
+- Continuity bytecode still present on Base Sepolia mission `1`
 
 ### Public URLs
 
-- Combined: https://ember.onrender.com (target after deploy)
+- Combined: https://meridian-backend-ikx8.onrender.com
+- Dashboard: https://dashboard.render.com/web/srv-d93aj1ernols73b8a170
 - Source: https://github.com/mohamedwael201193/ember
 
 ---
@@ -52,9 +54,9 @@ Continuity `0x068bB96e…5770` · Mission `1` · W1 `x08xy6zyy5ne5xkr93mtf` · W
 
 ## 4. Next tick
 
-1. Finish single-service Render health gate; suspend legacy split services.
-2. Keep the 12-hour soak running; do not mutate rescue journals during it.
-3. Rotate exposed tokens; optional `workflow` scope to restore Actions CI.
+1. Keep the 12-hour soak running; close Phase 12 when COMPLETED/pass.
+2. Rotate exposed tokens; optional `workflow` scope to restore Actions CI.
+3. Retry KeeperHub Pro / agentic wallet when platform allows.
 4. Frontend remains deferred; mainnet remains human-gated.
 
 ---
