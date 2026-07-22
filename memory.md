@@ -181,3 +181,43 @@ This section supersedes stale status statements above without deleting session h
 - Verdict: **Base Sepolia backend rehearsal certified; mainnet not ready** until
   durable journals, Render plan/account issue, KeeperHub Pro W2/W3 semantics,
   credential rotation, and Phase 13 approval are resolved.
+## 8. Final production certification tick (2026-07-23 02:50 UTC+3)
+
+Human Phase 13 approval granted in chat.
+
+### Research
+- KeeperHub docs still Bearer `kh_` for headless REST/MCP.
+- Paid marketplace remains 402 + x402/MPP dual-rail; `call_workflow` does not auto-pay.
+- REST execute/status paths still match `packages/kh-client`.
+- `anchorProof` remains Continuity via `execute_contract_call`, not an MCP tool name.
+
+### Gates re-run
+- `pnpm build|typecheck|lint|test|format:check|validate-env|security:secrets|audit` PASS
+- Tests: 19 files / 54 tests
+- Foundry Continuity suite + gas snapshot re-armed
+
+### Phase 11
+- Paid `defi-onchain-intelligence-base` SUCCESS exec `7g702yluekcbxzcdf1jmz`
+- Settlement tx `0x3a42febdb9bc3b3751c061d72be851a8609bb1475e5940d1c07401edde43eda5`
+- Wallet ended 0.47 USDC
+- `wallet-snapshot-base` still external bug after charge: network `"undefined"`
+- Evidence: `docs/evidence/phase11-paid-retry-2026-07-23.json`
+
+### Mainnet prep (no Continuity broadcast)
+- Created disabled W1 mainnet `5goaid2zjgzyb32661se3`
+- Created disabled W1' mainnet `pvhwggqr8318wac68jb62`
+- Canonical hash `0x0ccdc52804ea95ce83e7990b8b8e6a66c42b717c30a88a05248cf95310dd30e2`
+- Attach Render disk `dsk-d9glcjreo5us73cbk500` → `/var/data/ember`
+- Journals set to `/var/data/ember/{payday,rescues}`
+- Incident: journal-only env PUT wiped Render env; immediately restored 50 keys
+- Forge Deploy.s.sol broadcast attempt FAILED: deployer ETH=0 (`lack of funds for max fee`)
+- Org A/B mainnet USDC = 0; deployer USDC ≈ 5.25 (escrow-capable once gas exists)
+- Evidence: `mainnet-deploy-blocker-2026-07-23.json`, `render-durable-disk-2026-07-23.json`
+
+### Artifacts
+- `MAINNET_READINESS_REPORT.md`
+- `FINAL_BACKEND_CERTIFICATION.md`
+
+### Stop condition hit
+Missing required Base ETH (deployer) and Base USDC (Org A/B). No simulated mainnet success. Frontend remains deferred.
+

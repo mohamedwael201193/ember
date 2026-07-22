@@ -1,16 +1,20 @@
-# Free-plan Blueprint — single web service hosts Observer + PAYDAY + Sentinel.
-# Persistent disks are unavailable on Render free; journals use /tmp and reset
-# on redeploy/sleep. Promote plan + disks before Phase 13 mainnet.
+# Production Blueprint — single web service hosts Observer + PAYDAY + Sentinel.
+# Starter (or higher) is required for the persistent disk that backs rescue/PAYDAY
+# journals. Free-plan /tmp journals are rehearsal-only.
 services:
   - type: web
     name: ember
     runtime: node
-    region: frankfurt
-    plan: free
+    region: oregon
+    plan: starter
     buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
     startCommand: node scripts/start-ember-runtime.mjs
     healthCheckPath: /healthz
     autoDeploy: true
+    disk:
+      name: ember-journals
+      mountPath: /var/data/ember
+      sizeGB: 1
     envVars:
       - key: NODE_VERSION
         value: 24.12.0
@@ -101,8 +105,8 @@ services:
       - key: IPFS_GATEWAY
         value: https://gateway.pinata.cloud/ipfs
       - key: RESCUE_JOURNAL_DIR
-        value: /tmp/ember/rescues
+        value: /var/data/ember/rescues
       - key: PAYDAY_JOURNAL_DIR
-        value: /tmp/ember/payday
+        value: /var/data/ember/payday
       - key: LOG_LEVEL
         value: info

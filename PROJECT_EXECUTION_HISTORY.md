@@ -488,3 +488,59 @@ Final hardening commit `05b7fac1ceb16d4eb628f35f3090333c3a454a6b`
 deployed through Render deployment `dep-d9gj9v1oagis73f0qvq0`, which reached
 `live` at `2026-07-22T21:25:00.156548Z`. Public health, readiness, metrics,
 authorization, request-size enforcement, and receipt-backed HMAC check passed.
+
+---
+
+## 2026-07-23 — Final production certification & mainnet attempt
+
+Human Phase 13 approval was granted in chat.
+
+### KeeperHub research delta
+- Headless auth remains Bearer `kh_`.
+- Paid marketplace remains 402 with x402 (Base USDC) and MPP (Tempo USDC.e).
+- REST execute/status/wait paths still match `packages/kh-client`.
+- MCP `execute_workflow` / `get_execution` / `execute_contract_call` remain valid; `anchorProof` is still a Continuity function invoked through `execute_contract_call`.
+
+### Full gate re-run
+Local build, typecheck, lint, format, env validation, secrets scan, dependency audit, and 54 unit/integration tests passed. Foundry Continuity tests and gas snapshot checks remained green.
+
+### Phase 11 funded retries
+- Successful paid workflow: `defi-onchain-intelligence-base`
+  - execution `7g702yluekcbxzcdf1jmz`
+  - settlement `0x3a42febdb9bc3b3751c061d72be851a8609bb1475e5940d1c07401edde43eda5`
+- External listing failure retained: `wallet-snapshot-base` charged then errored with `network "undefined"` (execution `0swaxxxg94s19ygfly76r`)
+- Wallet balance after retries: 0.47 Base USDC
+- Evidence: `docs/evidence/phase11-paid-retry-2026-07-23.json`
+
+### Mainnet preparation completed without Continuity broadcast
+- Org A mainnet W1 created disabled: `5goaid2zjgzyb32661se3`
+- Org B mainnet W1' created disabled: `pvhwggqr8318wac68jb62`
+- Canonical mainnet workflow hash: `0x0ccdc52804ea95ce83e7990b8b8e6a66c42b717c30a88a05248cf95310dd30e2`
+- Workflow files: `workflows/w1-payday-stream.mainnet.json`, `workflows/w1-orgb-replay.mainnet.json`
+- Render persistent disk attached: `dsk-d9glcjreo5us73cbk500` mount `/var/data/ember`
+- Journal env paths moved to `/var/data/ember/payday` and `/var/data/ember/rescues`
+- Ops incident: a journal-only Render env PUT replaced the full environment; all 50 required keys were restored immediately from local `.env`
+- Redeploy triggered: `dep-d9gldc3rjlhs73cljeb0`
+
+### Mainnet Continuity deploy attempt — hard stop
+Balances at attempt:
+- Deployer `0xf76e6B…71a3`: 0 ETH, 5.248801 USDC
+- Org A `0xB6Ed11…240b`: 0 ETH, 0 USDC
+- Org B `0xa45d8a…EFa6`: 0 ETH, 0 USDC
+
+`forge script script/Deploy.s.sol --broadcast` failed before broadcast with:
+`transaction validation error: lack of funds (0) for max fee (1131903424)`.
+
+Evidence: `docs/evidence/mainnet-deploy-blocker-2026-07-23.json`, `docs/evidence/render-durable-disk-2026-07-23.json`.
+
+### Final artifacts produced
+- `MAINNET_READINESS_REPORT.md`
+- `FINAL_BACKEND_CERTIFICATION.md`
+
+### Remaining human funding actions before any mainnet Continuity tx
+1. Fund deployer with Base ETH for gas.
+2. Fund Org A with ≥5 Base USDC.
+3. Fund Org B with ≥2 Base USDC.
+4. Rotate credentials previously pasted in chat.
+
+No EMBER Continuity, mission, payroll, rescue, or proof transaction has been broadcast on Base mainnet.

@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-07-22T23:48:45.000Z",
+  "phase": 13,
+  "humanApproval": "granted_in_chat_2026-07-23",
+  "chainId": 8453,
+  "usdc": {
+    "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "symbol": "USDC",
+    "decimals": 6
+  },
+  "balancesAtAttempt": {
+    "deployer": {
+      "address": "0xf76e6B0920e9332fF4410f6dD53F01722AbC71a3",
+      "eth": "0",
+      "usdc": "5.248801"
+    },
+    "orgA": {
+      "address": "0xB6Ed11fDceFBf213719C029e3aDc372c6701240b",
+      "eth": "0",
+      "usdc": "0"
+    },
+    "orgB": {
+      "address": "0xa45d8a46a4BC22Aae9946AE85962fA130A0aEFa6",
+      "eth": "0",
+      "usdc": "0"
+    }
+  },
+  "preparedArtifacts": {
+    "orgAMainnetWorkflowId": "5goaid2zjgzyb32661se3",
+    "orgBMainnetReplayWorkflowId": "pvhwggqr8318wac68jb62",
+    "workflowHashMainnet": "0x0ccdc52804ea95ce83e7990b8b8e6a66c42b717c30a88a05248cf95310dd30e2",
+    "workflowFiles": [
+      "workflows/w1-payday-stream.mainnet.json",
+      "workflows/w1-orgb-replay.mainnet.json"
+    ]
+  },
+  "forgeAttempt": {
+    "script": "script/Deploy.s.sol",
+    "rpc": "BASE_RPC_URL",
+    "broadcast": true,
+    "result": "failed_before_broadcast",
+    "error": "transaction validation error: lack of funds (0) for max fee (1131903424)",
+    "interpretation": "Deployer has enough USDC for escrow (1 USDC) but zero Base ETH for gas. Continuity cannot be deployed until the deployer is funded with Base ETH."
+  },
+  "remainingFundingRequirements": {
+    "deployerEth": ">= 0.002 Base ETH recommended for deploy+register+fund verify",
+    "orgAUsdc": ">= 5.00 Base USDC for payroll budget path",
+    "orgBUsdc": ">= 2.00 Base USDC for rescue replay path",
+    "escrowUsdcFromDeployer": "1.00 Base USDC (available on deployer today)"
+  },
+  "continuityAddressMainnet": null,
+  "missionIdMainnet": null,
+  "pass": false,
+  "stopCondition": "missing_required_gas_funds"
+}

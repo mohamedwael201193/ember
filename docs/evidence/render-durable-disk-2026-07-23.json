@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-07-22T23:46:23.814Z",
+  "serviceId": "srv-d93aj1ernols73b8a170",
+  "disk": {
+    "id": "dsk-d9glcjreo5us73cbk500",
+    "name": "ember-journals",
+    "mountPath": "/var/data/ember",
+    "sizeGB": 1,
+    "createdAt": "2026-07-22T23:46:23.814309Z"
+  },
+  "journalPaths": {
+    "RESCUE_JOURNAL_DIR": "/var/data/ember/rescues",
+    "PAYDAY_JOURNAL_DIR": "/var/data/ember/payday"
+  },
+  "incident": {
+    "description": "An initial Render env-var PUT with only journal keys replaced the full environment. The complete rehearsal environment was immediately restored (50 keys) from local .env with durable journal paths.",
+    "restoredKeyCount": 50,
+    "followUpDeployId": "dep-d9gldc3rjlhs73cljeb0"
+  },
+  "pass": true,
+  "notes": [
+    "Starter plan supports persistent disks; free /tmp journals are no longer the production path.",
+    "Disk attachment plus env restore require a live deploy before journals are durable at runtime."
+  ]
+}

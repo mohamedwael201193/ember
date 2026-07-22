@@ -29,6 +29,9 @@ They contain no API key or private key.
 | `runtime-hardening-local-2026-07-22.json` | Pass | Child credential allowlists, strict environment startup, health/readiness/auth, and graceful parent/child shutdown. |
 | `render-final-deploy-2026-07-22.json` | Pass with plan/durability blockers | Final hardening commit deployed live; health, readiness, auth, request limit, metrics, and receipt-backed HMAC check passed. |
 | `backend-certification-2026-07-22.json` | Rehearsal certified; mainnet blocked | Consolidated final local, contract, KeeperHub, wallet, Marketplace, runtime, Render, security, and stop-gate result. |
+| `phase11-paid-retry-2026-07-23.json` | Pass with external listing bug | Retried funded x402 success (`defi-onchain-intelligence-base`) and confirmed `wallet-snapshot-base` still fails after charge. |
+| `render-durable-disk-2026-07-23.json` | Pass | Persistent 1 GB disk mounted at `/var/data/ember`; journals moved off `/tmp`. |
+| `mainnet-deploy-blocker-2026-07-23.json` | Fail / funding stop | Forge Deploy broadcast blocked by deployer Base ETH = 0 despite Phase 13 approval and prepared mainnet workflows. |
 
 Public proof:
 

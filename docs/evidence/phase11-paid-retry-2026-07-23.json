@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-07-22T23:48:30.000Z",
+  "phase": 11,
+  "wallet": {
+    "address": "0xBfA03582FE97f46B982b6e12DA8a5cE5DA0dd280",
+    "baseUsdcAfter": "0.47",
+    "tempoUsdcAfter": "0"
+  },
+  "calls": [
+    {
+      "slug": "defi-onchain-intelligence-base",
+      "protocol": "x402",
+      "httpStatus": 200,
+      "paid": true,
+      "workflowStatus": "success",
+      "executionId": "7g702yluekcbxzcdf1jmz",
+      "settlementTx": "0x3a42febdb9bc3b3751c061d72be851a8609bb1475e5940d1c07401edde43eda5",
+      "settlementRecipient": "0xAcb41Cb0a6de47FC9bFf538b48e0B918B1D543c0",
+      "amountUsdc": "0.01",
+      "receiptStatus": "success"
+    },
+    {
+      "slug": "wallet-snapshot-base",
+      "protocol": "x402",
+      "httpStatus": 200,
+      "paid": true,
+      "workflowStatus": "error",
+      "executionId": "0swaxxxg94s19ygfly76r",
+      "error": "Protocol \"aave-v3\" contract \"pool\" is not deployed on network \"undefined\"",
+      "classification": "external_keeperhub_listing_bug",
+      "notes": "Payment settled; workflow failed because the listing resolves network as undefined."
+    }
+  ],
+  "priorSettlements": [
+    "0xabbe77bc77f922d67d7430c77486f4dc6d913c8bb4a810bb07dade644bdd3563",
+    "0x87f5c75fac79d090df15da27c8a330002c206e74ca3b20cb02114e0dda93e71f"
+  ],
+  "mpp": {
+    "attempted": false,
+    "reason": "Listings offered x402; Tempo USDC.e balance is 0."
+  },
+  "pass": true,
+  "scopeNote": "Marketplace fee settlements on Base mainnet. Not an EMBER Continuity mission deployment."
+}

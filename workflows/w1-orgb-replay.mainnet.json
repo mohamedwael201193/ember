@@ -1,0 +1,38 @@
+{
+  "id": "pvhwggqr8318wac68jb62",
+  "name": "payday-stream-orgb-replay-mainnet",
+  "description": "EMBER W1' mainnet Org B rescue replay. Keep disabled; execute only via Sentinel.",
+  "enabled": false,
+  "nodes": [
+    {
+      "id": "trigger-1",
+      "type": "trigger",
+      "position": { "x": 0, "y": 0 },
+      "data": {
+        "type": "trigger",
+        "label": "Manual Trigger",
+        "status": "idle",
+        "config": { "triggerType": "manual" }
+      }
+    },
+    {
+      "id": "transfer-usdc",
+      "type": "action",
+      "position": { "x": 252, "y": 0 },
+      "data": {
+        "type": "action",
+        "label": "Pay Employee USDC",
+        "status": "idle",
+        "config": {
+          "actionType": "web3/transfer-token",
+          "network": "8453",
+          "amount": "0.01",
+          "recipientAddress": "0x230640f6508c7a1086444c5ba62d230f395ba0e1",
+          "tokenConfig": "{\"mode\":\"custom\",\"customToken\":{\"address\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"symbol\":\"USDC\"}}",
+          "integrationId": "uof7week9ne35ljfdnjae"
+        }
+      }
+    }
+  ],
+  "edges": [{ "id": "e1", "source": "trigger-1", "target": "transfer-usdc" }]
+}

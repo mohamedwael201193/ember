@@ -1,0 +1,38 @@
+{
+  "id": "5goaid2zjgzyb32661se3",
+  "name": "payday-stream-mainnet",
+  "description": "EMBER W1 mainnet: manual Org A USDC payroll transfer on Base (8453). Disabled until Phase 13 cutover.",
+  "enabled": false,
+  "nodes": [
+    {
+      "id": "trigger-1",
+      "type": "trigger",
+      "position": { "x": 0, "y": 0 },
+      "data": {
+        "type": "trigger",
+        "label": "Manual Trigger",
+        "status": "idle",
+        "config": { "triggerType": "Manual" }
+      }
+    },
+    {
+      "id": "transfer-usdc",
+      "type": "action",
+      "position": { "x": 252, "y": 0 },
+      "data": {
+        "type": "action",
+        "label": "Pay Employee USDC",
+        "status": "idle",
+        "config": {
+          "actionType": "web3/transfer-token",
+          "network": "8453",
+          "amount": "0.01",
+          "recipientAddress": "0x230640f6508c7a1086444c5ba62d230f395ba0e1",
+          "tokenConfig": "{\"mode\":\"custom\",\"customToken\":{\"address\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"symbol\":\"USDC\"}}",
+          "integrationId": "jq31igp9un4exkxl4z7wu"
+        }
+      }
+    }
+  ],
+  "edges": [{ "id": "e1", "source": "trigger-1", "target": "transfer-usdc" }]
+}
