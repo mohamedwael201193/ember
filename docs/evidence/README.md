@@ -17,6 +17,7 @@ They contain no API key or private key.
 | `payday-restart-idempotency.json` | Pass                | Same-slot restart returns the same KeeperHub execution and transaction; receipt is valid.                                    |
 | `proof-live2slots.json`           | Pass                | Canonical proof pin, gateway fetch-back hash, KeeperHub anchor execution, `ProofAnchored` event, and stored proof all agree. |
 | `post-fix-three-drills.json`      | Pass                | Three bounded batches: six unique verified transfers, three fetched-back proofs, three anchors, stable explicit reruns.      |
+| `render-free-deploy.json`         | Pass                | Three free Render web services created; public `/healthz`/`/readyz` and HMAC `/check` verified live.                         |
 
 Public proof:
 
