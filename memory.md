@@ -31,7 +31,7 @@ Bearer-only KH auth · Sepolia-only · No Docker (process-kill chaos) · No fron
 
 - Hardened `.gitignore` for `.env`, `.cursor/**`, runtime journals, Foundry cache,
   credentials files.
-- **83 dated commits** (2026-07-15 → 2026-07-22) live at
+- **84 dated commits** (2026-07-15 → 2026-07-22) live at
   https://github.com/james32135/ember (token owner `james32135`).
 - Direct push to https://github.com/mohamedwael201193/ember blocked: `.env`
   PAT authenticates as `james32135` (403 on that upstream). Provide a
@@ -65,8 +65,8 @@ Continuity `0x068bB96e…5770` · Mission `1` · W1 `x08xy6zyy5ne5xkr93mtf` · W
    rotate the exposed tokens.
 2. Keep the 12-hour soak running; do not mutate rescue journals during it.
 3. Retry agentic wallet / paid Marketplace when platform allows.
-4. Frontend remains deferred until backend Phase 12 soak + Phase 11 gates.
-4. Frontend remains docs-only; mainnet remains human-gated.
+4. Frontend remains deferred until backend Phase 12 soak + Phase 11 gates;
+   mainnet remains human-gated.
 
 ---
 
