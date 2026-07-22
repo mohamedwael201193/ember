@@ -150,17 +150,32 @@ for (const name of LEGACY_NAMES) {
 
 const current = byName.get(SERVICE_NAME);
 let result;
-if (current?.id) {
-  await api(`/services/${current.id}`, {
+async function patchRuntime(serviceId) {
+  await api(`/services/${serviceId}`, {
     method: "PATCH",
     body: JSON.stringify({
+      name: SERVICE_NAME,
       repo: REPO,
       branch: BRANCH,
       autoDeploy: "yes",
-      buildCommand,
-      startCommand
+      serviceDetails: {
+        healthCheckPath: "/healthz",
+        envSpecificDetails: {
+          buildCommand,
+          startCommand
+        }
+      }
     })
   });
+}
+
+const reuseName = process.env.RENDER_REUSE_SERVICE || "meridian-backend";
+if (!current?.id && byName.get(reuseName)?.id) {
+  current = byName.get(reuseName);
+}
+
+if (current?.id) {
+  await patchRuntime(current.id);
   if (current.suspended === "suspended") {
     await api(`/services/${current.id}/resume`, { method: "POST", body: "{}" });
   }
@@ -178,33 +193,41 @@ if (current?.id) {
     id: current.id,
     url: current.serviceDetails?.url || current.url,
     deployId: deploy?.id || deploy?.deploy?.id,
-    repo: REPO
+    repo: REPO,
+    reusedFrom: current.name !== SERVICE_NAME ? current.name : undefined
   };
 } else {
-  const created = await api("/services", {
-    method: "POST",
-    body: JSON.stringify({
-      type: "web_service",
-      name: SERVICE_NAME,
-      ownerId,
-      repo: REPO,
-      autoDeploy: "yes",
-      branch: BRANCH,
-      buildCommand,
-      startCommand,
-      envVars,
-      serviceDetails: {
-        runtime: "node",
-        plan: "free",
-        region: "frankfurt",
-        healthCheckPath: "/healthz",
-        envSpecificDetails: {
-          buildCommand,
-          startCommand
+  let created;
+  try {
+    created = await api("/services", {
+      method: "POST",
+      body: JSON.stringify({
+        type: "web_service",
+        name: SERVICE_NAME,
+        ownerId,
+        repo: REPO,
+        autoDeploy: "yes",
+        branch: BRANCH,
+        buildCommand,
+        startCommand,
+        envVars,
+        serviceDetails: {
+          runtime: "node",
+          plan: "free",
+          region: "frankfurt",
+          healthCheckPath: "/healthz",
+          envSpecificDetails: {
+            buildCommand,
+            startCommand
+          }
         }
-      }
-    })
-  });
+      })
+    });
+  } catch (error) {
+    throw new Error(
+      `${error instanceof Error ? error.message : String(error)}. Set RENDER_REUSE_SERVICE to a suspended web service name to retarget.`
+    );
+  }
   const service = created.service || created;
   result = {
     name: SERVICE_NAME,

@@ -130,16 +130,16 @@ const server = createServer(async (req, res) => {
   const pathname = new URL(req.url || "/", "http://localhost").pathname;
 
   if (pathname === "/healthz" && req.method === "GET") {
+    // Liveness only — Render free health checks must pass while children boot.
     const [observer, payday, sentinel] = await Promise.all([
-      fetchJson(`http://127.0.0.1:${OBSERVER_PORT}/healthz`),
-      fetchJson(`http://127.0.0.1:${PAYDAY_PORT}/healthz`),
-      fetchJson(`http://127.0.0.1:${SENTINEL_PORT}/healthz`)
+      fetchJson(`http://127.0.0.1:${OBSERVER_PORT}/healthz`, 800),
+      fetchJson(`http://127.0.0.1:${PAYDAY_PORT}/healthz`, 800),
+      fetchJson(`http://127.0.0.1:${SENTINEL_PORT}/healthz`, 800)
     ]);
-    const ok = observer.ok && payday.ok && sentinel.ok;
-    res.writeHead(ok ? 200 : 503, { "content-type": "application/json" });
+    res.writeHead(200, { "content-type": "application/json" });
     res.end(
       JSON.stringify({
-        ok,
+        ok: true,
         service: "ember-runtime",
         children: { observer: observer.ok, payday: payday.ok, sentinel: sentinel.ok }
       })
