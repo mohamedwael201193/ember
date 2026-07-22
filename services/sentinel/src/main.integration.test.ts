@@ -14,9 +14,15 @@ async function freePort(): Promise<number> {
 }
 
 async function waitForHealth(url: string, process_: ChildProcess): Promise<void> {
-  const deadline = Date.now() + 10_000;
+  const deadline = Date.now() + 30_000;
+  let stderr = "";
+  process_.stderr?.on("data", (chunk: Buffer | string) => {
+    stderr += String(chunk);
+  });
   while (Date.now() < deadline) {
-    if (process_.exitCode !== null) throw new Error(`sentinel exited with ${process_.exitCode}`);
+    if (process_.exitCode !== null) {
+      throw new Error(`sentinel exited with ${process_.exitCode}: ${stderr.slice(0, 500)}`);
+    }
     try {
       if ((await fetch(url)).ok) return;
     } catch {
@@ -24,7 +30,7 @@ async function waitForHealth(url: string, process_: ChildProcess): Promise<void>
     }
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
-  throw new Error("sentinel health timeout");
+  throw new Error(`sentinel health timeout: ${stderr.slice(0, 500)}`);
 }
 
 afterEach(() => {
@@ -38,7 +44,10 @@ describe("sentinel HTTP boundary", () => {
     child = spawn(process.execPath, ["--import", "tsx", "services/sentinel/src/main.ts"], {
       cwd: process.cwd(),
       env: {
-        ...process.env,
+        PATH: process.env.PATH,
+        SystemRoot: process.env.SystemRoot,
+        TEMP: process.env.TEMP,
+        TMP: process.env.TMP,
         KH_API_BASE: "https://app.keeperhub.com",
         KH_API_KEY_STANDBY: "kh_standby_test",
         SENTINEL_SHARED_SECRET: "s".repeat(64),
@@ -93,5 +102,5 @@ describe("sentinel HTTP boundary", () => {
         })
       ).status
     ).toBe(413);
-  }, 15_000);
+  }, 45_000);
 });

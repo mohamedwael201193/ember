@@ -19,9 +19,9 @@
 | 8 | Cross-org import + credential rebind | Programmatic create in B with B integration | Created Org B workflow `EMBER Import Rebind Smoke` with integration `uof7week9ne35ljfdnjae` and Org B address (idempotency `ember-import-rebind-2026-07-22`) | **PASS** |
 | 9 | `web3/transfer-token` schema | `tokenConfig` JSON string | Live `list_action_schemas`: `{"mode":"custom","customToken":{"address","symbol"}}`; prefer `chainId` over deprecated `network` | **PASS** |
 | 10 | Marketplace paid call (x402) | HTTP 402 with challenge | `call_workflow` slug `wallet-snapshot-base` → **402**, amount `10000` (0.01 USDC), asset Base USDC `0x8335…2913`, network `eip155:8453`, payTo `0x21db…1a92`. Tool does **not** auto-pay | **PASS** (challenge) |
-| 11 | Marketplace paid settlement tx | Real Base USDC payment + execution | Agentic wallet `keeperhub-wallet add` → **HTTP 500 INTERNAL** provision failure. Settlement **blocked** until wallet provision works + Base USDC funded | **FAIL / BLOCKED** |
+| 11 | Marketplace paid settlement tx | Real Base USDC payment + execution | 2026-07-22 retry: wallet **provisioned** (`0xBfA0…d280`); paid call returns `INSUFFICIENT_FUNDS` (0 Base USDC, needs 0.01). Settlement **blocked on funding** only | **PARTIAL / FUND** |
 | 12 | Marketplace write semantics | Unsigned calldata for write | Docs + `call_workflow` description: write returns `{to,data,value}`. Sample write listings disabled (503). Architecture: treat paid **read** for fee path; W3 rescue remains Org B–owned manual/MCP unless write listing proven later | **PARTIAL** |
-| 13 | Agentic wallet install | `skill install` + `wallet add` | `skill install` wrote Cursor/Claude skills; Cursor hooks require manual wiring. `wallet add` failed 500 | **PARTIAL** |
+| 13 | Agentic wallet install | `skill install` + `wallet add` | Skill installed earlier; MCP `info`/`balance` now auto-provision successfully. Balance still 0 USDC | **PASS** (provision) |
 | 14 | Official SDK | Inspect coverage | `@keeperhub/sdk@0.1.1` early 0.x REST client; agents should prefer MCP. Backend may use SDK where methods exist + REST for gaps | **PASS** |
 | 15 | Foundry toolchain | Installable | WSL `forge 1.7.1`; `forge test` Continuity: 2 passed | **PASS** |
 | 16 | pnpm / Node | Node 24, pnpm 10 | Node v24.12.0; pnpm 10.34.5; lint/typecheck/test/build green | **PASS** |
@@ -41,8 +41,8 @@
 ## Load-bearing decision for W3 fees
 
 1. **x402 challenge path is real** for paid **read** listings (402 + exact scheme on Base USDC).  
-2. **Settlement not yet proven** — blocked on KeeperHub agentic wallet provisioning (platform 500).  
-3. Until settlement PASS: implement W3 fee state machine with `X402` / `MPP` / `ESCROW_FALLBACK`, but **do not list W3 as paid Marketplace** until a real settlement tx is recorded. Escrow fallback remains the rehearsal path.  
+2. **Settlement not yet proven** — wallet provisions; blocked only on funding ≥0.01 Base USDC.  
+3. Until settlement PASS: keep W3 fee state machine with `X402` / `MPP` / `ESCROW_FALLBACK`, but **do not list W3 as paid Marketplace** until a real settlement tx is recorded. Escrow fallback remains the rehearsal path.  
 4. Docs contradiction resolved for planning: Marketplace page claims KeeperHub handles payment+execution; MCP `call_workflow` explicitly does **not** auto-pay — agent/wallet must settle 402 then retry.
 
 ## Commands used (redacted)
@@ -61,7 +61,7 @@ pnpm lint && pnpm typecheck && pnpm test && pnpm build
 
 ## Human actions still required
 
-1. Retry agentic wallet provision when KeeperHub recovers; fund with ≥0.05 Base mainnet USDC for paid rehearsal.  
+1. Fund agentic wallet `0xBfA03582FE97f46B982b6e12DA8a5cE5DA0dd280` with ≥0.05 Base mainnet USDC, then retry paid `wallet-snapshot-base`.  
 2. Optional: dashboard confirmation of import/rebind (programmatic path already PASS).  
-3. Docker Desktop / engine if compose-based chaos is required on this machine.  
-4. Public URLs for Sentinel / Primary Observer (Render or tunnel) before live W2 schedule.
+3. Phase 13 mainnet remains human-gated.  
+4. Combined Render runtime is live at `https://meridian-backend-ikx8.onrender.com`.

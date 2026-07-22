@@ -17,7 +17,11 @@ They contain no API key or private key.
 | `payday-restart-idempotency.json` | Pass                | Same-slot restart returns the same KeeperHub execution and transaction; receipt is valid.                                    |
 | `proof-live2slots.json`           | Pass                | Canonical proof pin, gateway fetch-back hash, KeeperHub anchor execution, `ProofAnchored` event, and stored proof all agree. |
 | `post-fix-three-drills.json`      | Pass                | Three bounded batches: six unique verified transfers, three fetched-back proofs, three anchors, stable explicit reruns.      |
-| `render-free-deploy.json`         | Pass                | Three free Render web services created; public `/healthz`/`/readyz` and HMAC `/check` verified live.                         |
+| `render-free-deploy.json`         | Pass                | Combined Render web service (retargeted); public `/healthz`/`/readyz` and HMAC `/check` verified live.                       |
+| `render-combined-public-checks.json` | Pass             | Single-runtime probes: children health, unauth 401s, receipt-backed HMAC `/check`.                                           |
+| `soak-12h.json`                   | Pass                | 12h process soak: 695 checks, zero health/PID/journal mutations.                                                             |
+| `validation-suite-2026-07-22.json`| Pass                | Full local+live validation after soak (unit/typecheck/drills/anchor/Render/KH smoke).                                        |
+| `phase11-wallet-retry.json`       | Partial             | Agentic wallet now provisions; paid settlement blocked on 0 USDC balance.                                                    |
 
 Public proof:
 
@@ -42,7 +46,7 @@ all mission journals; `rescue-idempotency-check.json` is the post-fix result.
 ## External blockers
 
 - KeeperHub HTTP and Code workflow actions return `402 upgrade_required`.
-- Agentic wallet provisioning returns HTTP 500, blocking a real paid
-  Marketplace settlement.
-- Render public deployment requires human service creation.
+- Agentic wallet is provisioned but unfunded; paid Marketplace settlement
+  needs ≥0.01 Base USDC in `0xBfA03582FE97f46B982b6e12DA8a5cE5DA0dd280`.
 - Mainnet activity requires explicit Phase 13 human approval.
+- Frontend remains deferred.

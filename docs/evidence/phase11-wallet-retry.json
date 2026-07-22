@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "at": "2026-07-22T16:41:00.000Z",
+  "phase": 11,
+  "network": "base",
+  "wallet": {
+    "provisioned": true,
+    "subOrgId": "76f6b04e-9c69-4ef4-b182-7f6017437e63",
+    "walletAddress": "0xBfA03582FE97f46B982b6e12DA8a5cE5DA0dd280",
+    "baseUsdc": "0",
+    "tempoUsdc": "0"
+  },
+  "paidCall": {
+    "slug": "wallet-snapshot-base",
+    "paymentHint": "x402",
+    "result": "INSUFFICIENT_FUNDS",
+    "neededUsd": 0.01,
+    "balanceUsd": 0,
+    "fundingUrl": "https://pay.coinbase.com/buy/select-asset?defaultNetwork=base&defaultAsset=USDC&addresses=%7B%220xBfA03582FE97f46B982b6e12DA8a5cE5DA0dd280%22%3A%5B%22base%22%5D%7D&presetCryptoAmount=5"
+  },
+  "pass": false,
+  "notes": [
+    "Agentic wallet provision previously failed with HTTP 500; now succeeds.",
+    "Settlement still blocked until wallet is funded with >= 0.01 Base USDC.",
+    "Do not list paid W3 until a real settlement tx is captured."
+  ]
+}

@@ -4,7 +4,7 @@
  * Does not modify git config. Uses one-shot -c author identity and env dates.
  */
 import { execFileSync } from "node:child_process";
-import { readdirSync, statSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readdirSync, writeFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const ROOT = process.cwd();
