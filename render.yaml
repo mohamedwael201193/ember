@@ -1,14 +1,14 @@
-# Free-plan Blueprint. Persistent disks are unavailable on Render free;
-# journals use ephemeral /var/data paths that reset on redeploy/sleep.
-# Promote plan + disks before Phase 13 mainnet.
+# Free-plan Blueprint — single web service hosts Observer + PAYDAY + Sentinel.
+# Persistent disks are unavailable on Render free; journals use /tmp and reset
+# on redeploy/sleep. Promote plan + disks before Phase 13 mainnet.
 services:
   - type: web
-    name: ember-payday
+    name: ember
     runtime: node
     region: frankfurt
     plan: free
     buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
-    startCommand: node services/payday/dist/main.js
+    startCommand: node scripts/start-ember-runtime.mjs
     healthCheckPath: /healthz
     autoDeploy: true
     envVars:
@@ -18,105 +18,21 @@ services:
         value: production
       - key: PAYDAY_ENABLE
         value: "0"
+      - key: SENTINEL_SELF_POLL
+        value: "1"
+      - key: PROOF_ANCHOR_ENABLE
+        value: "0"
       - key: KH_API_BASE
         value: https://app.keeperhub.com
       - key: KH_MCP_URL
         value: https://app.keeperhub.com/mcp
       - key: KH_API_KEY_PRIMARY_EXECUTOR
         sync: false
-      - key: KH_ORG_A_W1_WORKFLOW_ID
-        sync: false
-      - key: ORG_A_WALLET_ADDRESS
-        sync: false
-      - key: EMPLOYEE_ADDRESS
-        sync: false
-      - key: MISSION_ID_SEPOLIA
-        sync: false
-      - key: MISSION_START_AT
-        sync: false
-      - key: BASE_SEPOLIA_RPC_URL
-        sync: false
-      - key: BASE_SEPOLIA_RPC_URL_FALLBACK
-        value: https://sepolia.base.org
-      - key: USDC_ADDRESS_BASE_SEPOLIA
-        value: 0x036CbD53842c5426634e7929541eC2318f3dCF7e
-      - key: PAYMENT_AMOUNT_USDC
-        value: "10000"
-      - key: CADENCE_SECONDS
-        value: "300"
-      - key: CHAIN_ID_MAINNET
-        value: "8453"
-      - key: CHAIN_ID_REHEARSAL
-        value: "84532"
-      - key: PAYROLL_BUDGET_USDC
-        value: "5000000"
-      - key: ESCROW_FUND_USDC
-        value: "1000000"
-      - key: MAINNET_TOTAL_SPEND_CAP_USDC
-        value: "10000000"
-      - key: GRACE_MISSED_RUNS
-        value: "2"
-      - key: SENTINEL_POLL_SECONDS
-        value: "120"
-      - key: CLOCK_SKEW_SECONDS
-        value: "60"
-      - key: RECEIPT_CONFIRMATIONS
-        value: "3"
-      - key: MAX_REPLAY_SLOTS
-        value: "12"
-      - key: X402_FEE_USDC
-        value: "50000"
-      - key: X402_MAX_FEE_USDC
-        value: "500000"
-      - key: RESCUE_JOURNAL_DIR
-        value: /tmp/ember/payday
-      - key: LOG_LEVEL
-        value: info
-
-  - type: web
-    name: ember-primary-observer
-    runtime: node
-    region: frankfurt
-    plan: free
-    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
-    startCommand: node services/primary-observer/dist/main.js
-    healthCheckPath: /healthz
-    autoDeploy: true
-    envVars:
-      - key: NODE_VERSION
-        value: 24.12.0
-      - key: NODE_ENV
-        value: production
-      - key: KH_API_BASE
-        value: https://app.keeperhub.com
       - key: KH_API_KEY_PRIMARY_OBSERVER
         sync: false
-      - key: KH_ORG_A_W1_WORKFLOW_ID
-        sync: false
-      - key: PRIMARY_OBSERVER_SHARED_SECRET
-        sync: false
-      - key: LOG_LEVEL
-        value: info
-
-  - type: web
-    name: ember-sentinel
-    runtime: node
-    region: frankfurt
-    plan: free
-    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
-    startCommand: node services/sentinel/dist/main.js
-    healthCheckPath: /healthz
-    autoDeploy: true
-    envVars:
-      - key: NODE_VERSION
-        value: 24.12.0
-      - key: NODE_ENV
-        value: production
-      - key: KH_API_BASE
-        value: https://app.keeperhub.com
-      - key: KH_MCP_URL
-        value: https://app.keeperhub.com/mcp
       - key: KH_API_KEY_STANDBY
+        sync: false
+      - key: KH_ORG_A_W1_WORKFLOW_ID
         sync: false
       - key: KH_ORG_B_W1_REPLAY_WORKFLOW_ID
         sync: false
@@ -132,17 +48,10 @@ services:
         sync: false
       - key: EMPLOYEE_ADDRESS
         sync: false
-      - key: SENTINEL_SHARED_SECRET
-        sync: false
       - key: PRIMARY_OBSERVER_SHARED_SECRET
         sync: false
-      - key: PRIMARY_OBSERVER_URL
-        fromService:
-          type: web
-          name: ember-primary-observer
-          property: host
-      - key: SENTINEL_SELF_POLL
-        value: "1"
+      - key: SENTINEL_SHARED_SECRET
+        sync: false
       - key: CONTINUITY_ADDRESS_SEPOLIA
         sync: false
       - key: MISSION_ID_SEPOLIA
@@ -151,14 +60,6 @@ services:
         sync: false
       - key: WORKFLOW_HASH_SEPOLIA
         sync: false
-      - key: W1_CANONICAL_PATH
-        value: workflows/w1-payday-stream.json
-      - key: PROOF_ANCHOR_ENABLE
-        value: "0"
-      - key: PINATA_JWT
-        sync: false
-      - key: IPFS_GATEWAY
-        value: https://gateway.pinata.cloud/ipfs
       - key: BASE_SEPOLIA_RPC_URL
         sync: false
       - key: BASE_SEPOLIA_RPC_URL_FALLBACK
@@ -193,7 +94,15 @@ services:
         value: "50000"
       - key: X402_MAX_FEE_USDC
         value: "500000"
+      - key: W1_CANONICAL_PATH
+        value: workflows/w1-payday-stream.json
+      - key: PINATA_JWT
+        sync: false
+      - key: IPFS_GATEWAY
+        value: https://gateway.pinata.cloud/ipfs
       - key: RESCUE_JOURNAL_DIR
         value: /tmp/ember/rescues
+      - key: PAYDAY_JOURNAL_DIR
+        value: /tmp/ember/payday
       - key: LOG_LEVEL
         value: info

@@ -1,6 +1,6 @@
 # EMBER session memory
 
-Last updated: 2026-07-22 08:08 UTC+3  
+Last updated: 2026-07-22 17:25 UTC+3  
 Mode: **Autonomous backend delivery loop** (self-pacing)
 
 Secrets live in `.env` (gitignored). Never paste private keys into chat.
@@ -23,32 +23,24 @@ Bearer-only KH auth · Sepolia-only · No Docker (process-kill chaos) · No fron
 | 09 Chaos | **PASS** | `drill-sentinel-kill.ps1` → pass=true |
 | 10 Proof | **PASS** | Real Pinata CID, fetch-back hash, KeeperHub anchor, event/storage verified |
 | 11 Fee / marketplace | PENDING | Blocked on agentic wallet 500 for paid listing |
-| 12 Runtime | **LIVE on Render free** | Public health/ready + HMAC `/check`; soak still running locally |
+| 12 Runtime | **Consolidating to 1 Render web** | Combined `ember` runtime; local soak ~9.8h / 12h clean |
 
 ---
 
 ## 2. This tick
 
-- Hardened `.gitignore` for `.env`, `.cursor/**`, runtime journals, Foundry cache,
-  credentials files.
-- **84 dated commits** (2026-07-15 → 2026-07-22) live at
-  https://github.com/james32135/ember (token owner `james32135`).
-- Direct push to https://github.com/mohamedwael201193/ember blocked: `.env`
-  PAT authenticates as `james32135` (403 on that upstream). Provide a
-  `mohamedwael201193` PAT with `repo` (+ `workflow` if restoring Actions).
-- Render free services resumed, repo retargeted, redeployed, and verified:
-  all `/healthz` `/readyz` `/metrics` = 200; unauthenticated `/rescue` and
-  `/v1/executions` = 401.
-- Evidence: `docs/evidence/render-free-deploy.json`,
-  `docs/evidence/render-free-public-checks.json`.
+- Correct `mohamedwael201193` PAT + Render key confirmed from `.env` (file
+  token; ignore stale shell env overrides).
+- Force-push dated history to https://github.com/mohamedwael201193/ember
+- Collapse three free Render services → one `ember` web service via
+  `scripts/start-ember-runtime.mjs` (Observer+PAYDAY+Sentinel children).
+- Local soak still running clean (~569 checks at last sample).
 - Continuity bytecode still present on Base Sepolia mission `1`.
 
 ### Public URLs
 
-- Observer: https://ember-primary-observer.onrender.com
-- PAYDAY: https://ember-payday.onrender.com
-- Sentinel: https://ember-sentinel.onrender.com
-- Source: https://github.com/james32135/ember
+- Combined: https://ember.onrender.com (target after deploy)
+- Source: https://github.com/mohamedwael201193/ember
 
 ---
 
@@ -60,13 +52,10 @@ Continuity `0x068bB96e…5770` · Mission `1` · W1 `x08xy6zyy5ne5xkr93mtf` · W
 
 ## 4. Next tick
 
-1. User: put a `mohamedwael201193` PAT (`repo` + optional `workflow`) in `.env`
-   as `GITHUB_TOKEN`, then force-push this history to the requested upstream;
-   rotate the exposed tokens.
+1. Finish single-service Render health gate; suspend legacy split services.
 2. Keep the 12-hour soak running; do not mutate rescue journals during it.
-3. Retry agentic wallet / paid Marketplace when platform allows.
-4. Frontend remains deferred until backend Phase 12 soak + Phase 11 gates;
-   mainnet remains human-gated.
+3. Rotate exposed tokens; optional `workflow` scope to restore Actions CI.
+4. Frontend remains deferred; mainnet remains human-gated.
 
 ---
 
@@ -341,3 +330,79 @@ idle; first request may take ~30–60s to wake.
    `mohamedwael201193/ember` and restore `.github/workflows/ci.yml`.
 3. Optionally transfer/rename `james32135/ember` if that should become the
    canonical public repo.
+
+---
+
+## 11. Heartbeat 2026-07-22 11:15 UTC+3
+
+- Soak: `RUNNING` · checks=218 · failures=0 · journals stable
+- Render: Observer cold-start flake then 200; PAYDAY/Sentinel 200
+- Loop: soak-completion watcher still armed; 30m fallback re-armed
+- Unchanged blockers: `mohamedwael201193` PAT, KeeperHub Pro/wallet 500,
+  Phase 13 human mainnet gate, frontend deferred
+
+### Heartbeat 2026-07-22 11:47 UTC+3
+
+- Soak: `RUNNING` · checks=247 · failures=0 · journals stable
+- Render: Observer/PAYDAY/Sentinel all 200
+- Loop: soak-completion watcher still armed; 30m fallback re-armed
+
+### Heartbeat 2026-07-22 12:19 UTC+3
+
+- Soak: `RUNNING` · checks=277 · failures=0 · journals stable
+- Render: Observer/PAYDAY/Sentinel all 200
+- Loop: soak watcher + 30m fallback re-armed
+
+### Heartbeat 2026-07-22 12:49 UTC+3
+
+- Soak: `RUNNING` · checks=306 · failures=0 · journals stable
+- Render: Observer/PAYDAY/Sentinel all 200
+- Loop: soak watcher + 30m fallback re-armed
+
+### Heartbeat 2026-07-22 13:19 UTC+3
+
+- Soak: `RUNNING` · checks=335 · failures=0 · journals stable
+- Render: Observer/PAYDAY/Sentinel all 200
+- Loop: soak watcher + 30m fallback re-armed
+
+### Heartbeat 2026-07-22 13:50 UTC+3
+
+- Soak: `RUNNING` · checks=365 · failures=0 · journals stable
+- Render: Observer/PAYDAY/Sentinel all 200
+- Loop: soak watcher + 30m fallback re-armed
+
+### Heartbeat 2026-07-22 14:20 UTC+3
+
+- Soak: `RUNNING` · checks=394 · failures=0 · journals stable
+- Render: Observer/PAYDAY/Sentinel all 200
+- Loop: soak watcher + 30m fallback re-armed
+
+### Heartbeat 2026-07-22 14:50 UTC+3
+
+- Soak: `RUNNING` · checks=423 · failures=0 · journals stable
+- Render: Observer/PAYDAY/Sentinel all 200
+- Loop: soak watcher + 30m fallback re-armed
+
+### Heartbeat 2026-07-22 15:20 UTC+3
+
+- Soak: `RUNNING` · checks=452 · failures=0 · journals stable
+- Render: Observer/PAYDAY/Sentinel all 200
+- Loop: soak watcher + 30m fallback re-armed
+
+### Heartbeat 2026-07-22 15:50 UTC+3
+
+- Soak: `RUNNING` · checks=481 · failures=0 · journals stable
+- Render: Observer/PAYDAY/Sentinel all 200
+- Loop: soak watcher + 30m fallback re-armed
+
+### Heartbeat 2026-07-22 16:21 UTC+3
+
+- Soak: `RUNNING` · checks=511 · failures=0 · journals stable
+- Render: Observer/PAYDAY/Sentinel all 200
+- Loop: soak watcher + 30m fallback re-armed
+
+### Heartbeat 2026-07-22 16:51 UTC+3
+
+- Soak: `RUNNING` · checks=539 · failures=0 · journals stable
+- Render: Observer/PAYDAY/Sentinel all 200
+- Loop: soak watcher + 30m fallback re-armed
