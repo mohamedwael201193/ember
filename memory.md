@@ -104,3 +104,58 @@ Agentic wallet `0xBfA03582FE97f46B982b6e12DA8a5cE5DA0dd280`
 - Publish: dated history on `mohamedwael201193/ember` (~90 commits).
 - Render: free create quota exhausted → reused suspended `meridian-backend` as single `ember` runtime (`scripts/start-ember-runtime.mjs`).
 - Soak: `SOAK_COMPLETE pass=True checks=695` at `2026-07-22T16:32:55Z`.
+
+---
+
+## 7. Certification continuation (2026-07-23 00:07 UTC+3)
+
+This section supersedes stale status statements above without deleting session history.
+
+### Phase 11 funded retry
+
+- Agentic wallet funding blocker is resolved.
+- Starting balance: 0.50 Base USDC; ending balance after two calls: 0.48 Base USDC.
+- `wallet-snapshot-base` payment settled, but the external workflow failed after charging:
+  `0xabbe77bc77f922d67d7430c77486f4dc6d913c8bb4a810bb07dade644bdd3563`.
+- Alternate `defi-onchain-intelligence-base` paid workflow completed:
+  `0x87f5c75fac79d090df15da27c8a330002c206e74ca3b20cb02114e0dda93e71f`.
+- Both 0.01 USDC receipts were reverified on Base mainnet with success status.
+- Evidence: `docs/evidence/phase11-paid-settlement-2026-07-22.json`.
+- MPP was not applicable: tested listings offered x402 and wallet Tempo USDC.e balance is zero.
+- These are Marketplace fee payments, not EMBER mainnet deployment. Phase 13 remains gated.
+
+### Final hardening
+
+- Combined runtime children now receive explicit per-service environment allowlists.
+- Added environment-isolation regression tests; no child receives `DEPLOYER_PRIVATE_KEY`.
+- Combined `/healthz` now returns 503 when any child is unhealthy.
+- Combined graceful shutdown now waits for child exit with bounded SIGKILL fallback.
+- PAYDAY now projects `BASE_SEPOLIA_RPC_URL_FALLBACK`.
+- KeeperHub REST retries only safe GET/HEAD reads on 429/502/503/504 and network failures.
+- MCP retries only read-only `tools/list`; workflow/tool mutations remain single-attempt.
+- Added targeted retry-policy tests.
+- Contract Slither audit: zero unsuppressed findings.
+- Added contract gas snapshot.
+- Secret scan now detects GitHub and Render tokens in tracked content and git history.
+- Local combined-runtime boot test exposed a missing `SENTINEL_POLL_SECONDS`
+  allowlist entry; fixed and regression-tested.
+- Final combined-runtime probe: health 200, ready 200, unauthenticated check
+  401, synthetic SIGTERM drained children, parent exited 0, listener closed.
+- Evidence: `docs/evidence/runtime-hardening-local-2026-07-22.json`.
+
+### Regression result
+
+- `pnpm build`: PASS
+- `pnpm typecheck`: PASS
+- `pnpm lint`: PASS
+- `pnpm test`: PASS — 19 files / 54 tests
+- Full history created: `PROJECT_EXECUTION_HISTORY.md`
+
+### Active external/human gates
+
+1. Render reports reused service plan `starter`; API downgrade to `free` returned HTTP 500 twice.
+2. Render free `/tmp` journals are ephemeral; durable journals are mandatory before mainnet.
+3. Real W2/W3 HTTP/Code semantics require KeeperHub Pro; current workflow artifacts are explicit stubs.
+4. Rotate exposed GitHub and Render tokens before mainnet.
+5. Phase 13 needs explicit human approval.
+6. Frontend remains deferred.

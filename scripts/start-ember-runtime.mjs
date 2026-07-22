@@ -6,6 +6,12 @@
 import { spawn } from "node:child_process";
 import { createServer, request as httpRequest } from "node:http";
 import { resolve } from "node:path";
+import {
+  OBSERVER_ENV_KEYS,
+  PAYDAY_ENV_KEYS,
+  SENTINEL_ENV_KEYS,
+  buildChildEnv
+} from "./runtime-child-env.mjs";
 
 const ROOT = resolve(import.meta.dirname, "..");
 const PUBLIC_PORT = Number(process.env.PORT || 10000);
@@ -15,32 +21,35 @@ const SENTINEL_PORT = Number(process.env.SENTINEL_PORT || 8787);
 
 const children = [];
 let shuttingDown = false;
+let shutdownPromise;
 
 function log(level, msg, extra = {}) {
-  console.log(JSON.stringify({ level, msg, service: "ember-runtime", ...extra, ts: new Date().toISOString() }));
+  console.log(
+    JSON.stringify({ level, msg, service: "ember-runtime", ...extra, ts: new Date().toISOString() })
+  );
 }
 
-function spawnService(name, entry, envExtra) {
+function spawnService(name, entry, allowedKeys, envExtra, forbiddenKeys) {
   const child = spawn(process.execPath, [entry], {
     cwd: ROOT,
-    env: {
-      ...process.env,
-      ...envExtra,
-      // Children must not bind Render's public PORT.
-      PORT: String(envExtra.PORT)
-    },
+    // Children receive an explicit allowlist, never the combined service environment.
+    env: buildChildEnv(process.env, allowedKeys, envExtra, forbiddenKeys),
     stdio: ["ignore", "pipe", "pipe"]
+  });
+  let resolveExit;
+  const exit = new Promise((resolve) => {
+    resolveExit = resolve;
   });
   child.stdout.on("data", (buf) => process.stdout.write(`[${name}] ${buf}`));
   child.stderr.on("data", (buf) => process.stderr.write(`[${name}] ${buf}`));
   child.on("exit", (code, signal) => {
-    log("error", "child_exit", { name, code, signal });
+    resolveExit({ code, signal });
+    log(shuttingDown ? "info" : "error", "child_exit", { name, code, signal });
     if (!shuttingDown) {
-      shutdown("child_exit");
-      process.exitCode = code || 1;
+      void shutdown("child_exit", code || 1);
     }
   });
-  children.push(child);
+  children.push({ name, child, exit });
   return child;
 }
 
@@ -110,36 +119,54 @@ function routeTarget(pathname) {
   return null;
 }
 
-spawnService("observer", "services/primary-observer/dist/main.js", {
-  PORT: String(OBSERVER_PORT),
-  PRIMARY_OBSERVER_PORT: String(OBSERVER_PORT)
-});
-spawnService("payday", "services/payday/dist/main.js", {
-  PORT: String(PAYDAY_PORT),
-  PAYDAY_PORT: String(PAYDAY_PORT),
-  RESCUE_JOURNAL_DIR: process.env.PAYDAY_JOURNAL_DIR || "/tmp/ember/payday"
-});
-spawnService("sentinel", "services/sentinel/dist/main.js", {
-  PORT: String(SENTINEL_PORT),
-  SENTINEL_PORT: String(SENTINEL_PORT),
-  PRIMARY_OBSERVER_URL: `http://127.0.0.1:${OBSERVER_PORT}`,
-  RESCUE_JOURNAL_DIR: process.env.RESCUE_JOURNAL_DIR || "/tmp/ember/rescues"
-});
+spawnService(
+  "observer",
+  "services/primary-observer/dist/main.js",
+  OBSERVER_ENV_KEYS,
+  {
+    PORT: String(OBSERVER_PORT),
+    PRIMARY_OBSERVER_PORT: String(OBSERVER_PORT)
+  },
+  ["DEPLOYER_PRIVATE_KEY", "KH_API_KEY_PRIMARY_EXECUTOR", "KH_API_KEY_STANDBY", "PINATA_JWT"]
+);
+spawnService(
+  "payday",
+  "services/payday/dist/main.js",
+  PAYDAY_ENV_KEYS,
+  {
+    PORT: String(PAYDAY_PORT),
+    PAYDAY_PORT: String(PAYDAY_PORT),
+    RESCUE_JOURNAL_DIR: process.env.PAYDAY_JOURNAL_DIR || "/tmp/ember/payday"
+  },
+  ["DEPLOYER_PRIVATE_KEY", "KH_API_KEY_PRIMARY_OBSERVER", "KH_API_KEY_STANDBY", "PINATA_JWT"]
+);
+spawnService(
+  "sentinel",
+  "services/sentinel/dist/main.js",
+  SENTINEL_ENV_KEYS,
+  {
+    PORT: String(SENTINEL_PORT),
+    SENTINEL_PORT: String(SENTINEL_PORT),
+    PRIMARY_OBSERVER_URL: `http://127.0.0.1:${OBSERVER_PORT}`,
+    RESCUE_JOURNAL_DIR: process.env.RESCUE_JOURNAL_DIR || "/tmp/ember/rescues"
+  },
+  ["DEPLOYER_PRIVATE_KEY", "KH_API_KEY_PRIMARY_EXECUTOR", "KH_API_KEY_PRIMARY_OBSERVER"]
+);
 
 const server = createServer(async (req, res) => {
   const pathname = new URL(req.url || "/", "http://localhost").pathname;
 
   if (pathname === "/healthz" && req.method === "GET") {
-    // Liveness only — Render free health checks must pass while children boot.
     const [observer, payday, sentinel] = await Promise.all([
       fetchJson(`http://127.0.0.1:${OBSERVER_PORT}/healthz`, 800),
       fetchJson(`http://127.0.0.1:${PAYDAY_PORT}/healthz`, 800),
       fetchJson(`http://127.0.0.1:${SENTINEL_PORT}/healthz`, 800)
     ]);
-    res.writeHead(200, { "content-type": "application/json" });
+    const healthy = observer.ok && payday.ok && sentinel.ok;
+    res.writeHead(healthy ? 200 : 503, { "content-type": "application/json" });
     res.end(
       JSON.stringify({
-        ok: true,
+        ok: healthy,
         service: "ember-runtime",
         children: { observer: observer.ok, payday: payday.ok, sentinel: sentinel.ok }
       })
@@ -177,7 +204,12 @@ const server = createServer(async (req, res) => {
     res.end(JSON.stringify({ error: "not_found", service: "ember-runtime" }));
     return;
   }
-  proxy(target.port, req, res, `${target.path}${new URL(req.url || "/", "http://localhost").search}`);
+  proxy(
+    target.port,
+    req,
+    res,
+    `${target.path}${new URL(req.url || "/", "http://localhost").search}`
+  );
 });
 
 server.listen(PUBLIC_PORT, () => {
@@ -189,20 +221,35 @@ server.listen(PUBLIC_PORT, () => {
   });
 });
 
-function shutdown(signal) {
-  if (shuttingDown) return;
+async function shutdown(signal, exitCode = 0) {
+  if (shutdownPromise) return shutdownPromise;
   shuttingDown = true;
-  log("info", "shutdown_started", { signal });
-  server.close();
-  for (const child of children) {
-    try {
-      child.kill("SIGTERM");
-    } catch {
-      /* ignore */
+  shutdownPromise = (async () => {
+    log("info", "shutdown_started", { signal });
+    const serverClosed = new Promise((resolveClose) => server.close(resolveClose));
+    for (const { child } of children) {
+      try {
+        child.kill("SIGTERM");
+      } catch {
+        /* ignore */
+      }
     }
-  }
-  setTimeout(() => process.exit(0), 5_000).unref();
+    const timeout = new Promise((resolveTimeout) =>
+      setTimeout(() => resolveTimeout(false), 10_000)
+    );
+    const childrenDrained = Promise.allSettled(children.map(({ exit }) => exit)).then(() => true);
+    const drained = await Promise.race([childrenDrained, timeout]);
+    if (!drained) {
+      for (const { child } of children) {
+        if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
+      }
+    }
+    await Promise.race([serverClosed, timeout]);
+    log("info", "shutdown_complete", { signal, childrenDrained: drained });
+    process.exit(exitCode);
+  })();
+  return shutdownPromise;
 }
 
-process.on("SIGTERM", () => shutdown("SIGTERM"));
-process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => void shutdown("SIGTERM"));
+process.on("SIGINT", () => void shutdown("SIGINT"));

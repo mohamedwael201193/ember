@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-07-22T21:16:00.000Z",
+  "scope": "combined-runtime-final-hardening",
+  "initialRegression": {
+    "result": "failed",
+    "cause": "SENTINEL_POLL_SECONDS was absent from the Sentinel child environment allowlist",
+    "behavior": "Sentinel rejected NaN during strict environment parsing; the parent detected child exit and drained Observer and PAYDAY",
+    "fix": "Added SENTINEL_POLL_SECONDS to SENTINEL_ENV_KEYS and added a regression assertion"
+  },
+  "finalRun": {
+    "publicPort": 19000,
+    "healthz": {
+      "status": 200,
+      "children": {
+        "observer": true,
+        "payday": true,
+        "sentinel": true
+      }
+    },
+    "readyz": {
+      "status": 200,
+      "children": {
+        "observer": true,
+        "payday": true,
+        "sentinel": true
+      }
+    },
+    "unauthenticatedCheckStatus": 401,
+    "shutdownTrigger": "synthetic SIGTERM event in the parent process",
+    "shutdownStartedLogged": true,
+    "shutdownCompleteLogged": true,
+    "parentExitCode": 0,
+    "listenerClosed": true
+  },
+  "credentialIsolation": {
+    "testFile": "scripts/runtime-child-env.test.mjs",
+    "observerForbiddenCredentialsAbsent": true,
+    "paydayForbiddenCredentialsAbsent": true,
+    "sentinelOrgACredentialsAbsent": true,
+    "deployerPrivateKeyAbsentFromAllChildren": true
+  },
+  "pass": true
+}

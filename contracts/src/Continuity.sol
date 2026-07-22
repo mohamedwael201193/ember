@@ -102,8 +102,11 @@ contract Continuity {
     ) external onlyOwner returns (uint256 missionId) {
         require(workflowHash != bytes32(0), "zero workflow hash");
         // Mission start is an operator-declared UTC anchor; slight validator skew is acceptable.
-        // forge-lint: disable-next-line(block-timestamp)
+        // Slither timestamp: the mission schedule is intentionally anchored to chain time.
+        // forge-lint: disable-start(block-timestamp)
+        // slither-disable-next-line timestamp
         require(startAt >= block.timestamp, "past start");
+        // forge-lint: disable-end(block-timestamp)
         require(cadenceSeconds > 0, "zero cadence");
         require(budget > 0, "zero budget");
         require(beneficiary != address(0) && standby != address(0), "zero address");
@@ -126,6 +129,9 @@ contract Continuity {
         );
     }
 
+    // Slither reentrancy: this path is protected by nonReentrant. The exact balance
+    // equality is intentional so fee-on-transfer/rebasing tokens are rejected.
+    // slither-disable-start reentrancy-no-eth,reentrancy-balance,incorrect-equality
     function fund(uint256 missionId, uint256 amount) external nonReentrant {
         Mission storage mission = missions[missionId];
         require(mission.exists, "unknown mission");
@@ -139,6 +145,7 @@ contract Continuity {
         mission.escrowBalance += uint128(amount);
         emit Funded(missionId, msg.sender, amount);
     }
+    // slither-disable-end reentrancy-no-eth,reentrancy-balance,incorrect-equality
 
     function anchorProof(
         uint256 missionId,

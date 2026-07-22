@@ -13,6 +13,18 @@ interface McpToolResult {
   isError?: boolean;
 }
 
+const RETRYABLE_MCP_READ_STATUSES = new Set([429, 502, 503, 504]);
+
+async function waitForRetry(response: Response, attempt: number): Promise<void> {
+  const retryAfter = response.headers.get("retry-after");
+  const seconds = retryAfter === null ? Number.NaN : Number(retryAfter);
+  const milliseconds =
+    Number.isFinite(seconds) && seconds >= 0
+      ? Math.min(seconds * 1_000, 30_000)
+      : Math.min(250 * 2 ** attempt, 5_000);
+  await new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
 export function parseMcpToolResult<T>(value: unknown): T {
   if (!value || typeof value !== "object") throw new Error("MCP tool result is invalid");
   const result = value as McpToolResult;
@@ -51,7 +63,7 @@ export class McpHttpClient {
   }
 
   async listTools(): Promise<unknown[]> {
-    const result = await this.call<{ tools: unknown[] }>("tools/list", {});
+    const result = await this.call<{ tools: unknown[] }>("tools/list", {}, true);
     return result.tools;
   }
 
@@ -59,26 +71,41 @@ export class McpHttpClient {
     return this.call("tools/call", { name, arguments: arguments_ });
   }
 
-  async call<T>(method: string, params: Record<string, unknown>): Promise<T> {
+  async call<T>(
+    method: string,
+    params: Record<string, unknown>,
+    retryableRead = false
+  ): Promise<T> {
     const id = randomUUID();
-    const response = await this.fetcher(this.endpoint, {
-      method: "POST",
-      signal: AbortSignal.timeout(this.timeoutMs),
-      headers: {
-        accept: "application/json, text/event-stream",
-        authorization: `Bearer ${this.apiKey}`,
-        "content-type": "application/json",
-        ...(this.#sessionId ? { "mcp-session-id": this.#sessionId } : {})
-      },
-      body: JSON.stringify({ jsonrpc: "2.0", id, method, params })
-    });
-    if (!response.ok) throw new Error(`MCP request failed with HTTP ${response.status}`);
-    this.#sessionId = response.headers.get("mcp-session-id") ?? this.#sessionId;
-    const payload = await this.readResponse<T>(response);
-    if (payload.error) throw new Error(`MCP error ${payload.error.code}: ${payload.error.message}`);
-    if (payload.id !== id || payload.result === undefined)
-      throw new Error("MCP response is invalid");
-    return payload.result;
+    const maxAttempts = retryableRead ? 3 : 1;
+    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+      const response = await this.fetcher(this.endpoint, {
+        method: "POST",
+        signal: AbortSignal.timeout(this.timeoutMs),
+        headers: {
+          accept: "application/json, text/event-stream",
+          authorization: `Bearer ${this.apiKey}`,
+          "content-type": "application/json",
+          ...(this.#sessionId ? { "mcp-session-id": this.#sessionId } : {})
+        },
+        body: JSON.stringify({ jsonrpc: "2.0", id, method, params })
+      });
+      if (!response.ok) {
+        if (attempt + 1 < maxAttempts && RETRYABLE_MCP_READ_STATUSES.has(response.status)) {
+          await waitForRetry(response, attempt);
+          continue;
+        }
+        throw new Error(`MCP request failed with HTTP ${response.status}`);
+      }
+      this.#sessionId = response.headers.get("mcp-session-id") ?? this.#sessionId;
+      const payload = await this.readResponse<T>(response);
+      if (payload.error)
+        throw new Error(`MCP error ${payload.error.code}: ${payload.error.message}`);
+      if (payload.id !== id || payload.result === undefined)
+        throw new Error("MCP response is invalid");
+      return payload.result;
+    }
+    throw new Error("MCP read retries exhausted");
   }
 
   async notify(method: string, params: Record<string, unknown>): Promise<void> {

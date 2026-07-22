@@ -25,8 +25,7 @@ const apiKey = process.env.RENDER_API_KEY || process.env.render_api_key;
 if (!apiKey) throw new Error("RENDER_API_KEY missing");
 
 const OWNER_ID = process.env.RENDER_OWNER_ID;
-const REPO =
-  process.env.RENDER_REPO || "https://github.com/mohamedwael201193/ember";
+const REPO = process.env.RENDER_REPO || "https://github.com/mohamedwael201193/ember";
 const BRANCH = process.env.RENDER_BRANCH || "main";
 const SERVICE_NAME = process.env.RENDER_SERVICE_NAME || "ember";
 const LEGACY_NAMES = ["ember-primary-observer", "ember-payday", "ember-sentinel"];
@@ -71,8 +70,14 @@ const envVars = [
   envVar("PROOF_ANCHOR_ENABLE", process.env.PROOF_ANCHOR_ENABLE || "0"),
   envVar("KH_API_BASE", process.env.KH_API_BASE || "https://app.keeperhub.com"),
   envVar("KH_MCP_URL", process.env.KH_MCP_URL || "https://app.keeperhub.com/mcp"),
-  envVar("BASE_SEPOLIA_RPC_URL_FALLBACK", process.env.BASE_SEPOLIA_RPC_URL_FALLBACK || "https://sepolia.base.org"),
-  envVar("USDC_ADDRESS_BASE_SEPOLIA", process.env.USDC_ADDRESS_BASE_SEPOLIA || "0x036CbD53842c5426634e7929541eC2318f3dCF7e"),
+  envVar(
+    "BASE_SEPOLIA_RPC_URL_FALLBACK",
+    process.env.BASE_SEPOLIA_RPC_URL_FALLBACK || "https://sepolia.base.org"
+  ),
+  envVar(
+    "USDC_ADDRESS_BASE_SEPOLIA",
+    process.env.USDC_ADDRESS_BASE_SEPOLIA || "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
+  ),
   envVar("PAYMENT_AMOUNT_USDC", process.env.PAYMENT_AMOUNT_USDC || "10000"),
   envVar("CADENCE_SECONDS", process.env.CADENCE_SECONDS || "300"),
   envVar("CHAIN_ID_MAINNET", "8453"),
@@ -159,6 +164,7 @@ async function patchRuntime(serviceId) {
       branch: BRANCH,
       autoDeploy: "yes",
       serviceDetails: {
+        plan: "free",
         healthCheckPath: "/healthz",
         envSpecificDetails: {
           buildCommand,

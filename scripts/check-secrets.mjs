@@ -38,6 +38,11 @@ const patterns = [
   { name: "KeeperHub API key", value: /\bkh_(?!x{20,}\b)[A-Za-z0-9_-]{20,}\b/g },
   { name: "JWT", value: /\beyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\b/g },
   {
+    name: "GitHub token",
+    value: /\b(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{40,})\b/g
+  },
+  { name: "Render API key", value: /\brnd_[A-Za-z0-9]{20,}\b/g },
+  {
     name: "assigned EVM private key",
     value: /(?:PRIVATE_KEY|privateKey)\s*[:=]\s*["']?0x[a-fA-F0-9]{64}\b/g
   }
@@ -63,6 +68,30 @@ for (const file of files) {
     pattern.value.lastIndex = 0;
     if (pattern.value.test(content)) findings.push(`${file}: ${pattern.name}`);
   }
+}
+
+try {
+  const history = execFileSync(
+    "git",
+    [
+      "log",
+      "--all",
+      "--format=",
+      "--no-ext-diff",
+      "-p",
+      "--",
+      ".",
+      ":(exclude)*KEEPERHUB_MASTER_REFERENCE*",
+      ":(exclude)*KEEPERHUB_HACKATHON_INTELLIGENCE*"
+    ],
+    { encoding: "utf8", maxBuffer: 100 * 1024 * 1024, stdio: ["ignore", "pipe", "ignore"] }
+  );
+  for (const pattern of patterns) {
+    pattern.value.lastIndex = 0;
+    if (pattern.value.test(history)) findings.push(`git history: ${pattern.name}`);
+  }
+} catch {
+  // A workspace without git history is still covered by the file scan above.
 }
 
 if (findings.length > 0) {
