@@ -23,7 +23,9 @@ const apiKey = process.env.RENDER_API_KEY || process.env.render_api_key;
 if (!apiKey) throw new Error("RENDER_API_KEY missing");
 
 const OWNER_ID = process.env.RENDER_OWNER_ID;
-const REPO = process.env.RENDER_REPO || "https://github.com/james32135/ember";
+const REPO =
+  process.env.RENDER_REPO ||
+  "https://github.com/james32135/ember"; // token-accessible publish repo; override for forks
 const BRANCH = process.env.RENDER_BRANCH || "main";
 
 async function api(path, init = {}) {
@@ -159,6 +161,19 @@ const results = [];
 for (const spec of services) {
   const current = byName.get(spec.name);
   if (current?.id) {
+    await api(`/services/${current.id}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        repo: REPO,
+        branch: BRANCH,
+        autoDeploy: "yes",
+        buildCommand: "corepack enable && pnpm install --frozen-lockfile && pnpm build",
+        startCommand: spec.startCommand
+      })
+    });
+    if (current.suspended === "suspended") {
+      await api(`/services/${current.id}/resume`, { method: "POST", body: "{}" });
+    }
     await api(`/services/${current.id}/env-vars`, {
       method: "PUT",
       body: JSON.stringify(spec.envVars)
@@ -169,10 +184,11 @@ for (const spec of services) {
     });
     results.push({
       name: spec.name,
-      action: "redeployed",
+      action: "updated_and_redeployed",
       id: current.id,
       url: current.serviceDetails?.url || current.url,
-      deployId: deploy?.id || deploy?.deploy?.id
+      deployId: deploy?.id || deploy?.deploy?.id,
+      repo: REPO
     });
     continue;
   }
@@ -228,13 +244,50 @@ if (observer?.url && sentinel?.id) {
   });
 }
 
+async function waitHealthy(url, attempts = 36, delayMs = 10_000) {
+  const healthUrl = `${url.replace(/\/$/, "")}/healthz`;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetch(healthUrl, { signal: AbortSignal.timeout(8_000) });
+      if (response.ok) {
+        const body = await response.json();
+        return { ok: true, attempt, status: response.status, body };
+      }
+      if (attempt === attempts) {
+        return { ok: false, attempt, status: response.status };
+      }
+    } catch (error) {
+      if (attempt === attempts) {
+        return {
+          ok: false,
+          attempt,
+          error: error instanceof Error ? error.message : String(error)
+        };
+      }
+    }
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  }
+  return { ok: false, attempt: attempts };
+}
+
+const health = {};
+for (const item of results) {
+  if (!item.url) continue;
+  const url = item.url.startsWith("http") ? item.url : `https://${item.url}`;
+  item.url = url;
+  health[item.name] = await waitHealthy(url);
+}
+
 mkdirSync("docs/evidence", { recursive: true });
 const evidence = {
   version: 1,
   at: new Date().toISOString(),
   repo: REPO,
   ownerId,
-  results
+  results,
+  health,
+  pass: Object.values(health).every((entry) => entry?.ok === true)
 };
 writeFileSync("docs/evidence/render-free-deploy.json", `${JSON.stringify(evidence, null, 2)}\n`);
 console.log(JSON.stringify(evidence, null, 2));
+if (!evidence.pass) process.exitCode = 1;

@@ -2,14 +2,20 @@
 .env
 .env.*
 !.env.example
+*.env
+.env.backup
+.env.bak
 .cursor/
-.cursor/mcp.json
+.cursor/**
 
-# Private keys / key material
+# Private keys / key material / tokens
 *.pem
 *.p12
+*.key
 id_rsa
 id_ed25519
+**/credentials.json
+**/secrets.json
 
 # Dependencies and build
 node_modules/
@@ -41,4 +47,7 @@ Thumbs.db
 # Temp
 tmp/
 temp/
-.env.bak
+
+# Requires GitHub token workflow scope to publish
+.github/workflows/
+
