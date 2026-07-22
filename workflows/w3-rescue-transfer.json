@@ -1,0 +1,36 @@
+{
+  "name": "ember-w3-rescue-transfer",
+  "description": "Manual Org B pulse stub for the free plan. Real rescue uses the HMAC Sentinel endpoint, disabled W1 replay transfers, and Continuity.anchorProof. Do not list as paid until HTTP/Code nodes and agentic-wallet settlement work.",
+  "id": "2z5x95h89ncjbnf4r6130",
+  "nodes": [
+    {
+      "id": "trigger-1",
+      "type": "trigger",
+      "position": { "x": 100, "y": 200 },
+      "data": {
+        "label": "Manual Rescue",
+        "type": "trigger",
+        "config": {
+          "triggerType": "manual"
+        },
+        "status": "idle"
+      }
+    },
+    {
+      "id": "bal-1",
+      "type": "action",
+      "position": { "x": 420, "y": 200 },
+      "data": {
+        "label": "Org B ETH Pulse",
+        "type": "action",
+        "config": {
+          "actionType": "web3/check-balance",
+          "network": "84532",
+          "address": "0xa45d8a46a4BC22Aae9946AE85962fA130A0aEFa6"
+        },
+        "status": "idle"
+      }
+    }
+  ],
+  "edges": [{ "id": "e1", "source": "trigger-1", "target": "bal-1" }]
+}

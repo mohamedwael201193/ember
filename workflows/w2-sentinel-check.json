@@ -1,0 +1,43 @@
+{
+  "name": "ember-w2-sentinel-check",
+  "description": "Schedule heartbeat on Org B. Free-plan stub uses web3/check-balance. HTTP Request and Code actions require KeeperHub Pro (upgrade_required). Until Pro, Sentinel self-polls via SENTINEL_SELF_POLL=1 calling Observer/HMAC /check locally.",
+  "id": "67hf9klj6pbwn56qzxwi7",
+  "nodes": [
+    {
+      "id": "trigger-1",
+      "type": "trigger",
+      "position": { "x": 100, "y": 200 },
+      "data": {
+        "label": "Every 2 Minutes",
+        "type": "trigger",
+        "config": {
+          "triggerType": "schedule",
+          "scheduleConfig": {
+            "frequency": "minutes",
+            "interval": 2,
+            "timezone": "UTC"
+          }
+        },
+        "status": "idle"
+      }
+    },
+    {
+      "id": "bal-1",
+      "type": "action",
+      "position": { "x": 420, "y": 200 },
+      "data": {
+        "label": "Org B ETH Pulse",
+        "type": "action",
+        "config": {
+          "actionType": "web3/check-balance",
+          "network": "84532",
+          "address": "0xa45d8a46a4BC22Aae9946AE85962fA130A0aEFa6"
+        },
+        "status": "idle"
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e1", "source": "trigger-1", "target": "bal-1" }
+  ]
+}
