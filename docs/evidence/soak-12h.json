@@ -1,18 +1,18 @@
 {
     "version":  1,
     "drill":  "services-12h-soak",
-    "state":  "RUNNING",
-    "pass":  null,
+    "state":  "COMPLETED",
+    "pass":  true,
     "startedAt":  "2026-07-22T04:32:02.3243187Z",
-    "updatedAt":  "2026-07-22T05:03:12.1795926Z",
+    "updatedAt":  "2026-07-22T16:32:55.9984904Z",
     "requestedDurationHours":  12,
     "intervalSeconds":  60,
-    "checks":  31,
+    "checks":  695,
     "healthFailures":  0,
     "pidChanges":  0,
     "journalMutations":  0,
     "sentinelPid":  32136,
     "observerPid":  35520,
-    "maxSentinelWorkingSetBytes":  21676032,
-    "maxObserverWorkingSetBytes":  11960320
+    "maxSentinelWorkingSetBytes":  32161792,
+    "maxObserverWorkingSetBytes":  30896128
 }

@@ -1,6 +1,6 @@
 # EMBER session memory
 
-Last updated: 2026-07-22 17:48 UTC+3  
+Last updated: 2026-07-22 19:34 UTC+3  
 Mode: **Autonomous backend delivery loop** (self-pacing)
 
 Secrets live in `.env` (gitignored). Never paste private keys into chat.
@@ -23,19 +23,16 @@ Bearer-only KH auth · Sepolia-only · No Docker (process-kill chaos) · No fron
 | 09 Chaos | **PASS** | `drill-sentinel-kill.ps1` → pass=true |
 | 10 Proof | **PASS** | Real Pinata CID, fetch-back hash, KeeperHub anchor, event/storage verified |
 | 11 Fee / marketplace | PENDING | Blocked on agentic wallet 500 for paid listing |
-| 12 Runtime | **LIVE — 1 Render web** | Combined runtime healthy; local soak ~10h / 12h clean |
+| 12 Runtime | **PASS (soak)** | 12h soak `pass=true`; single Render runtime live |
 
 ---
 
 ## 2. This tick
 
-- Force-pushed **88 commits** to https://github.com/mohamedwael201193/ember
-- Single Render service `ember` (reused suspended `meridian-backend` — free
-  create quota exhausted): Observer+PAYDAY+Sentinel via
-  `scripts/start-ember-runtime.mjs`
-- Public `/healthz` `/readyz` `/status` + child healthz = 200; `/v1/executions`
-  = 401 (expected unauthenticated)
-- Local soak still clean (~584 checks at last sample)
+- **12h soak COMPLETED** `pass=true` · checks=695 · healthFailures=0 ·
+  pidChanges=0 · journalMutations=0 · evidence `docs/evidence/soak-12h.json`
+- Single Render `ember-runtime` still healthy after soak closeout
+- Repo: https://github.com/mohamedwael201193/ember
 - Continuity bytecode still present on Base Sepolia mission `1`
 
 ### Public URLs
@@ -54,10 +51,10 @@ Continuity `0x068bB96e…5770` · Mission `1` · W1 `x08xy6zyy5ne5xkr93mtf` · W
 
 ## 4. Next tick
 
-1. Keep the 12-hour soak running; close Phase 12 when COMPLETED/pass.
+1. Phase 11: retry agentic wallet / paid Marketplace when platform allows.
 2. Rotate exposed tokens; optional `workflow` scope to restore Actions CI.
-3. Retry KeeperHub Pro / agentic wallet when platform allows.
-4. Frontend remains deferred; mainnet remains human-gated.
+3. Phase 13 mainnet remains human-gated.
+4. Frontend remains deferred until Phase 11 + human mainnet approval path.
 
 ---
 
@@ -65,7 +62,7 @@ Continuity `0x068bB96e…5770` · Mission `1` · W1 `x08xy6zyy5ne5xkr93mtf` · W
 
 1. Agentic wallet 500  
 2. KeeperHub Pro for HTTP nodes  
-3. Public URLs for hosted schedule  
+3. Phase 13 human mainnet sign-off  
 
 ---
 
