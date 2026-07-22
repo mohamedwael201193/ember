@@ -148,7 +148,7 @@ for (const name of LEGACY_NAMES) {
   }
 }
 
-const current = byName.get(SERVICE_NAME);
+let current = byName.get(SERVICE_NAME);
 let result;
 async function patchRuntime(serviceId) {
   await api(`/services/${serviceId}`, {
