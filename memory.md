@@ -1,6 +1,6 @@
 # EMBER session memory
 
-Last updated: 2026-07-22 07:55 UTC+3  
+Last updated: 2026-07-22 08:08 UTC+3  
 Mode: **Autonomous backend delivery loop** (self-pacing)
 
 Secrets live in `.env` (gitignored). Never paste private keys into chat.
@@ -29,20 +29,26 @@ Bearer-only KH auth · Sepolia-only · No Docker (process-kill chaos) · No fron
 
 ## 2. This tick
 
-- Hardened `.gitignore` for `.env`, `.cursor`, runtime journals, Foundry cache.
-- Built **81 dated commits** (2026-07-15 → 2026-07-22) and pushed to
-  https://github.com/james32135/ember (token owner).
-- Direct push to https://github.com/mohamedwael201193/ember blocked: token is
-  `james32135` with pull-only on that repo; also lacked `workflow` scope for CI.
-- Deployed three Render **free** web services; public HMAC `/check` returns 200
-  receipt-backed `MISSION_DOWN` (PAYDAY cadence off on free deploy).
-- Evidence: `docs/evidence/render-free-deploy.json`.
+- Hardened `.gitignore` for `.env`, `.cursor/**`, runtime journals, Foundry cache,
+  credentials files.
+- **83 dated commits** (2026-07-15 → 2026-07-22) live at
+  https://github.com/james32135/ember (token owner `james32135`).
+- Direct push to https://github.com/mohamedwael201193/ember blocked: `.env`
+  PAT authenticates as `james32135` (403 on that upstream). Provide a
+  `mohamedwael201193` PAT with `repo` (+ `workflow` if restoring Actions).
+- Render free services resumed, repo retargeted, redeployed, and verified:
+  all `/healthz` `/readyz` `/metrics` = 200; unauthenticated `/rescue` and
+  `/v1/executions` = 401.
+- Evidence: `docs/evidence/render-free-deploy.json`,
+  `docs/evidence/render-free-public-checks.json`.
+- Continuity bytecode still present on Base Sepolia mission `1`.
 
 ### Public URLs
 
 - Observer: https://ember-primary-observer.onrender.com
 - PAYDAY: https://ember-payday.onrender.com
 - Sentinel: https://ember-sentinel.onrender.com
+- Source: https://github.com/james32135/ember
 
 ---
 
@@ -54,10 +60,12 @@ Continuity `0x068bB96e…5770` · Mission `1` · W1 `x08xy6zyy5ne5xkr93mtf` · W
 
 ## 4. Next tick
 
-1. User: paste a `mohamedwael201193` PAT with `repo` + `workflow` into `.env`, then
-   force-push history to the requested upstream; rotate exposed tokens.
+1. User: put a `mohamedwael201193` PAT (`repo` + optional `workflow`) in `.env`
+   as `GITHUB_TOKEN`, then force-push this history to the requested upstream;
+   rotate the exposed tokens.
 2. Keep the 12-hour soak running; do not mutate rescue journals during it.
 3. Retry agentic wallet / paid Marketplace when platform allows.
+4. Frontend remains deferred until backend Phase 12 soak + Phase 11 gates.
 4. Frontend remains docs-only; mainnet remains human-gated.
 
 ---

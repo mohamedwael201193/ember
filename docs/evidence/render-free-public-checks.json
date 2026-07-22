@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "at": "2026-07-22T05:06:00Z",
+  "pass": true,
+  "repo": "https://github.com/james32135/ember",
+  "services": {
+    "ember-primary-observer": "https://ember-primary-observer.onrender.com",
+    "ember-payday": "https://ember-payday.onrender.com",
+    "ember-sentinel": "https://ember-sentinel.onrender.com"
+  },
+  "checks": {
+    "healthz": { "observer": 200, "payday": 200, "sentinel": 200 },
+    "readyz": { "observer": 200, "payday": 200, "sentinel": 200 },
+    "metrics": { "observer": 200, "payday": 200, "sentinel": 200 },
+    "sentinel_rescue_unauthenticated": 401,
+    "observer_executions_unauthenticated": 401
+  },
+  "continuity": {
+    "address": "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
+    "network": "base-sepolia",
+    "hasCode": true,
+    "missionId": "1"
+  },
+  "notes": [
+    "Render free plan: no persistent disks; journals use /tmp and reset on sleep/redeploy.",
+    "GitHub PAT in .env authenticates as james32135 and cannot push to mohamedwael201193/ember.",
+    "Public publish target used for deploy: https://github.com/james32135/ember"
+  ]
+}
