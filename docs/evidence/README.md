@@ -27,6 +27,8 @@ They contain no API key or private key.
 | `phase11-wallet-retry.json`       | Partial             | Agentic wallet now provisions; paid settlement blocked on 0 USDC balance.                                                    |
 | `phase11-paid-settlement-2026-07-22.json` | Pass with external listing bug | Two real 0.01 Base USDC x402 receipts; alternate paid workflow completed after `wallet-snapshot-base` charged then failed. |
 | `runtime-hardening-local-2026-07-22.json` | Pass | Child credential allowlists, strict environment startup, health/readiness/auth, and graceful parent/child shutdown. |
+| `render-final-deploy-2026-07-22.json` | Pass with plan/durability blockers | Final hardening commit deployed live; health, readiness, auth, request limit, metrics, and receipt-backed HMAC check passed. |
+| `backend-certification-2026-07-22.json` | Rehearsal certified; mainnet blocked | Consolidated final local, contract, KeeperHub, wallet, Marketplace, runtime, Render, security, and stop-gate result. |
 
 Public proof:
 

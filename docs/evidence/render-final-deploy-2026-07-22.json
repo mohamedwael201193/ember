@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-07-22T21:26:12.310Z",
+  "service": {
+    "id": "srv-d93aj1ernols73b8a170",
+    "name": "ember",
+    "slug": "meridian-backend-ikx8",
+    "url": "https://meridian-backend-ikx8.onrender.com",
+    "region": "frankfurt",
+    "suspended": false,
+    "reportedPlan": "starter",
+    "requestedPlan": "free",
+    "healthCheckPath": "/healthz",
+    "buildCommand": "corepack enable && pnpm install --frozen-lockfile && pnpm build",
+    "startCommand": "node scripts/start-ember-runtime.mjs"
+  },
+  "deployment": {
+    "id": "dep-d9gj9v1oagis73f0qvq0",
+    "commit": "05b7fac1ceb16d4eb628f35f3090333c3a454a6b",
+    "status": "live",
+    "finishedAt": "2026-07-22T21:25:00.156548Z"
+  },
+  "publicChecks": {
+    "healthz": {
+      "status": 200,
+      "observer": true,
+      "payday": true,
+      "sentinel": true
+    },
+    "readyz": {
+      "status": 200,
+      "observer": true,
+      "payday": true,
+      "sentinel": true
+    },
+    "status": {
+      "status": 200,
+      "ready": true,
+      "continuityAddress": "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
+      "missionStartAt": 1784683614
+    },
+    "metrics": {
+      "status": 200,
+      "configured": 1,
+      "checkFailures": 0,
+      "rescues": 0
+    },
+    "unauthenticatedCheck": 401,
+    "unauthenticatedRescue": 401,
+    "unauthenticatedExecutions": 401,
+    "oversizedRequest": 413,
+    "signedCheck": {
+      "status": 200,
+      "receiptBacked": true,
+      "receiptVerifiedPayments": 50,
+      "state": "MISSION_DOWN",
+      "reason": "missed_beyond_grace"
+    }
+  },
+  "expectedStateNote": "PAYDAY_ENABLE is 0 on the public rehearsal runtime, so historical misses and MISSION_DOWN are expected.",
+  "planBlocker": {
+    "status": "open",
+    "detail": "The Render API returned HTTP 500 on two attempts to downgrade the reused starter service to free."
+  },
+  "durabilityBlocker": {
+    "status": "open_for_mainnet",
+    "detail": "Free Render filesystems are ephemeral and the rehearsal journals use /tmp. Durable journal storage is required before Phase 13."
+  },
+  "pass": true
+}

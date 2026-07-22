@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-07-22T21:26:12.310Z",
+  "scope": "backend-only-final-certification",
+  "frontend": "deferred",
+  "local": {
+    "build": "pass",
+    "typecheck": "pass",
+    "lint": "pass",
+    "format": "pass",
+    "environmentValidation": "pass",
+    "unitAndIntegration": {
+      "pass": true,
+      "files": 19,
+      "tests": 54
+    },
+    "dependencyAudit": {
+      "pass": true,
+      "knownVulnerabilities": 0
+    },
+    "secretScan": {
+      "pass": true,
+      "trackedFiles": 212,
+      "gitHistoryScanned": true
+    }
+  },
+  "contracts": {
+    "format": "pass",
+    "build": "pass",
+    "unitTests": 7,
+    "invariantTests": 1,
+    "invariantRuns": 256,
+    "invariantCalls": 128000,
+    "gasSnapshot": "pass",
+    "continuityCoverage": {
+      "lines": "96.92%",
+      "statements": "98.28%",
+      "branches": "68.85%",
+      "functions": "90.00%"
+    },
+    "slither": {
+      "contracts": 2,
+      "detectors": 101,
+      "unsuppressedFindings": 0
+    }
+  },
+  "keeperHub": {
+    "rest": {
+      "pass": true,
+      "orgAWorkflows": 7,
+      "orgBWorkflows": 5
+    },
+    "mcp": "pass",
+    "cli": "pass",
+    "safeReadRetryPolicy": "pass",
+    "mutationNoRetryPolicy": "pass",
+    "anchorRecovery": {
+      "pass": true,
+      "rescueId": "live2slots",
+      "proofHash": "0x0661310941447722638179bd59a063dfb75cea13a0dca98a884eb2e76b759493"
+    },
+    "postFixDrills": {
+      "pass": true,
+      "consecutiveDrills": 3,
+      "midReplayCrashDrills": 1,
+      "uniqueSlots": 8,
+      "uniqueReplayTransactions": 8,
+      "fetchedAndRehashedProofs": 4,
+      "verifiedAnchors": 4
+    }
+  },
+  "walletAndMarketplace": {
+    "walletProvisioned": true,
+    "walletAddress": "0xBfA03582FE97f46B982b6e12DA8a5cE5DA0dd280",
+    "baseUsdcAfter": "0.48",
+    "x402Settlements": 2,
+    "successfulPaidWorkflowExecutions": 1,
+    "listingSpecificFailure": "wallet-snapshot-base charged then failed",
+    "mpp": "not_applicable_to_tested_x402_listings"
+  },
+  "runtime": {
+    "credentialIsolation": "pass",
+    "health": "pass",
+    "readiness": "pass",
+    "hmac": "pass",
+    "requestLimit": "pass",
+    "gracefulShutdown": "pass",
+    "childFailureShutdown": "pass",
+    "restartRecovery": "pass",
+    "soak12h": {
+      "pass": true,
+      "checks": 695,
+      "failures": 0
+    }
+  },
+  "render": {
+    "deployment": "live",
+    "commit": "05b7fac1ceb16d4eb628f35f3090333c3a454a6b",
+    "healthz": 200,
+    "readyz": 200,
+    "signedCheck": 200,
+    "receiptBacked": true,
+    "unauthorizedRoutes": 401,
+    "oversizedRequest": 413,
+    "reportedPlan": "starter",
+    "requestedPlan": "free"
+  },
+  "mainnetGate": {
+    "ready": false,
+    "approvalRequested": false,
+    "blockers": [
+      "Render plan downgrade to free returns HTTP 500 and needs Render account/platform action.",
+      "Render free /tmp journals are ephemeral; durable journal storage is required for mainnet.",
+      "Real W2/W3 HTTP and Code workflow semantics require KeeperHub Pro; current workflows are explicit stubs.",
+      "GitHub and Render credentials exposed in chat must be rotated before mainnet.",
+      "Phase 13 requires explicit human approval after all other gates are green."
+    ]
+  },
+  "result": "backend_rehearsal_certified_mainnet_not_ready"
+}

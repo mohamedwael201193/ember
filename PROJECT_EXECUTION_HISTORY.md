@@ -397,6 +397,9 @@ The combined runtime child boundaries are:
 - `docs/evidence/validation-suite-2026-07-22.json`: pre-final-hardening suite.
 - `docs/evidence/phase11-wallet-retry.json`: historical insufficient-funds result.
 - `docs/evidence/phase11-paid-settlement-2026-07-22.json`: funded x402 settlement and external listing failure.
+- `docs/evidence/runtime-hardening-local-2026-07-22.json`: strict child environments and graceful-shutdown regression.
+- `docs/evidence/render-final-deploy-2026-07-22.json`: live deployment of final hardening commit and public probes.
+- `docs/evidence/backend-certification-2026-07-22.json`: consolidated rehearsal certification and mainnet blockers.
 - `contracts/broadcast/**/run-latest.json`: Base Sepolia deploy, register, approve, and fund broadcasts.
 - `contracts/.gas-snapshot`: final gas baseline.
 
@@ -480,3 +483,8 @@ Remaining gates:
 7. Frontend remains intentionally deferred.
 
 No Base mainnet contract, mission, payroll, rescue, or proof deployment has been performed.
+
+Final hardening commit `05b7fac1ceb16d4eb628f35f3090333c3a454a6b`
+deployed through Render deployment `dep-d9gj9v1oagis73f0qvq0`, which reached
+`live` at `2026-07-22T21:25:00.156548Z`. Public health, readiness, metrics,
+authorization, request-size enforcement, and receipt-backed HMAC check passed.

@@ -159,3 +159,25 @@ This section supersedes stale status statements above without deleting session h
 4. Rotate exposed GitHub and Render tokens before mainnet.
 5. Phase 13 needs explicit human approval.
 6. Frontend remains deferred.
+
+### Final deployment and certification closeout
+
+- Commit `05b7fac1ceb16d4eb628f35f3090333c3a454a6b` pushed to
+  `mohamedwael201193/ember`.
+- Render deployment `dep-d9gj9v1oagis73f0qvq0` reached `live` at
+  `2026-07-22T21:25:00.156548Z`.
+- Deployed health 200, readiness 200, status 200, metrics 200.
+- Deployed unauthenticated check/rescue/executions 401; oversized request 413.
+- Deployed signed check 200, receipt-backed, 50 receipt-verified payments.
+- Final suite: build/typecheck/lint/format/env/secrets/dependency audit PASS;
+  19 files / 54 tests PASS.
+- Contracts: 8 tests PASS, 256 invariant runs / 128000 calls, Continuity
+  96.92% line coverage, gas snapshot PASS, Slither 0 findings.
+- Live KeeperHub: Org A 7 workflows, Org B 5 workflows; anchor recovery PASS;
+  3 post-fix drills + mid-replay recovery PASS.
+- Evidence: `docs/evidence/render-final-deploy-2026-07-22.json`.
+- Consolidated verdict:
+  `docs/evidence/backend-certification-2026-07-22.json`.
+- Verdict: **Base Sepolia backend rehearsal certified; mainnet not ready** until
+  durable journals, Render plan/account issue, KeeperHub Pro W2/W3 semantics,
+  credential rotation, and Phase 13 approval are resolved.
