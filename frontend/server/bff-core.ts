@@ -7,34 +7,45 @@ import { readFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+function serverDir(): string {
+  try {
+    return dirname(fileURLToPath(import.meta.url));
+  } catch {
+    return process.cwd();
+  }
+}
 
 export type ApiResult = { status: number; data: unknown };
 
 function loadEnvFile(path: string) {
-  if (!existsSync(path)) return;
-  const text = readFileSync(path, "utf8");
-  for (const line of text.split(/\r?\n/)) {
-    if (!line || line.startsWith("#")) continue;
-    const eq = line.indexOf("=");
-    if (eq < 1) continue;
-    const key = line.slice(0, eq).trim();
-    let val = line.slice(eq + 1).trim();
-    if (
-      (val.startsWith('"') && val.endsWith('"')) ||
-      (val.startsWith("'") && val.endsWith("'"))
-    ) {
-      val = val.slice(1, -1);
+  try {
+    if (!existsSync(path)) return;
+    const text = readFileSync(path, "utf8");
+    for (const line of text.split(/\r?\n/)) {
+      if (!line || line.startsWith("#")) continue;
+      const eq = line.indexOf("=");
+      if (eq < 1) continue;
+      const key = line.slice(0, eq).trim();
+      let val = line.slice(eq + 1).trim();
+      if (
+        (val.startsWith('"') && val.endsWith('"')) ||
+        (val.startsWith("'") && val.endsWith("'"))
+      ) {
+        val = val.slice(1, -1);
+      }
+      if (process.env[key] === undefined) process.env[key] = val;
     }
-    if (process.env[key] === undefined) process.env[key] = val;
+  } catch {
+    /* ignore missing/unreadable .env on serverless */
   }
 }
 
 /** Load repo .env when running locally (no-op on Vercel if file missing). */
 export function bootstrapEnv() {
+  const base = serverDir();
   const candidates = [
-    resolve(__dirname, "../../.env"),
-    resolve(__dirname, "../.env"),
+    resolve(base, "../../.env"),
+    resolve(base, "../.env"),
     resolve(process.cwd(), ".env"),
     resolve(process.cwd(), "../.env"),
   ];
@@ -151,10 +162,11 @@ function readJsonFile(path: string): unknown | null {
 }
 
 function loadEvidence() {
-  const bundledPayday = resolve(__dirname, "data/mainnet-payday-slots.json");
-  const bundledRescue = resolve(__dirname, "data/mainnet-rescue.json");
-  const repoPayday = resolve(__dirname, "../../docs/evidence/mainnet-payday-slots-2026-07-23.json");
-  const repoRescue = resolve(__dirname, "../../docs/evidence/mainnet-rescue-2026-07-23.json");
+  const base = serverDir();
+  const bundledPayday = resolve(base, "data/mainnet-payday-slots.json");
+  const bundledRescue = resolve(base, "data/mainnet-rescue.json");
+  const repoPayday = resolve(base, "../../docs/evidence/mainnet-payday-slots-2026-07-23.json");
+  const repoRescue = resolve(base, "../../docs/evidence/mainnet-rescue-2026-07-23.json");
 
   const payday =
     (readJsonFile(bundledPayday) as Record<string, unknown> | null) ||

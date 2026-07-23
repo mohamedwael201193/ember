@@ -1,17 +1,11 @@
 /**
  * Vercel serverless BFF — same routes as local `server/bff.ts`.
- * Secrets: set in Vercel Project Settings → Environment Variables.
  */
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { bootstrapEnv, handleApi } from "../server/bff-core";
 
-bootstrapEnv();
-
-function readBody(req: VercelRequest): string {
-  if (req.body == null) return "";
-  if (typeof req.body === "string") return req.body || "{}";
-  return JSON.stringify(req.body);
-}
+export const config = {
+  maxDuration: 60,
+};
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("access-control-allow-origin", "*");
@@ -23,24 +17,41 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  const segments = req.query.path;
-  const joined = Array.isArray(segments)
-    ? segments.join("/")
-    : typeof segments === "string"
-      ? segments
-      : "";
-  const pathname = `/api/${joined}`.replace(/\/+$/, "") || "/api";
-
   try {
+    // Dynamic import so cold-start failures surface as JSON, not opaque 500s.
+    const { bootstrapEnv, handleApi } = await import("../server/bff-core");
+    bootstrapEnv();
+
+    const segments = req.query.path;
+    const joined = Array.isArray(segments)
+      ? segments.join("/")
+      : typeof segments === "string"
+        ? segments
+        : "";
+    const pathname = (`/api/${joined}`).replace(/\/+$/, "") || "/api";
+
+    let body = "";
+    if (req.method === "POST" || req.method === "PUT" || req.method === "PATCH") {
+      if (typeof req.body === "string") body = req.body || "{}";
+      else if (req.body != null) body = JSON.stringify(req.body);
+      else body = "{}";
+    }
+
+    const search = typeof req.url === "string" && req.url.includes("?")
+      ? `?${req.url.split("?")[1]}`
+      : "";
+
     const result = await handleApi({
       method: req.method || "GET",
       pathname,
-      search: req.url?.includes("?") ? `?${req.url.split("?")[1]}` : "",
-      body: readBody(req),
+      search,
+      body,
     });
     res.status(result.status).json(result.data);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    res.status(502).json({ error: "bff_upstream_failed", message });
+    const stack = err instanceof Error ? err.stack : undefined;
+    console.error("[ember-bff]", message, stack);
+    res.status(500).json({ error: "bff_function_failed", message });
   }
 }
