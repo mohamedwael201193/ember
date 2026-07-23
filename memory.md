@@ -60,7 +60,7 @@ Bearer-only KH auth · Base mainnet cutover in progress · No Docker (process-ki
 
 ### Public URLs
 
-- Combined: https://meridian-backend-ikx8.onrender.com
+- Combined: https://ember-api-8qzg.onrender.com (legacy slug meridian-backend-ikx8 kept as ember-legacy)
 - Dashboard: https://dashboard.render.com/web/srv-d93aj1ernols73b8a170
 - Source: https://github.com/mohamedwael201193/ember
 
@@ -275,7 +275,7 @@ Dials: VARIANCE 8 / MOTION 8 / DENSITY 3.
 - Workspace: `frontend/` (`@ember/frontend`)
 - Stack: React 18, Vite 6, Tailwind 4, Motion, GSAP+ScrollTrigger, Lenis, TanStack Query, React Router
 - BFF: `frontend/server/bff.ts` signs HMAC; secrets never in browser
-- Runtime: `EMBER_RUNTIME_URL` → Render `meridian-backend-ikx8.onrender.com`
+- Runtime: `EMBER_RUNTIME_URL` → Render `ember-api-8qzg.onrender.com`
 - Original SVG kit: `frontend/src/components/svg/SvgScene.tsx` (fail, rescue, proof, architecture, wallets, radar, observer, sentinel, payroll, escrow)
 
 ### Pages

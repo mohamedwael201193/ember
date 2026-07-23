@@ -4,7 +4,7 @@
 **Scope:** Backend only (React + Vite frontend deferred)  
 **Network posture:** Base Sepolia rehearsal certified; Base mainnet prepared and funding-blocked  
 **Repository:** https://github.com/mohamedwael201193/ember  
-**Public runtime:** https://meridian-backend-ikx8.onrender.com
+**Public runtime:** https://ember-api-8qzg.onrender.com
 
 ---
 
@@ -29,7 +29,7 @@ Combined Render runtime (`scripts/start-ember-runtime.mjs`) hosts Observer + PAY
 
 | Surface | Implementation |
 |---|---|
-| Public URL | `https://meridian-backend-ikx8.onrender.com` |
+| Public URL | `https://ember-api-8qzg.onrender.com` |
 | Plan / disk | Render starter + 1 GB disk at `/var/data/ember` |
 | Journals | `/var/data/ember/payday`, `/var/data/ember/rescues` |
 | Auth | Bearer KeeperHub keys + HMAC service secrets |

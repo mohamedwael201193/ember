@@ -63,4 +63,4 @@ pnpm lint && pnpm typecheck && pnpm test && pnpm build
 
 1. Optional: dashboard confirmation of import/rebind (programmatic path already PASS).  
 2. Phase 13 mainnet remains human-gated.  
-3. Combined Render runtime is live at `https://meridian-backend-ikx8.onrender.com`.
+3. Combined Render runtime is live at `https://ember-api-8qzg.onrender.com` (legacy `meridian-backend-ikx8` retained as `ember-legacy`).

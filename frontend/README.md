@@ -32,7 +32,7 @@ pnpm --filter @ember/frontend dev
 
 Required env (repo `.env` / see `.env.example`):
 
-- `EMBER_RUNTIME_URL` (default Render URL)
+- `EMBER_RUNTIME_URL` (default `https://ember-api-8qzg.onrender.com`)
 - `SENTINEL_SHARED_SECRET`
 - `PRIMARY_OBSERVER_SHARED_SECRET`
 - `EMBER_NETWORK`

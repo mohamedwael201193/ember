@@ -45,7 +45,7 @@ export function runtimeUrl(): string {
   return (
     process.env.EMBER_RUNTIME_URL ||
     process.env.SENTINEL_PUBLIC_URL ||
-    "https://meridian-backend-ikx8.onrender.com"
+    "https://ember-api-8qzg.onrender.com"
   ).replace(/\/$/, "");
 }
 

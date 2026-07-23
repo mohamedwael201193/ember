@@ -51,8 +51,8 @@ Scope: backend, contracts, KeeperHub workflows, infrastructure, validation, evid
 - Agentic wallet: `0xBfA03582FE97f46B982b6e12DA8a5cE5DA0dd280`
 - Agentic wallet sub-organization: `76f6b04e-9c69-4ef4-b182-7f6017437e63`
 - Render service ID: `srv-d93aj1ernols73b8a170`
-- Render service name: `ember`
-- Public runtime: `https://meridian-backend-ikx8.onrender.com`
+- Render service name: `ember-api` (slug `ember-api-8qzg`; legacy `ember-legacy` / `meridian-backend-ikx8`)
+- Public runtime: `https://ember-api-8qzg.onrender.com`
 - Render dashboard: `https://dashboard.render.com/web/srv-d93aj1ernols73b8a170`
 - GitHub repository: `https://github.com/mohamedwael201193/ember`
 
