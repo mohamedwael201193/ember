@@ -1,4 +1,5 @@
-/** Bundled evidence for Vercel BFF (no fs reads). */\nexport const bundledPayday = {
+/** Bundled evidence for Vercel BFF (no fs reads). */
+export const bundledPayday = {
   "version": 1,
   "verifiedAt": "2026-07-23T01:13:19.765Z",
   "chainId": 8453,
@@ -37,7 +38,8 @@
     "continuity": "1"
   },
   "pass": true
-} as const;\nexport const bundledRescue = {
+} as const;
+export const bundledRescue = {
   "status": 200,
   "journal": {
     "version": 1,
@@ -102,4 +104,4 @@
     "anchorTxHash": "0x74ba1eac3e35c269175c06629782f66da454775141b6c94f14d608065c8d211f"
   },
   "pass": true
-} as const;\n
+} as const;
