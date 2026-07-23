@@ -6,6 +6,10 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/api/evidence/mainnet",
+      "destination": "/api/evidence/mainnet"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
