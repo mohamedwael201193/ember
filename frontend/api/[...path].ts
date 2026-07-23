@@ -2,15 +2,19 @@
  * Vercel serverless BFF — same routes as local `server/bff.ts`.
  */
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { bootstrapEnv, handleApi } from "./_lib/bff-core";
+import { bootstrapEnv, handleApi } from "./bff-core";
 
 export const config = {
   maxDuration: 60,
 };
 
-bootstrapEnv();
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  try {
+    bootstrapEnv();
+  } catch {
+    /* ignore */
+  }
+
   res.setHeader("access-control-allow-origin", "*");
   res.setHeader("access-control-allow-headers", "content-type,authorization");
   res.setHeader("access-control-allow-methods", "GET,POST,OPTIONS");

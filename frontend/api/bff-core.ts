@@ -4,16 +4,8 @@
  */
 import { createHash, createHmac, randomBytes } from "node:crypto";
 import { readFileSync, existsSync } from "node:fs";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-
-function serverDir(): string {
-  try {
-    return dirname(fileURLToPath(import.meta.url));
-  } catch {
-    return process.cwd();
-  }
-}
+import { resolve } from "node:path";
+import { bundledPayday, bundledRescue } from "./evidence-data";
 
 export type ApiResult = { status: number; data: unknown };
 
@@ -42,12 +34,10 @@ function loadEnvFile(path: string) {
 
 /** Load repo .env when running locally (no-op on Vercel if file missing). */
 export function bootstrapEnv() {
-  const base = serverDir();
   const candidates = [
-    resolve(base, "../../.env"),
-    resolve(base, "../.env"),
     resolve(process.cwd(), ".env"),
     resolve(process.cwd(), "../.env"),
+    resolve(process.cwd(), "../../.env"),
   ];
   for (const p of candidates) loadEnvFile(p);
 }
@@ -156,24 +146,9 @@ export function publicConfig() {
   };
 }
 
-function readJsonFile(path: string): unknown | null {
-  if (!existsSync(path)) return null;
-  return JSON.parse(readFileSync(path, "utf8"));
-}
-
 function loadEvidence() {
-  const base = serverDir();
-  const bundledPayday = resolve(base, "data/mainnet-payday-slots.json");
-  const bundledRescue = resolve(base, "data/mainnet-rescue.json");
-  const repoPayday = resolve(base, "../../docs/evidence/mainnet-payday-slots-2026-07-23.json");
-  const repoRescue = resolve(base, "../../docs/evidence/mainnet-rescue-2026-07-23.json");
-
-  const payday =
-    (readJsonFile(bundledPayday) as Record<string, unknown> | null) ||
-    (readJsonFile(repoPayday) as Record<string, unknown> | null);
-  const rescueWrap =
-    (readJsonFile(bundledRescue) as { journal?: Record<string, unknown> } | null) ||
-    (readJsonFile(repoRescue) as { journal?: Record<string, unknown> } | null);
+  const payday = bundledPayday as Record<string, unknown>;
+  const rescueWrap = bundledRescue as { journal?: Record<string, unknown> };
   const journal = rescueWrap?.journal ?? null;
 
   return {
@@ -212,8 +187,13 @@ export async function handleApi(req: ApiRequest): Promise<ApiResult> {
   if (path === "/api/health" && method === "GET") {
     const upstream = await proxyPublic("/healthz");
     return {
-      status: upstream.status,
-      data: { bff: "ok", runtime: RUNTIME_URL, upstream: upstream.json },
+      status: 200,
+      data: {
+        bff: "ok",
+        runtime: RUNTIME_URL,
+        upstreamStatus: upstream.status,
+        upstream: upstream.json,
+      },
     };
   }
 
