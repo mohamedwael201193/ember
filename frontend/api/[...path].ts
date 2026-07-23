@@ -207,13 +207,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
   try {
-    const segments = req.query.path;
-    const joined = Array.isArray(segments)
-      ? segments.join("/")
-      : typeof segments === "string"
-        ? segments
-        : "";
-    const pathname = (`/api/${joined}`).replace(/\/+$/, "") || "/api";
+    const rawUrl = typeof req.url === "string" ? req.url : "/api";
+    const pathname = new URL(rawUrl, "http://vercel.local").pathname.replace(/\/+$/, "") || "/api";
     let body = "";
     if (req.method === "POST" || req.method === "PUT" || req.method === "PATCH") {
       if (typeof req.body === "string") body = req.body || "{}";
