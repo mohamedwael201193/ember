@@ -1,0 +1,73 @@
+{
+  "at": "2026-07-23T01:42:26.045Z",
+  "deployCommit": "35b5dd7",
+  "base": "https://meridian-backend-ikx8.onrender.com",
+  "health": {
+    "status": 200,
+    "json": {
+      "ok": true,
+      "service": "ember-runtime",
+      "children": {
+        "observer": true,
+        "payday": true,
+        "sentinel": true
+      }
+    }
+  },
+  "ready": {
+    "status": 200,
+    "json": {
+      "ready": true,
+      "service": "ember-runtime",
+      "children": {
+        "observer": true,
+        "payday": true,
+        "sentinel": true
+      }
+    }
+  },
+  "status": {
+    "status": 200,
+    "json": {
+      "ready": true,
+      "continuityAddress": "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
+      "missionStartAt": 1784768419
+    }
+  },
+  "metrics": {
+    "status": 200,
+    "hasPayday": false,
+    "hasSentinel": true,
+    "bytes": 127
+  },
+  "unauthCheck": {
+    "status": 401
+  },
+  "check": {
+    "status": 200,
+    "json": {
+      "missionId": "1",
+      "network": "mainnet",
+      "chainId": 8453,
+      "continuityAddress": "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
+      "checkedAt": "2026-07-23T01:42:26.335Z",
+      "executionSampleSize": 3,
+      "receiptVerifiedPayments": 3,
+      "receiptBacked": true,
+      "state": "MISSION_DOWN",
+      "reason": "missed_beyond_grace",
+      "expectedSlotCount": 9,
+      "paidSlotCount": 3,
+      "missedSlots": [
+        1784769319,
+        1784769619,
+        1784769919,
+        1784770219,
+        1784770519,
+        1784770819
+      ],
+      "latestPaidSlot": 1784769019
+    }
+  },
+  "pass": true
+}

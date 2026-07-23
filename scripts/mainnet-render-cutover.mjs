@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * Safe Render cutover: GET existing env-vars, merge updates, PUT full set, deploy.
+ * Safe Render cutover: paginated GET of existing env-vars, merge updates, PUT full set, deploy.
  * Never PUTs a partial list (Render replaces the entire set).
+ * Render lists env-vars in pages of ~20 — always paginate before merge.
  */
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
@@ -44,10 +45,29 @@ async function api(path, init = {}) {
   return body;
 }
 
+async function listAllEnv() {
+  const map = new Map();
+  let cursor = "";
+  for (let i = 0; i < 20; i++) {
+    const q = cursor ? `?limit=50&cursor=${encodeURIComponent(cursor)}` : "?limit=50";
+    const page = await api(`/services/${serviceId}/env-vars${q}`);
+    const rows = Array.isArray(page) ? page : [];
+    if (!rows.length) break;
+    for (const row of rows) {
+      const key = row.envVar?.key || row.key;
+      const value = row.envVar?.value || row.value;
+      if (key) map.set(key, value);
+      if (row.cursor) cursor = row.cursor;
+    }
+    if (rows.length < 50) break;
+  }
+  return map;
+}
+
 const updates = {
   EMBER_NETWORK: "mainnet",
-  PAYDAY_ENABLE: "1",
-  PROOF_ANCHOR_ENABLE: "1",
+  PAYDAY_ENABLE: process.env.PAYDAY_ENABLE || "0",
+  PROOF_ANCHOR_ENABLE: process.env.PROOF_ANCHOR_ENABLE || "1",
   MISSION_START_AT: process.env.MISSION_START_AT_MAINNET || process.env.MISSION_START_AT,
   CONTINUITY_ADDRESS_MAINNET: process.env.CONTINUITY_ADDRESS_MAINNET,
   MISSION_ID_MAINNET: process.env.MISSION_ID_MAINNET || "1",
@@ -67,19 +87,15 @@ const updates = {
   RESCUE_JOURNAL_DIR: process.env.RESCUE_JOURNAL_DIR || "/var/data/ember/rescues"
 };
 
-const existing = await api(`/services/${serviceId}/env-vars`);
-const rows = Array.isArray(existing) ? existing : [];
-const map = new Map();
-for (const row of rows) {
-  const key = row.envVar?.key || row.key;
-  const value = row.envVar?.value || row.value;
-  if (key) map.set(key, value);
-}
+const map = await listAllEnv();
 const beforeKeys = [...map.keys()].sort();
+if (beforeKeys.length < 40) {
+  throw new Error(
+    `Refusing cutover merge: only ${beforeKeys.length} env keys visible after pagination. Restore full env first.`
+  );
+}
 for (const [key, value] of Object.entries(updates)) {
-  if (value === undefined || value === "") {
-    throw new Error(`cutover update ${key} is empty`);
-  }
+  if (value === undefined || value === "") throw new Error(`cutover update ${key} is empty`);
   map.set(key, value);
 }
 const envVars = [...map.entries()].map(([key, value]) => ({ key, value }));
@@ -87,11 +103,11 @@ await api(`/services/${serviceId}/env-vars`, {
   method: "PUT",
   body: JSON.stringify(envVars)
 });
-const deploy = await api(`/services/${serviceId}/deploys`, {
+const deployRows = await api(`/services/${serviceId}/deploys`, {
   method: "POST",
   body: JSON.stringify({ clearCache: "do_not_clear" })
 });
-
+const deploy = deployRows?.deploy || deployRows;
 const evidence = {
   version: 1,
   at: new Date().toISOString(),
@@ -99,8 +115,8 @@ const evidence = {
   beforeKeyCount: beforeKeys.length,
   afterKeyCount: envVars.length,
   updatedKeys: Object.keys(updates).sort(),
-  deployId: deploy.id || deploy.deploy?.id,
-  pass: envVars.length >= beforeKeys.length
+  deployId: deploy?.id ?? null,
+  pass: envVars.length >= beforeKeys.length && envVars.length >= 40
 };
 mkdirSync("docs/evidence", { recursive: true });
 writeFileSync(
@@ -108,3 +124,4 @@ writeFileSync(
   JSON.stringify(evidence, null, 2)
 );
 console.log(JSON.stringify(evidence, null, 2));
+if (!evidence.pass) process.exit(1);
