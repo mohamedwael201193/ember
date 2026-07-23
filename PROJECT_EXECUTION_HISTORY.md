@@ -590,3 +590,43 @@ No EMBER Continuity, mission, payroll, rescue, or proof transaction has been bro
 - Bug fixed mid-flight: `anchorProof` had hardcoded Sepolia `chain_id`; now uses `EMBER_NETWORK` / `chainId`
 - Post-rescue balances: Org A 0.02 / Org B 0.10 / Employee 0.05
 - Evidence: `docs/evidence/mainnet-rescue-2026-07-23.json`
+
+---
+
+## 2026-07-23 — Frontend phase (premium product UI)
+
+### Research
+- Read `FRONTEND_SPEC.md` / OpenAPI / Render runtime routes; overridden Carbon-dashboard dials per product brief
+- Security boundary: browser must not hold HMAC secrets → BFF required
+- Design systems: Linear/Cursor tokens adapted into EMBER `DESIGN.md` (ember coal accent, Syne/DM Sans)
+
+### Scaffold
+- Added `frontend/` to pnpm workspace
+- Vite + React 18 + TS + Tailwind v4 + Motion + GSAP + Lenis + TanStack Query + React Router + Lucide
+- `frontend/server/bff.ts` proxies signed `/check`, `/rescue`, `/v1/executions`, public health/ready/status, evidence aggregate
+- Original orbit canvas + generated `ember-orbit-signal.png` (no stock)
+
+### Product surfaces (cinematic redesign pass)
+| Route | Surface |
+|---|---|
+| `/` | 4-chapter GSAP scroll story + original SVG illustrations |
+| `/app` | Living console: topology, health radar, mission river |
+| `/app/mission/new` | Guided wizard (wallet → employee → beneficiary → payroll → recovery → review) |
+| `/app/mission` | Visual mission + Continuity explorer links |
+| `/app/executions` | PAYDAY calendar (not table-first) |
+| `/app/rescues` | Interactive rescue pipeline + certified journal |
+| `/app/proofs` | Visual proof chain (hash → CID → pin → anchor → verify) |
+| `/app/operations` | Ops status map + service pulses |
+| `/app/wallets` | Role model + evidence balances |
+| `/app/settings` | Public config (no secrets) |
+
+Chrome: top product nav (not admin sidebar). Onboarding v2 with SVG scenes (`ember.onboarding.v2`).
+
+### Live verification against Render
+- `/api/health` children all true
+- `/api/check` → mainnet / 8453 / `MISSION_DOWN` / 3 receipt-verified payments
+- Evidence endpoint loads `mainnet-payday-slots-2026-07-23.json` + `mainnet-rescue-2026-07-23.json`
+- `pnpm --filter @ember/frontend build` succeeds
+
+### Docs
+- `frontend/README.md`, `frontend/DESIGN.md`, root `DESIGN.md`, `memory.md` §10

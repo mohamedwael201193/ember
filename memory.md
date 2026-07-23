@@ -218,8 +218,8 @@ Human Phase 13 approval granted in chat.
 - `MAINNET_READINESS_REPORT.md`
 - `FINAL_BACKEND_CERTIFICATION.md`
 
-### Stop condition hit
-Missing required Base ETH (deployer) and Base USDC (Org A/B). No simulated mainnet success. Frontend remains deferred.
+### Stop condition hit (superseded)
+Earlier blocker (deployer ETH / Org USDC) was cleared in Phase 13. Frontend is no longer deferred.
 
 ## 9. Phase 13 live tick (2026-07-23 04:15 UTC+3)
 
@@ -260,4 +260,46 @@ Balances after 3 slots: Org A **0.02**, Org B **0.12**, Employee **0.03**, Escro
 - `mainnet-continuity-deploy-2026-07-23.json`
 - `mainnet-org-fund-2026-07-23.json`
 - `mainnet-payday-slots-2026-07-23.json`
+- `mainnet-rescue-2026-07-23.json`
+- `mainnet-render-post-push-2026-07-23.json`
+
+## 10. Frontend phase (2026-07-23)
+
+### Design read
+Premium AI continuity product (not admin). Cinematic landing + living console.
+Inspiration language: contentarchitecture.dev (typography, whitespace, scroll choreography).
+Tokens: Syne + DM Sans + JetBrains Mono; ember `#ff5c1a`; ink `#09090b`; tiny blue accents.
+Dials: VARIANCE 8 / MOTION 8 / DENSITY 3.
+
+### Package
+- Workspace: `frontend/` (`@ember/frontend`)
+- Stack: React 18, Vite 6, Tailwind 4, Motion, GSAP+ScrollTrigger, Lenis, TanStack Query, React Router
+- BFF: `frontend/server/bff.ts` signs HMAC; secrets never in browser
+- Runtime: `EMBER_RUNTIME_URL` → Render `meridian-backend-ikx8.onrender.com`
+- Original SVG kit: `frontend/src/components/svg/SvgScene.tsx` (fail, rescue, proof, architecture, wallets, radar, observer, sentinel, payroll, escrow)
+
+### Pages
+- `/` cinematic 4-chapter landing (fail → wake → proof → architecture) with GSAP pin/scrub
+- `/app` Living console (topology + health radar + mission river)
+- `/app/mission/new` guided Mission Builder wizard (wallet → deploy draft)
+- Mission, PAYDAY calendar, Rescue pipeline, Proof chain (visual), Ops status map, Wallets, Settings
+- Product chrome: top nav (not sidebar admin). Onboarding v2 with SVG scenes.
+
+### Verified live (no mocks)
+- BFF `/api/health` → runtime children observer/payday/sentinel true
+- BFF `/api/check` → `MISSION_DOWN`, chainId 8453, 3 receipt-verified payments
+- BFF `/api/evidence/mainnet` → real payday slots + COMPLETED rescue + proof CID
+- Production build: `pnpm --filter @ember/frontend build` OK
+
+### Run
+```bash
+pnpm --filter @ember/frontend dev
+# http://localhost:5173  ·  BFF :8780
+```
+
+### Vercel
+- Root Directory: `frontend`
+- `vercel.json` + serverless BFF `api/[...path].ts` (shared `server/bff-core.ts`)
+- Env from `frontend/.env.example` (HMAC secrets server-side only)
+- Bundled evidence: `frontend/server/data/*.json`
 
