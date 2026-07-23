@@ -8,10 +8,11 @@ import {
   bearerTokenMatches,
   loadPaydayEnv,
   requestClientKey,
+  resolveActiveNetworkConfig,
   slotIndexAt
 } from "@ember/mission-core";
 import { createPublicClient, http, type Address, type Hex } from "viem";
-import { baseSepolia } from "viem/chains";
+import { base, baseSepolia } from "viem/chains";
 
 const paydayKeys = [
   "KH_API_BASE",
@@ -33,6 +34,7 @@ const paydayKeys = [
   "MAX_REPLAY_SLOTS",
   "X402_FEE_USDC",
   "X402_MAX_FEE_USDC",
+  "EMBER_NETWORK",
   "CHAIN_ID_MAINNET",
   "CHAIN_ID_REHEARSAL",
   "BASE_RPC_URL",
@@ -56,10 +58,14 @@ const paydayKeys = [
 ] as const;
 
 const env = loadPaydayEnv(Object.fromEntries(paydayKeys.map((key) => [key, process.env[key]])));
+const activeNetwork = resolveActiveNetworkConfig(
+  Object.fromEntries(paydayKeys.map((key) => [key, process.env[key]]))
+);
 const journalDirectory = env.RESCUE_JOURNAL_DIR || "./runtime/payday";
 const cadenceEnabled = env.PAYDAY_ENABLE === "1";
 const workflowId = env.KH_ORG_A_W1_WORKFLOW_ID;
 const controlToken = env.PAYDAY_CONTROL_TOKEN;
+const missionId = activeNetwork.missionId;
 const runOnceLimiter = new FixedWindowRateLimiter(5, 60_000);
 let tickInFlight = false;
 let successfulRuns = 0;
@@ -108,12 +114,10 @@ async function waitForTerminal(
 }
 
 async function verifyTerminalPayment(transactionHash: string): Promise<void> {
-  const token = env.USDC_ADDRESS_BASE_SEPOLIA;
+  const token = activeNetwork.usdcAddress;
   const from = env.ORG_A_WALLET_ADDRESS;
   const to = env.EMPLOYEE_ADDRESS;
-  const rpcUrls = [env.BASE_SEPOLIA_RPC_URL, env.BASE_SEPOLIA_RPC_URL_FALLBACK].filter(
-    (value): value is string => Boolean(value)
-  );
+  const rpcUrls = activeNetwork.rpcUrls;
   if (!token || !from || !to || rpcUrls.length === 0) {
     throw new Error("PAYDAY receipt verification configuration is incomplete");
   }
@@ -123,8 +127,9 @@ async function verifyTerminalPayment(transactionHash: string): Promise<void> {
     to: to as Address,
     amount: BigInt(env.PAYMENT_AMOUNT_USDC)
   };
+  const chain = activeNetwork.network === "mainnet" ? base : baseSepolia;
   const result = await verifyPaymentWithRetry({
-    clients: rpcUrls.map((url) => createPublicClient({ chain: baseSepolia, transport: http(url) })),
+    clients: rpcUrls.map((url) => createPublicClient({ chain, transport: http(url) })),
     hash: transactionHash as Hex,
     expected,
     minConfirmations: env.RECEIPT_CONFIRMATIONS
@@ -149,10 +154,17 @@ async function cadenceTick(): Promise<void> {
     return;
   }
   const slot = env.MISSION_START_AT + slotIndex * env.CADENCE_SECONDS;
-  const idempotencyKey = `ember-payday-${env.MISSION_ID_SEPOLIA ?? "mission"}-${slot}`;
+  const idempotencyKey = `ember-payday-${missionId ?? "mission"}-${slot}`;
   tickInFlight = true;
   try {
-    await journal({ event: "invoke_begin", workflowId, slot, idempotencyKey });
+    await journal({
+      event: "invoke_begin",
+      workflowId,
+      slot,
+      idempotencyKey,
+      network: activeNetwork.network,
+      chainId: activeNetwork.chainId
+    });
     const started = await kh.workflows.execute(workflowId, { slot }, { idempotencyKey });
     await journal({
       event: "invoke_accepted",
@@ -238,8 +250,8 @@ const server = createServer((request, response) => {
   }
   if (pathname === "/readyz" && request.method === "GET") {
     const receiptConfigured = Boolean(
-      env.BASE_SEPOLIA_RPC_URL &&
-      env.USDC_ADDRESS_BASE_SEPOLIA &&
+      activeNetwork.usdcAddress &&
+      activeNetwork.rpcUrls.length > 0 &&
       env.ORG_A_WALLET_ADDRESS &&
       env.EMPLOYEE_ADDRESS
     );

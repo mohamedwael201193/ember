@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "fundedAt": "2026-07-23T00:52:11.614Z",
+  "chainId": 8453,
+  "amounts": {
+    "orgAUsdc": "0.05",
+    "orgBUsdc": "0.12"
+  },
+  "before": {
+    "deployerUsdc": "2.248801",
+    "deployerEth": "0.001008070936281432",
+    "orgA": "0",
+    "orgB": "0",
+    "now": 1784767929,
+    "missionStartAt": 1784768419
+  },
+  "after": {
+    "deployerUsdc": "2.198801",
+    "orgA": "0.05",
+    "orgB": "0.12"
+  },
+  "transactions": {
+    "orgA": "0x3fef807c9af669edf50aab890079e0c6c865edce22f3a1e7d66c565650e30c51",
+    "orgB": "0x7b0161ad60e818858e8132f048c40c132866e2dd272fe69c69c4bdfc006630e8"
+  },
+  "receipts": {
+    "orgA": {
+      "status": "success",
+      "blockNumber": "48989292"
+    },
+    "orgB": {
+      "status": "success",
+      "blockNumber": "48989293"
+    }
+  },
+  "explorers": {
+    "orgA": "https://basescan.org/tx/0x3fef807c9af669edf50aab890079e0c6c865edce22f3a1e7d66c565650e30c51",
+    "orgB": "https://basescan.org/tx/0x7b0161ad60e818858e8132f048c40c132866e2dd272fe69c69c4bdfc006630e8"
+  },
+  "pass": true,
+  "note": "orgB balance confirmed after brief RPC lag"
+}

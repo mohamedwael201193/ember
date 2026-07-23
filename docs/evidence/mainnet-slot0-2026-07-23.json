@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "slot": 0,
+  "slotUnix": 1784768419,
+  "executionId": "667ekg3qk5f45127eqjyy",
+  "transactionHash": "0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2",
+  "workflowId": "5goaid2zjgzyb32661se3",
+  "network": "mainnet",
+  "chainId": 8453,
+  "explorer": "https://basescan.org/tx/0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2",
+  "receiptVerified": true,
+  "confirmations": 3
+}

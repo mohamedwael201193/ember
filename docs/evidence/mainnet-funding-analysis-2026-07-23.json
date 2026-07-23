@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-07-23T00:47:00.000Z",
+  "question": "Can Org A and Org B complete every required Mainnet validation if they each receive only 0.1 USDC?",
+  "answer": "NO",
+  "configSource": {
+    "PAYMENT_AMOUNT_USDC": "10000",
+    "paymentHuman": "0.01 USDC",
+    "w1MainnetAmount": "0.01",
+    "GRACE_MISSED_RUNS": "2",
+    "MAX_REPLAY_SLOTS": "12",
+    "ESCROW_FUND_USDC": "1000000",
+    "escrowPayer": "DEPLOYER",
+    "X402_FEE_USDC": "50000",
+    "x402Payer": "AGENTIC_WALLET",
+    "phase13Commands": "three normal slots; kill PAYDAY; run one rescue"
+  },
+  "controlledPhase13WouldFitInPointOne": {
+    "orgASpendUsdc": 0.03,
+    "orgARemainingFromPointOne": 0.07,
+    "orgBSpendUsdc": 0.02,
+    "orgBRemainingFromPointOne": 0.08,
+    "note": "Controlled path only assumes exactly two missed slots at rescue time."
+  },
+  "whyNotEveryRequiredValidation": [
+    "MAX_REPLAY_SLOTS=12 means one rescue can require 0.12 USDC from Org B, which exceeds 0.1.",
+    "Chaos/restart validation can create an additional unpaid batch beyond the first rescue.",
+    "IMPLEMENTATION_PLAN cutover checklist requires Org A 5 USDC and Org B 2 USDC buffer for safe mainnet ops."
+  ],
+  "minimumSafe": {
+    "orgAUsdc": {
+      "floor": 0.05,
+      "recommended": 5.0,
+      "floorReason": "3 Phase-13 slots + 2 buffer slots at 0.01"
+    },
+    "orgBUsdc": {
+      "floor": 0.12,
+      "recommended": 2.0,
+      "floorReason": "one MAX_REPLAY_SLOTS=12 rescue at 0.01 each"
+    },
+    "deployer": {
+      "usdc": 1.0,
+      "eth": 0.002,
+      "reason": "ESCROW_FUND_USDC=1.00 plus gas for deploy/register/approve/fund"
+    }
+  },
+  "balancesAtAnalysis": {
+    "deployer": { "eth": "0.001019740126152209", "usdc": "3.248801" },
+    "orgA": { "eth": "0", "usdc": "0" },
+    "orgB": { "eth": "0", "usdc": "0" }
+  }
+}

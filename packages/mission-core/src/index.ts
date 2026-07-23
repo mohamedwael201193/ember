@@ -1,3 +1,4 @@
+export * from "./activeNetwork.js";
 export * from "./canonicalize.js";
 export * from "./diff.js";
 export * from "./env.js";

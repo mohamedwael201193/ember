@@ -15,6 +15,7 @@ import {
   loadSentinelEnv,
   readRequestBody,
   requestClientKey,
+  resolveActiveNetworkConfig,
   signHmac,
   verifyHmac
 } from "@ember/mission-core";
@@ -34,6 +35,7 @@ const sentinelKeys = [
   "SENTINEL_PUBLIC_URL",
   "MISSION_START_AT",
   "MISSION_ID_SEPOLIA",
+  "MISSION_ID_MAINNET",
   "CONTINUITY_ADDRESS_SEPOLIA",
   "CONTINUITY_ADDRESS_MAINNET",
   "CADENCE_SECONDS",
@@ -48,6 +50,7 @@ const sentinelKeys = [
   "MAX_REPLAY_SLOTS",
   "X402_FEE_USDC",
   "X402_MAX_FEE_USDC",
+  "EMBER_NETWORK",
   "CHAIN_ID_MAINNET",
   "CHAIN_ID_REHEARSAL",
   "BASE_RPC_URL",
@@ -75,6 +78,9 @@ const sentinelKeys = [
 ] as const;
 
 const env = loadSentinelEnv(Object.fromEntries(sentinelKeys.map((key) => [key, process.env[key]])));
+const activeNetwork = resolveActiveNetworkConfig(
+  Object.fromEntries(sentinelKeys.map((key) => [key, process.env[key]]))
+);
 const nonceStore = new InMemoryNonceStore();
 const observerResponseNonceStore = new InMemoryNonceStore();
 const requestLimiter = new FixedWindowRateLimiter(60, 60_000);
@@ -185,7 +191,7 @@ function baseStatus():
         | "proof_configuration_missing";
     }
   | { ready: true; continuityAddress: string; missionStartAt: number } {
-  const continuityAddress = env.CONTINUITY_ADDRESS_SEPOLIA;
+  const continuityAddress = activeNetwork.continuityAddress;
   if (!continuityAddress) return { ready: false, reason: "continuity_address_not_configured" };
   const missionStartAt = env.MISSION_START_AT;
   if (missionStartAt === undefined) return { ready: false, reason: "mission_start_missing" };
@@ -202,7 +208,7 @@ async function verifyPaidTimes(executions: ExecutionSummary[]): Promise<{
   verifiedPaymentTimes: number[];
   verifiedCount: number;
 }> {
-  const usdc = env.USDC_ADDRESS_BASE_SEPOLIA ?? process.env.USDC_ADDRESS_BASE_SEPOLIA;
+  const usdc = activeNetwork.usdcAddress;
   const orgA = process.env.ORG_A_WALLET_ADDRESS;
   const employee = process.env.EMPLOYEE_ADDRESS;
   if (!usdc || !orgA || !employee) throw new Error("missing_transfer_addresses");
@@ -212,15 +218,16 @@ async function verifyPaidTimes(executions: ExecutionSummary[]): Promise<{
     EMPLOYEE_ADDRESS: employee,
     PAYMENT_AMOUNT_USDC: env.PAYMENT_AMOUNT_USDC
   });
-  const rpcUrl =
-    env.BASE_SEPOLIA_RPC_URL ?? process.env.BASE_SEPOLIA_RPC_URL ?? "https://sepolia.base.org";
-  const fallback = env.BASE_SEPOLIA_RPC_URL_FALLBACK;
+  const rpcUrl = activeNetwork.rpcUrls[0];
+  if (!rpcUrl) throw new Error("missing_rpc_url");
+  const fallback = activeNetwork.rpcUrls[1];
   const verified = await verifyExecutionPayments({
     rpcUrl,
     ...(fallback ? { rpcFallbackUrl: fallback } : {}),
     executions,
     expected,
-    minConfirmations: env.RECEIPT_CONFIRMATIONS
+    minConfirmations: env.RECEIPT_CONFIRMATIONS,
+    chainId: activeNetwork.chainId
   });
   return {
     verifiedPaymentTimes: verified.map((item) => item.blockTimestamp),
@@ -247,7 +254,9 @@ async function runCheck() {
     verifiedPaymentTimes
   });
   return {
-    missionId: env.MISSION_ID_SEPOLIA ?? null,
+    missionId: activeNetwork.missionId ?? null,
+    network: activeNetwork.network,
+    chainId: activeNetwork.chainId,
     continuityAddress,
     checkedAt: new Date().toISOString(),
     executionSampleSize: executions.length,
@@ -284,17 +293,16 @@ async function handleRescue(body: string) {
       maxReplaySlots = Math.min(parsed.maxReplaySlots, env.MAX_REPLAY_SLOTS);
     }
   }
-  const missionId = env.MISSION_ID_SEPOLIA ?? "1";
-  const workflowHash = env.WORKFLOW_HASH_SEPOLIA ?? process.env.WORKFLOW_HASH_SEPOLIA;
-  if (!workflowHash) throw new Error("WORKFLOW_HASH_SEPOLIA missing");
+  const missionId = activeNetwork.missionId ?? "1";
+  const workflowHash = activeNetwork.workflowHash;
+  if (!workflowHash) throw new Error("workflow hash missing for active network");
   if (!env.KH_API_BASE || !env.KH_API_KEY_STANDBY)
     throw new Error("standby_kh_credentials_missing");
 
   const orgA = process.env.ORG_A_WALLET_ADDRESS as Address | undefined;
   const orgB = process.env.ORG_B_WALLET_ADDRESS as Address | undefined;
   const employee = process.env.EMPLOYEE_ADDRESS as Address | undefined;
-  const usdc = (env.USDC_ADDRESS_BASE_SEPOLIA ?? process.env.USDC_ADDRESS_BASE_SEPOLIA) as
-    Address | undefined;
+  const usdc = activeNetwork.usdcAddress as Address | undefined;
   const integrationId = process.env.ORG_B_WALLET_INTEGRATION_ID;
   if (!orgA || !orgB || !employee || !usdc || !integrationId) {
     throw new Error("rescue_addresses_or_integration_missing");
@@ -302,6 +310,8 @@ async function handleRescue(body: string) {
 
   const executions = await fetchObserverExecutions();
   const replayWorkflowId = process.env.KH_ORG_B_W1_REPLAY_WORKFLOW_ID;
+  const rpcUrl = activeNetwork.rpcUrls[0];
+  if (!rpcUrl) throw new Error("missing_rpc_url");
   const context = {
     missionId,
     rescueId: rescueId ?? "pending",
@@ -313,19 +323,23 @@ async function handleRescue(body: string) {
     maxReplaySlots,
     workflowHashExpected: workflowHash,
     w1CanonicalPath:
-      process.env.W1_CANONICAL_PATH || resolve(process.cwd(), "workflows/w1-payday-stream.json"),
+      process.env.W1_CANONICAL_PATH ||
+      resolve(
+        process.cwd(),
+        activeNetwork.network === "mainnet"
+          ? "workflows/w1-payday-stream.mainnet.json"
+          : "workflows/w1-payday-stream.json"
+      ),
     orgBIntegrationId: integrationId,
     employeeAddress: employee,
     usdcAddress: usdc,
     paymentAmountUsdc: env.PAYMENT_AMOUNT_USDC,
     orgAWallet: orgA,
     orgBWallet: orgB,
-    rpcUrl:
-      env.BASE_SEPOLIA_RPC_URL ?? process.env.BASE_SEPOLIA_RPC_URL ?? "https://sepolia.base.org",
-    ...(env.BASE_SEPOLIA_RPC_URL_FALLBACK
-      ? { rpcFallbackUrl: env.BASE_SEPOLIA_RPC_URL_FALLBACK }
-      : {}),
+    rpcUrl,
+    ...(activeNetwork.rpcUrls[1] ? { rpcFallbackUrl: activeNetwork.rpcUrls[1] } : {}),
     receiptConfirmations: env.RECEIPT_CONFIRMATIONS,
+    chainId: activeNetwork.chainId,
     khBaseUrl: env.KH_API_BASE,
     khApiKeyStandby: env.KH_API_KEY_STANDBY,
     ...(process.env.KH_MCP_URL ? { khMcpUrl: process.env.KH_MCP_URL } : {}),

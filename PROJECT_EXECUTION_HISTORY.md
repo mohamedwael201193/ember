@@ -544,3 +544,49 @@ Evidence: `docs/evidence/mainnet-deploy-blocker-2026-07-23.json`, `docs/evidence
 4. Rotate credentials previously pasted in chat.
 
 No EMBER Continuity, mission, payroll, rescue, or proof transaction has been broadcast on Base mainnet.
+
+---
+
+## 2026-07-23 — Phase 13 live Base mainnet execution
+
+### Funding gate answer (from actual `.env` / workflows)
+**NO** to “0.1 USDC each is enough for every required Mainnet validation.”
+- Slot amount = `PAYMENT_AMOUNT_USDC=10000` = **0.01 USDC**
+- Org B max rescue = `MAX_REPLAY_SLOTS=12` × 0.01 = **0.12 USDC** (> 0.1)
+- Floors used: Org A **0.05**, Org B **0.12**, Deployer escrow **1.00** already funded
+- Evidence: `docs/evidence/mainnet-funding-analysis-2026-07-23.json`
+
+### Continuity + mission (chainId 8453)
+- Continuity: `0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770`
+- Deploy tx: `0x050014bf756531fcc94b13dd3f254ef4d0f661049e3759600a5e4466e0a6a3a6`
+- Register tx: `0xe1c1d62d9e328bb2425db100620e0ee1857622a5e749ab2caef8b8e322b86f70`
+- Fund txs: `0xf16ba185…ba00` (approve), `0xea48ae06…1d4f` (fund 1 USDC)
+- Mission ID `1`, startAt `1784768419`, cadence `300`, workflowHash `0x0ccdc528…30e2`
+- Evidence: `docs/evidence/mainnet-continuity-deploy-2026-07-23.json`
+
+### Org funding (from deployer)
+- Org A +0.05 USDC: `0x3fef807c9af669edf50aab890079e0c6c865edce22f3a1e7d66c565650e30c51`
+- Org B +0.12 USDC: `0x7b0161ad60e818858e8132f048c40c132866e2dd272fe69c69c4bdfc006630e8`
+- Evidence: `docs/evidence/mainnet-org-fund-2026-07-23.json`
+
+### Service cutover code
+- `EMBER_NETWORK` + `packages/mission-core/src/activeNetwork.ts`
+- PAYDAY/Sentinel resolve Continuity/USDC/RPC/hash from mainnet keys when `EMBER_NETWORK=mainnet`
+
+### Three receipt-verified PAYDAY slots (W1 `5goaid2zjgzyb32661se3`)
+1. slot `1784768419` exec `667ekg3qk5f45127eqjyy` tx `0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2`
+2. slot `1784768719` exec `pmxyj7low2i06bne6j1bt` tx `0xeb670541f1646dc55e2403d97ba683c7f325c7e38161b1c415da5e8b5bb86888`
+3. slot `1784769019` exec `0i0pqz1u7xc5act9agvwa` tx `0x9288d13aa65976b2fb996b4764be4ab098f22631094a28a5e5f8ea6e36b9eec3`
+- Post-slot balances: Org A 0.02 / Org B 0.12 / Employee 0.03 / Escrow 1.00
+- W1 disabled after slot 3; PAYDAY restarted with `PAYDAY_ENABLE=0` for grace→rescue
+- Evidence: `docs/evidence/mainnet-payday-slots-2026-07-23.json`
+
+### Rescue COMPLETED (rescueId `3262643f2b4bec156242871d919663ceaec7696ed29cd63ffe02a59dcb4a7169`)
+- Missed slots replayed (Org B W1' `pvhwggqr8318wac68jb62`):
+  - `1784769319` exec `tjab2kqsitnwsfbr6e9ra` tx `0x474376218593b8d3fbecb103286129b91dd6590fad779514b636cc480d6c8e41`
+  - `1784769619` exec `xoratkk2crlscz57ma1fr` tx `0x83f721bfbafc20ba4327d2a955afd05db9ec7d063e41ae0484c851edf0c15432`
+- Proof CID `QmVr6yWDfuWbWE4m9UADtbJzSadqKXnUmpCHUERjsLWoyn` / hash `0x61206b51…460c`
+- Anchor tx (Base mainnet): `0x74ba1eac3e35c269175c06629782f66da454775141b6c94f14d608065c8d211f`
+- Bug fixed mid-flight: `anchorProof` had hardcoded Sepolia `chain_id`; now uses `EMBER_NETWORK` / `chainId`
+- Post-rescue balances: Org A 0.02 / Org B 0.10 / Employee 0.05
+- Evidence: `docs/evidence/mainnet-rescue-2026-07-23.json`

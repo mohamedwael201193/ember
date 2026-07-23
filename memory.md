@@ -1,16 +1,16 @@
 # EMBER session memory
 
-Last updated: 2026-07-22 21:45 UTC+3  
-Mode: **Autonomous backend delivery loop** (self-pacing)
+Last updated: 2026-07-23 04:15 UTC+3  
+Mode: **Phase 13 Base mainnet execution** (live)
 
 Secrets live in `.env` (gitignored). Never paste private keys into chat.
-**ROTATE NOW:** `github_token` / `render_api_key` were pasted in chat — revoke and reissue before mainnet.
+**ROTATE NOW:** `github_token` / `render_api_key` were pasted in chat — revoke and reissue.
 
 ---
 
 ## 0. Context locks
 
-Bearer-only KH auth · Sepolia-only · No Docker (process-kill chaos) · No frontend code · 402/wallet-fund non-halting · Phase 13 human-only
+Bearer-only KH auth · Base mainnet cutover in progress · No Docker (process-kill chaos) · No frontend · Phase 13 approved
 
 ---
 
@@ -19,12 +19,12 @@ Bearer-only KH auth · Sepolia-only · No Docker (process-kill chaos) · No fron
 | Phase | Status | Notes |
 |---|---|---|
 | 00–08 | **PASS / Pro stubs** | Receipt-backed `/check` |
-| 09 Rescue | **PASS** | Live replay + journal idempotency |
+| 09 Rescue | **PASS** (Sepolia) | Mainnet rescue in flight after 3 slots |
 | 09 Chaos | **PASS** | Kill + mid-replay drills pass |
 | 10 Proof | **PASS** | Pinata CID + KeeperHub anchor verified |
-| 11 Fee / marketplace | **PARTIAL** | Wallet provisioned; settlement needs ≥0.01 USDC fund |
-| 12 Runtime | **PASS** | 12h soak + single Render runtime + HMAC `/check` |
-| 13 Mainnet | **BLOCKED** | Human approval required |
+| 11 Fee / marketplace | **PASS** | x402 settled; one listing bug external |
+| 12 Runtime | **PASS** | 12h soak + Render + HMAC `/check` |
+| 13 Mainnet | **IN PROGRESS** | Continuity+mission+3 PAYDAY slots live |
 | Frontend | **DEFERRED** | Explicitly out of scope until backend gates close |
 
 ---
@@ -220,4 +220,44 @@ Human Phase 13 approval granted in chat.
 
 ### Stop condition hit
 Missing required Base ETH (deployer) and Base USDC (Org A/B). No simulated mainnet success. Frontend remains deferred.
+
+## 9. Phase 13 live tick (2026-07-23 04:15 UTC+3)
+
+### Funding question (real config — NOT a guess)
+**NO** — Org A/B cannot complete *every* required Mainnet validation on 0.1 USDC each.
+- `PAYMENT_AMOUNT_USDC=10000` → 0.01 USDC/slot
+- `MAX_REPLAY_SLOTS=12` → Org B floor **0.12** USDC for one max rescue
+- Controlled Phase-13 path alone would fit (A 0.03 / B 0.02), but not max-cap rescue + buffers
+- Floors: Org A **0.05**, Org B **0.12**, Deployer **1.00 USDC + ≥0.002 ETH**
+- Evidence: `docs/evidence/mainnet-funding-analysis-2026-07-23.json`
+
+### On-chain (Base 8453) — real broadcasts
+| Step | Result |
+|---|---|
+| Continuity deploy | `0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770` tx `0x050014bf…a3a6` |
+| Register mission 1 | tx `0xe1c1d62d…6f70` startAt `1784768419` hash `0x0ccdc528…30e2` |
+| Fund escrow 1 USDC | approve `0xf16ba185…ba00` + fund `0xea48ae06…1d4f` |
+| Fund Org A 0.05 | tx `0x3fef807c…0c51` |
+| Fund Org B 0.12 | tx `0x7b0161ad…30e8` |
+
+### PAYDAY (3 slots — receipt verified)
+| Slot | Execution | Tx |
+|---|---|---|
+| 1784768419 | `667ekg3qk5f45127eqjyy` | `0xd26e6174…1ea2` |
+| 1784768719 | `pmxyj7low2i06bne6j1bt` | `0xeb670541…6888` |
+| 1784769019 | `0i0pqz1u7xc5act9agvwa` | `0x9288d13a…eec3` |
+
+Balances after 3 slots: Org A **0.02**, Org B **0.12**, Employee **0.03**, Escrow **1.00**
+
+### Cutover mechanics
+- Added `EMBER_NETWORK=mainnet` + `resolveActiveNetworkConfig` (payday/sentinel)
+- Local combined runtime validated slots; W1 enabled then disabled after slot 3
+- W1 mainnet `5goaid2zjgzyb32661se3` · W1' `pvhwggqr8318wac68jb62` (disabled; Sentinel-only)
+- Next: wait grace (2 missed slots) → `/rescue` → proof/anchor → Render env merge cutover
+
+### Evidence
+- `mainnet-funding-analysis-2026-07-23.json`
+- `mainnet-continuity-deploy-2026-07-23.json`
+- `mainnet-org-fund-2026-07-23.json`
+- `mainnet-payday-slots-2026-07-23.json`
 

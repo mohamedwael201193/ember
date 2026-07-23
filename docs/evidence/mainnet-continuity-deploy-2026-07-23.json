@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-07-23T00:51:42.662Z",
+  "chainId": 8453,
+  "continuityAddress": "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
+  "missionId": "1",
+  "missionCount": "1",
+  "mission": {
+    "workflowHash": "0x0ccdc52804ea95ce83e7990b8b8e6a66c42b717c30a88a05248cf95310dd30e2",
+    "startAt": "1784768419",
+    "cadenceSeconds": "300",
+    "budget": "5000000",
+    "escrowBalance": "1000000",
+    "maxFeePerRescue": "500000",
+    "beneficiary": "0x230640f6508C7a1086444c5Ba62D230F395Ba0e1",
+    "standby": "0xa45d8a46a4BC22Aae9946AE85962fA130A0aEFa6",
+    "exists": true
+  },
+  "transactions": {
+    "deploy": "0x050014bf756531fcc94b13dd3f254ef4d0f661049e3759600a5e4466e0a6a3a6",
+    "register": "0xe1c1d62d9e328bb2425db100620e0ee1857622a5e749ab2caef8b8e322b86f70",
+    "fund": [
+      "0xf16ba18598ae512ceef01ebaae26376599e1920adaff8dfeef54a3dd43beba00",
+      "0xea48ae068b7d7a4489713691642a62465d57671225a6a91461d00a045cae1d4f"
+    ]
+  },
+  "receipts": {
+    "0x050014bf756531fcc94b13dd3f254ef4d0f661049e3759600a5e4466e0a6a3a6": {
+      "status": "success",
+      "blockNumber": "48989200",
+      "gasUsed": "1673711",
+      "logs": 0
+    },
+    "0xe1c1d62d9e328bb2425db100620e0ee1857622a5e749ab2caef8b8e322b86f70": {
+      "status": "success",
+      "blockNumber": "48989242",
+      "gasUsed": "162584",
+      "logs": 1
+    },
+    "0xf16ba18598ae512ceef01ebaae26376599e1920adaff8dfeef54a3dd43beba00": {
+      "status": "success",
+      "blockNumber": "48989249",
+      "gasUsed": "55437",
+      "logs": 1
+    },
+    "0xea48ae068b7d7a4489713691642a62465d57671225a6a91461d00a045cae1d4f": {
+      "status": "success",
+      "blockNumber": "48989250",
+      "gasUsed": "81361",
+      "logs": 2
+    }
+  },
+  "balances": {
+    "deployer": "2.248801",
+    "orgA": "0",
+    "orgB": "0",
+    "continuityUsdc": "1",
+    "escrowBalanceField": "1"
+  },
+  "explorers": {
+    "deploy": "https://basescan.org/tx/0x050014bf756531fcc94b13dd3f254ef4d0f661049e3759600a5e4466e0a6a3a6",
+    "register": "https://basescan.org/tx/0xe1c1d62d9e328bb2425db100620e0ee1857622a5e749ab2caef8b8e322b86f70",
+    "fund": [
+      "https://basescan.org/tx/0xf16ba18598ae512ceef01ebaae26376599e1920adaff8dfeef54a3dd43beba00",
+      "https://basescan.org/tx/0xea48ae068b7d7a4489713691642a62465d57671225a6a91461d00a045cae1d4f"
+    ],
+    "contract": "https://basescan.org/address/0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770"
+  },
+  "pass": true
+}

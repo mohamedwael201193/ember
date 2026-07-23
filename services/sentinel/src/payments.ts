@@ -1,5 +1,5 @@
 import { createPublicClient, http, type Address, type Hex } from "viem";
-import { baseSepolia } from "viem/chains";
+import { base, baseSepolia } from "viem/chains";
 import { verifyUsdcPaymentReceipt, type ExpectedTransfer } from "@ember/receipt-checker";
 import type { ExecutionSummary } from "./detector.js";
 
@@ -29,12 +29,14 @@ export async function verifyExecutionPayments(params: {
   executions: ExecutionSummary[];
   expected: ExpectedTransfer;
   minConfirmations: number;
+  chainId?: number;
 }): Promise<VerifiedPayment[]> {
   const transports = [params.rpcUrl, params.rpcFallbackUrl].filter(Boolean) as string[];
+  const chain = params.chainId === 8453 ? base : baseSepolia;
   let lastError: unknown;
   for (const url of transports) {
     try {
-      const client = createPublicClient({ chain: baseSepolia, transport: http(url) });
+      const client = createPublicClient({ chain, transport: http(url) });
       const verified: VerifiedPayment[] = [];
       const seen = new Set<string>();
       for (const candidate of extractCandidateHashes(params.executions)) {

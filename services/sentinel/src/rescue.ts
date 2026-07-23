@@ -15,7 +15,7 @@ import {
 } from "@ember/mission-core";
 import type { Address, Hex } from "viem";
 import { createPublicClient, http, keccak256, parseEventLogs, toBytes } from "viem";
-import { baseSepolia } from "viem/chains";
+import { base, baseSepolia } from "viem/chains";
 import {
   verifyPaymentWithRetry,
   verifyUsdcPaymentReceipt,
@@ -23,6 +23,10 @@ import {
 } from "@ember/receipt-checker";
 import type { ExecutionSummary } from "./detector.js";
 import { extractCandidateHashes } from "./payments.js";
+
+function chainForId(chainId: number | undefined) {
+  return chainId === 8453 ? base : baseSepolia;
+}
 
 export type RescueStatus = "IN_PROGRESS" | "COMPLETED" | "ABORTED";
 
@@ -87,6 +91,7 @@ export interface RescueContext {
   rpcUrl: string;
   rpcFallbackUrl?: string;
   receiptConfirmations: number;
+  chainId?: number;
   khBaseUrl: string;
   khMcpUrl?: string;
   khApiKeyStandby: string;
@@ -302,7 +307,10 @@ function proofBundle(journal: RescueJournal) {
 
 async function storedProofMatches(ctx: RescueContext, journal: RescueJournal): Promise<boolean> {
   if (!ctx.continuityAddress || !journal.anchorRescueId || !journal.proofHash) return false;
-  const client = createPublicClient({ chain: baseSepolia, transport: http(ctx.rpcUrl) });
+  const client = createPublicClient({
+    chain: chainForId(ctx.chainId),
+    transport: http(ctx.rpcUrl)
+  });
   const stored = await client.readContract({
     address: ctx.continuityAddress,
     abi: continuityProofAbi,
@@ -390,9 +398,10 @@ async function anchorProof(ctx: RescueContext, journal: RescueJournal): Promise<
   await mcp.initialize();
   let started: DirectExecutionStart;
   try {
+    const chainId = ctx.chainId ?? baseSepolia.id;
     const raw = await mcp.callTool("execute_contract_call", {
       contract_address: ctx.continuityAddress,
-      chain_id: String(baseSepolia.id),
+      chain_id: String(chainId),
       function_name: "anchorProof",
       function_args: JSON.stringify([
         journal.missionId,
@@ -426,7 +435,10 @@ async function anchorProof(ctx: RescueContext, journal: RescueJournal): Promise<
   if (!txHash?.startsWith("0x") || terminal.result?.success === false) {
     throw new Error("proof_anchor_transaction_missing");
   }
-  const client = createPublicClient({ chain: baseSepolia, transport: http(ctx.rpcUrl) });
+  const client = createPublicClient({
+    chain: chainForId(ctx.chainId),
+    transport: http(ctx.rpcUrl)
+  });
   const receipt = await client.waitForTransactionReceipt({
     hash: txHash as Hex,
     confirmations: ctx.receiptConfirmations,
@@ -490,6 +502,7 @@ export async function loadJournalCoveredSlots(params: {
   rpcUrl: string;
   expectedOrgB: ExpectedTransfer;
   minConfirmations: number;
+  chainId?: number;
 }): Promise<Set<number>> {
   const covered = new Set<number>();
   let names: string[] = [];
@@ -498,7 +511,10 @@ export async function loadJournalCoveredSlots(params: {
   } catch {
     return covered;
   }
-  const client = createPublicClient({ chain: baseSepolia, transport: http(params.rpcUrl) });
+  const client = createPublicClient({
+    chain: chainForId(params.chainId),
+    transport: http(params.rpcUrl)
+  });
   const prefix = `${params.missionId}-`;
   for (const name of names) {
     if (!name.startsWith(prefix) || !name.endsWith(".json") || name.includes(".tmp")) continue;
@@ -526,7 +542,10 @@ export async function loadJournalCoveredSlots(params: {
 }
 
 export async function classifyUnpaid(ctx: RescueContext): Promise<number[]> {
-  const client = createPublicClient({ chain: baseSepolia, transport: http(ctx.rpcUrl) });
+  const client = createPublicClient({
+    chain: chainForId(ctx.chainId),
+    transport: http(ctx.rpcUrl)
+  });
   const expectedOrgA: ExpectedTransfer = {
     token: ctx.usdcAddress,
     from: ctx.orgAWallet,
@@ -544,7 +563,8 @@ export async function classifyUnpaid(ctx: RescueContext): Promise<number[]> {
     missionId: ctx.missionId,
     rpcUrl: ctx.rpcUrl,
     expectedOrgB,
-    minConfirmations: ctx.receiptConfirmations
+    minConfirmations: ctx.receiptConfirmations,
+    ...(ctx.chainId !== undefined ? { chainId: ctx.chainId } : {})
   });
   for (const candidate of extractCandidateHashes(ctx.executions)) {
     for (const expected of [expectedOrgA, expectedOrgB]) {
@@ -687,7 +707,9 @@ export async function runRescue(ctx: RescueContext): Promise<RescueJournal> {
         const verified = await verifyPaymentWithRetry({
           clients: [ctx.rpcUrl, ctx.rpcFallbackUrl]
             .filter((url): url is string => Boolean(url))
-            .map((url) => createPublicClient({ chain: baseSepolia, transport: http(url) })),
+            .map((url) =>
+              createPublicClient({ chain: chainForId(ctx.chainId), transport: http(url) })
+            ),
           hash: txHash as Hex,
           expected: {
             token: ctx.usdcAddress,

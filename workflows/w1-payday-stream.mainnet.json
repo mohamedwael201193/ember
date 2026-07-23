@@ -2,7 +2,7 @@
   "id": "5goaid2zjgzyb32661se3",
   "name": "payday-stream-mainnet",
   "description": "EMBER W1 mainnet: manual Org A USDC payroll transfer on Base (8453). Disabled until Phase 13 cutover.",
-  "enabled": false,
+  "enabled": true,
   "nodes": [
     {
       "id": "trigger-1",

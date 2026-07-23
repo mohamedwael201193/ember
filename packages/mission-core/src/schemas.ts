@@ -57,6 +57,7 @@ function validateEconomics(
 }
 
 const sharedChainSchema = z.object({
+  EMBER_NETWORK: z.enum(["mainnet", "sepolia"]).optional(),
   CHAIN_ID_MAINNET: z.coerce.number().int().positive(),
   CHAIN_ID_REHEARSAL: z.coerce.number().int().positive(),
   BASE_RPC_URL: optionalUrl,

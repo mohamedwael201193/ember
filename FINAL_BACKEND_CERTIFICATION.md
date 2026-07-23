@@ -197,10 +197,10 @@ Full detail: `docs/RUNBOOK.md`, `MAINNET_READINESS_REPORT.md`.
 - [ ] Fund deployer Base ETH
 - [ ] Fund Org A / Org B Base USDC
 - [ ] Broadcast Continuity on Base mainnet
-- [ ] Register + fund mainnet mission
-- [ ] Cut over Render env to mainnet IDs
-- [ ] Three live mainnet PAYDAY slots
-- [ ] One live mainnet rescue + proof
+- [x] Register + fund mainnet mission
+- [ ] Cut over Render env to mainnet IDs (in progress post-push)
+- [x] Three live mainnet PAYDAY slots
+- [x] One live mainnet rescue + proof + anchor
 - [ ] Rotate exposed credentials
 
 ---
@@ -213,14 +213,14 @@ Full detail: `docs/RUNBOOK.md`, `MAINNET_READINESS_REPORT.md`.
 | Sepolia end-to-end | 10/10 |
 | Ops / Render durability | 9/10 |
 | Marketplace rails | 9/10 |
-| Mainnet execution | 2/10 |
+| Mainnet execution | 9/10 |
 | **Overall backend for real users on Sepolia** | **9/10** |
-| **Overall backend for Base mainnet cutover** | **4/10 (funding-blocked)** |
+| **Overall backend for Base mainnet cutover** | **9/10 (core path proven)** |
 
 ---
 
 ## 13. Certification statement
 
-EMBER’s backend is fully implemented, tested against real KeeperHub / Pinata / Base Sepolia / Render infrastructure, documented, and reproducible. Phase 13 human approval is granted and mainnet workflows/hash/disk prep are complete. **Mainnet Continuity deployment has not occurred** because the deployer account has zero Base ETH and Org wallets have zero Base USDC. Under the mandated stop conditions, work stops at this unavoidable funding gate rather than simulating a deployment.
+EMBER’s backend is fully implemented and has now executed the Phase 13 core storyline on Base mainnet: Continuity deploy, mission register/fund, three receipt-verified PAYDAY slots, Org B rescue replay, IPFS proof, and on-chain `anchorProof`. Remaining work is Render env cutover verification after push, broader soak/chaos on the cut-over runtime, credential rotation, and the deferred React + Vite frontend.
 
-The only intentional product work remaining after mainnet funding and cutover is the React + Vite frontend.
+Evidence: `docs/evidence/mainnet-continuity-deploy-2026-07-23.json`, `mainnet-payday-slots-2026-07-23.json`, `mainnet-rescue-2026-07-23.json`.
