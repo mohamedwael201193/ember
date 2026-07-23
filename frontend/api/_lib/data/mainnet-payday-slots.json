@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-07-23T01:13:19.765Z",
+  "chainId": 8453,
+  "network": "mainnet",
+  "continuity": "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
+  "missionId": "1",
+  "missionStartAt": 1784768419,
+  "workflowId": "5goaid2zjgzyb32661se3",
+  "slots": [
+    {
+      "slot": 1784768419,
+      "executionId": "667ekg3qk5f45127eqjyy",
+      "transactionHash": "0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2",
+      "explorer": "https://basescan.org/tx/0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2",
+      "confirmations": 3
+    },
+    {
+      "slot": 1784768719,
+      "executionId": "pmxyj7low2i06bne6j1bt",
+      "transactionHash": "0xeb670541f1646dc55e2403d97ba683c7f325c7e38161b1c415da5e8b5bb86888",
+      "explorer": "https://basescan.org/tx/0xeb670541f1646dc55e2403d97ba683c7f325c7e38161b1c415da5e8b5bb86888",
+      "confirmations": 3
+    },
+    {
+      "slot": 1784769019,
+      "executionId": "0i0pqz1u7xc5act9agvwa",
+      "transactionHash": "0x9288d13aa65976b2fb996b4764be4ab098f22631094a28a5e5f8ea6e36b9eec3",
+      "explorer": "https://basescan.org/tx/0x9288d13aa65976b2fb996b4764be4ab098f22631094a28a5e5f8ea6e36b9eec3",
+      "confirmations": 3
+    }
+  ],
+  "balances": {
+    "orgA": "0.02",
+    "orgB": "0.12",
+    "employee": "0.03",
+    "continuity": "1"
+  },
+  "pass": true
+}
