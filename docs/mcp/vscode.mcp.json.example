@@ -1,0 +1,25 @@
+{
+  "servers": {
+    "keeperhub": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote@latest",
+        "https://app.keeperhub.com/mcp",
+        "--header",
+        "Authorization: Bearer ${input:khApiKey}",
+        "--transport",
+        "http-only"
+      ]
+    }
+  },
+  "inputs": [
+    {
+      "id": "khApiKey",
+      "type": "promptString",
+      "description": "KeeperHub API key (kh_...)",
+      "password": true
+    }
+  ]
+}

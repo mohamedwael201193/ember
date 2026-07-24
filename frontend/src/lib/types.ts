@@ -17,6 +17,7 @@ export interface PublicConfig {
   runtimeUrl: string;
   explorerBase: string;
   ipfsGateway: string;
+  developmentMode?: boolean;
 }
 
 export interface CheckResponse {

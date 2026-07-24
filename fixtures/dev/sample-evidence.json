@@ -1,0 +1,65 @@
+{
+  "continuity": "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
+  "missionId": "1",
+  "chainId": 84532,
+  "network": "development",
+  "paydaySlots": [
+    {
+      "slot": 1784768419,
+      "executionId": "dev-exec-slot-1",
+      "transactionHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "explorer": "https://sepolia.basescan.org/tx/0x1111111111111111111111111111111111111111111111111111111111111111",
+      "confirmations": 3
+    },
+    {
+      "slot": 1784768719,
+      "executionId": "dev-exec-slot-2",
+      "transactionHash": "0x2222222222222222222222222222222222222222222222222222222222222222",
+      "explorer": "https://sepolia.basescan.org/tx/0x2222222222222222222222222222222222222222222222222222222222222222",
+      "confirmations": 3
+    },
+    {
+      "slot": 1784769019,
+      "executionId": "dev-exec-slot-3",
+      "transactionHash": "0x3333333333333333333333333333333333333333333333333333333333333333",
+      "explorer": "https://sepolia.basescan.org/tx/0x3333333333333333333333333333333333333333333333333333333333333333",
+      "confirmations": 3
+    }
+  ],
+  "balances": {
+    "orgA": "1.00",
+    "orgB": "1.00",
+    "employee": "0.30",
+    "continuity": "1"
+  },
+  "rescue": {
+    "version": 1,
+    "missionId": "1",
+    "rescueId": "dev-rescue-sample-001",
+    "status": "COMPLETED",
+    "createdAt": "2026-07-24T00:00:00.000Z",
+    "updatedAt": "2026-07-24T00:05:00.000Z",
+    "unpaidSlots": [1784769319],
+    "replays": [
+      {
+        "slot": 1784769319,
+        "executionId": "dev-replay-1",
+        "txHash": "0x4444444444444444444444444444444444444444444444444444444444444444"
+      }
+    ],
+    "stepsCompleted": [
+      "hash_check",
+      "classify",
+      "replay",
+      "proof_scaffold",
+      "proof_ipfs_verified",
+      "proof_anchored",
+      "done"
+    ],
+    "proofCid": "bafybeigembevelopmentsampleproofcid000000000000000000001",
+    "anchorTxHash": "0x5555555555555555555555555555555555555555555555555555555555555555"
+  },
+  "proofCid": "bafybeigembevelopmentsampleproofcid000000000000000000001",
+  "anchorTx": "0x5555555555555555555555555555555555555555555555555555555555555555",
+  "rescueId": "dev-rescue-sample-001"
+}

@@ -1,79 +1,30 @@
-# EMBER Frontend
+# `@ember/frontend`
 
-Premium React product UI for EMBER continuity.
+Product UI + local BFF for EMBER.
 
-## Stack
-
-- React 18 + Vite + TypeScript
-- Tailwind CSS v4
-- Motion + GSAP ScrollTrigger + Lenis
-- TanStack Query + React Router
-- Lucide icons
-
-## Architecture
-
-Browser → Vite (`/api/*`) → **BFF** (`server/bff.ts`) → Render runtime
-
-HMAC secrets (`SENTINEL_SHARED_SECRET`, `PRIMARY_OBSERVER_SHARED_SECRET`) stay in the BFF.
-The browser never signs Sentinel/Observer requests.
-
-## Run
-
-From repo root (loads `.env` via BFF):
+## Quick start (from repo root)
 
 ```bash
-pnpm --filter @ember/frontend install
-pnpm --filter @ember/frontend dev
+pnpm setup
+pnpm dev
 ```
 
-- Product: http://localhost:5173/
-- App: http://localhost:5173/app
-- BFF: http://127.0.0.1:8780
+Open http://127.0.0.1:5173
 
-Required env (repo `.env` / see `.env.example`):
+Full project docs: [`../README.md`](../README.md), [`../LOCAL_SETUP.md`](../LOCAL_SETUP.md).
 
-- `EMBER_RUNTIME_URL` (default `https://ember-api-8qzg.onrender.com`)
-- `SENTINEL_SHARED_SECRET`
-- `PRIMARY_OBSERVER_SHARED_SECRET`
-- `EMBER_NETWORK`
+## Scripts
 
-## Deploy to Vercel
+| Script | Description |
+|--------|-------------|
+| `pnpm dev` | Vite `:5173` + BFF `:8780` |
+| `pnpm build` | Production static build |
+| `pnpm start:bff` | BFF only |
 
-1. Import the GitHub repo in [Vercel](https://vercel.com).
-2. Set **Root Directory** to `frontend`.
-3. Framework Preset: **Other** (uses `vercel.json`).
-4. Add Environment Variables from `frontend/.env.example` (Production + Preview):
-   - `EMBER_RUNTIME_URL`
-   - `EMBER_NETWORK=mainnet`
-   - `SENTINEL_SHARED_SECRET`
-   - `PRIMARY_OBSERVER_SHARED_SECRET`
-   - Continuity / workflow IDs as needed
-5. Deploy.
+## Env
 
-SPA routes rewrite to `index.html`. `/api/*` is handled by serverless BFF (`api/[...path].ts`) using the same HMAC proxy as local `server/bff.ts`.
-
-```bash
-# Optional CLI
-cd frontend
-npx vercel
-```
-
-## Routes
-
-| Path | Surface |
-|------|---------|
-| `/` | Cinematic landing (scroll story + original SVGs) |
-| `/app` | Living console |
-| `/app/mission/new` | Guided mission builder |
-| `/app/mission` | Mission topology |
-| `/app/executions` | PAYDAY calendar |
-| `/app/rescues` | Rescue pipeline |
-| `/app/proofs` | Visual proof chain |
-| `/app/operations` | Ops status map |
+See `.env.example`. Secrets stay on the BFF / Vercel serverless — never `VITE_`.
 
 ## Design
 
-See `frontend/DESIGN.md` and root `DESIGN.md`.
-
-Inspiration language only: contentarchitecture.dev (split hero, large type, scroll chapters).
-Not a copy. Hand-crafted SVG illustrations in `src/components/svg/SvgScene.tsx`.
+See `DESIGN.md` and root `docs/FRONTEND_SPEC.md`.

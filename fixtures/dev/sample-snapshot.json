@@ -1,0 +1,46 @@
+{
+  "checkedAt": "2026-07-24T00:00:00.000Z",
+  "mode": "development",
+  "config": {
+    "network": "development",
+    "chainId": 84532,
+    "missionId": "1",
+    "continuity": "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
+    "workflowHash": "0xdev000000000000000000000000000000000000000000000000000000000001",
+    "orgAWorkflowId": "dev-org-a-w1",
+    "orgBReplayWorkflowId": "dev-org-b-w1-replay",
+    "runtimeUrl": "http://127.0.0.1:10000",
+    "explorerBase": "https://sepolia.basescan.org",
+    "ipfsGateway": "https://ipfs.io/ipfs/",
+    "developmentMode": true
+  },
+  "health": {
+    "ok": true,
+    "service": "ember-runtime",
+    "mode": "development",
+    "children": { "observer": true, "payday": true, "sentinel": true }
+  },
+  "ready": { "ok": true, "mode": "development" },
+  "status": {
+    "missionId": "1",
+    "state": "RECOVERED",
+    "network": "development",
+    "missedSlots": [],
+    "receiptBacked": true,
+    "receiptVerifiedPayments": 3
+  },
+  "check": {
+    "missionId": "1",
+    "state": "RECOVERED",
+    "missedSlots": [],
+    "receiptBacked": true,
+    "receiptVerifiedPayments": 3,
+    "mode": "development"
+  },
+  "checkStatus": 200,
+  "serviceReadiness": [
+    { "name": "runtime", "ok": true, "detail": { "ok": true, "mode": "development" } },
+    { "name": "ready", "ok": true, "detail": { "ok": true } },
+    { "name": "sentinel-check", "ok": true, "detail": { "state": "RECOVERED" } }
+  ]
+}

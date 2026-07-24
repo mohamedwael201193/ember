@@ -6,10 +6,16 @@ import {
 } from "../packages/mission-core/src/env.js";
 
 if (!existsSync(".env")) {
-  throw new Error(".env is required for environment validation");
+  throw new Error(".env is required for environment validation — run: pnpm setup");
 }
 
 process.loadEnvFile(".env");
+
+if (process.env.DEVELOPMENT_MODE === "1" || process.env.EMBER_DEV_MODE === "1") {
+  console.log("DEVELOPMENT_MODE=1 — skipping live KeeperHub/schema validation.");
+  console.log("Environment validation passed (development).");
+  process.exit(0);
+}
 
 function project(keys: readonly string[]): Record<string, string | undefined> {
   return Object.fromEntries(keys.map((key) => [key, process.env[key]]));

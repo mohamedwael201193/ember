@@ -5,9 +5,14 @@
   "type": "module",
   "packageManager": "pnpm@10.34.5",
   "engines": {
-    "node": ">=24"
+    "node": ">=20"
   },
   "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "dev": "node scripts/dev.mjs",
+    "dev:runtime": "node scripts/dev-mock-runtime.mjs",
+    "dev:watcher": "node scripts/dev-watcher.mjs",
     "lint": "eslint .",
     "typecheck": "pnpm --filter @ember/mission-core build && pnpm --filter @ember/kh-client build && pnpm --filter @ember/receipt-checker build && pnpm --recursive --if-present run typecheck",
     "test": "pnpm --filter @ember/receipt-checker build && vitest run",
@@ -21,6 +26,7 @@
     "test:anchor-recovery": "node --env-file=.env --import tsx scripts/verify-anchor-recovery.ts",
     "test:post-fix-drills": "node --env-file=.env --import tsx scripts/verify-post-fix-drills.ts"
   },
+  "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@types/node": "^24.10.1",

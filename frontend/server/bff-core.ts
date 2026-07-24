@@ -42,7 +42,35 @@ export function bootstrapEnv() {
   for (const p of candidates) loadEnvFile(p);
 }
 
+function isDevMode(): boolean {
+  return process.env.DEVELOPMENT_MODE === "1" || process.env.EMBER_DEV_MODE === "1";
+}
+
+function readFixture<T>(name: string): T | null {
+  const candidates = [
+    resolve(process.cwd(), "fixtures/dev", name),
+    resolve(process.cwd(), "../fixtures/dev", name),
+    resolve(process.cwd(), "../../fixtures/dev", name),
+  ];
+  for (const path of candidates) {
+    try {
+      if (!existsSync(path)) continue;
+      return JSON.parse(readFileSync(path, "utf8")) as T;
+    } catch {
+      /* try next */
+    }
+  }
+  return null;
+}
+
 export function runtimeUrl(): string {
+  if (isDevMode()) {
+    return (
+      process.env.EMBER_RUNTIME_URL ||
+      process.env.SENTINEL_PUBLIC_URL ||
+      "http://127.0.0.1:10000"
+    ).replace(/\/$/, "");
+  }
   return (
     process.env.EMBER_RUNTIME_URL ||
     process.env.SENTINEL_PUBLIC_URL ||
@@ -118,8 +146,9 @@ async function proxyPublic(path: string): Promise<{ status: number; json: unknow
 }
 
 export function publicConfig() {
-  const network = process.env.EMBER_NETWORK || "mainnet";
+  const network = process.env.EMBER_NETWORK || (isDevMode() ? "development" : "mainnet");
   const isMainnet = network === "mainnet";
+  const isDevelopment = network === "development" || isDevMode();
   return {
     network,
     chainId: isMainnet ? 8453 : 84532,
@@ -143,10 +172,16 @@ export function publicConfig() {
       ? "https://basescan.org"
       : "https://sepolia.basescan.org",
     ipfsGateway: process.env.IPFS_GATEWAY || "https://ipfs.io/ipfs/",
+    developmentMode: isDevelopment,
   };
 }
 
 function loadEvidence() {
+  if (isDevMode()) {
+    const sample = readFixture<Record<string, unknown>>("sample-evidence.json");
+    if (sample) return sample;
+  }
+
   const payday = bundledPayday as Record<string, unknown>;
   const rescueWrap = bundledRescue as { journal?: Record<string, unknown> };
   const journal = rescueWrap?.journal ?? null;
@@ -183,18 +218,42 @@ export async function handleApi(req: ApiRequest): Promise<ApiResult> {
   const RUNTIME_URL = runtimeUrl();
   const SENTINEL_SECRET = sentinelSecret();
   const OBSERVER_SECRET = observerSecret();
+  const sampleSnapshot = isDevMode()
+    ? readFixture<Record<string, unknown>>("sample-snapshot.json")
+    : null;
 
   if (path === "/api/health" && method === "GET") {
-    const upstream = await proxyPublic("/healthz");
-    return {
-      status: 200,
-      data: {
-        bff: "ok",
-        runtime: RUNTIME_URL,
-        upstreamStatus: upstream.status,
-        upstream: upstream.json,
-      },
-    };
+    try {
+      const upstream = await proxyPublic("/healthz");
+      return {
+        status: 200,
+        data: {
+          bff: "ok",
+          runtime: RUNTIME_URL,
+          developmentMode: isDevMode(),
+          upstreamStatus: upstream.status,
+          upstream: upstream.json,
+        },
+      };
+    } catch (err) {
+      if (isDevMode()) {
+        return {
+          status: 200,
+          data: {
+            bff: "ok",
+            runtime: RUNTIME_URL,
+            developmentMode: true,
+            upstreamStatus: 0,
+            upstream: {
+              ok: true,
+              mode: "development-offline",
+              note: err instanceof Error ? err.message : String(err),
+            },
+          },
+        };
+      }
+      throw err;
+    }
   }
 
   if (path === "/api/ready" && method === "GET") {
@@ -239,6 +298,17 @@ export async function handleApi(req: ApiRequest): Promise<ApiResult> {
   }
 
   if (path === "/api/snapshot" && method === "GET") {
+    if (sampleSnapshot) {
+      return {
+        status: 200,
+        data: {
+          ...sampleSnapshot,
+          checkedAt: new Date().toISOString(),
+          config: publicConfig(),
+        },
+      };
+    }
+
     const cfg = publicConfig();
     const [health, ready, status] = await Promise.all([
       proxyPublic("/healthz"),

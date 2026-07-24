@@ -1,0 +1,14 @@
+{
+  "missions": [
+    {
+      "id": "1",
+      "name": "Dev payroll continuity",
+      "network": "development",
+      "cadenceSeconds": 300,
+      "paymentAmountUsdc": "10000",
+      "status": "RECOVERED",
+      "slotsCompleted": 3,
+      "slotsRescued": 1
+    }
+  ]
+}

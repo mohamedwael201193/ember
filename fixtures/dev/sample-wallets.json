@@ -1,0 +1,21 @@
+{
+  "mode": "development",
+  "warning": "Sample addresses only — never fund these or use as real keys.",
+  "orgA": {
+    "name": "Dev Org A (primary)",
+    "address": "0x1111111111111111111111111111111111111111",
+    "integrationId": "dev-org-a-wallet"
+  },
+  "orgB": {
+    "name": "Dev Org B (standby)",
+    "address": "0x2222222222222222222222222222222222222222",
+    "integrationId": "dev-org-b-wallet"
+  },
+  "employee": {
+    "address": "0x3333333333333333333333333333333333333333"
+  },
+  "continuity": {
+    "address": "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
+    "network": "base-sepolia-sample"
+  }
+}
