@@ -3,6 +3,8 @@ import { motion } from "motion/react";
 import { api } from "@/lib/api";
 import { SvgHealthRadar, SvgOrbitSignal } from "@/components/svg/SvgScene";
 import { formatUtc } from "@/lib/utils";
+import { humanNetwork, humanState } from "@/lib/product";
+import { useDemoMode } from "@/hooks/useDemoMode";
 
 function pulseTone(ok: boolean) {
   return ok
@@ -11,10 +13,11 @@ function pulseTone(ok: boolean) {
 }
 
 export function OperationsPage() {
+  const { isDemo } = useDemoMode();
   const snap = useQuery({
     queryKey: ["snapshot"],
     queryFn: api.snapshot,
-    refetchInterval: 10_000,
+    refetchInterval: isDemo ? 60_000 : 10_000,
   });
 
   const check = snap.data?.check;
@@ -24,10 +27,10 @@ export function OperationsPage() {
     <div className="mx-auto max-w-5xl space-y-10">
       <div>
         <h1 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
-          Operations
+          Mission control
         </h1>
         <p className="mt-2 max-w-lg text-[var(--fg-muted)]">
-          Live status map. Observer, Sentinel, and runtime speak through signals, not dumps.
+          Live health for runtime, guardian checks, chain, and network — obvious at a glance.
         </p>
       </div>
 
@@ -50,23 +53,23 @@ export function OperationsPage() {
           <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
-                label: "Mission",
-                value: String(check?.state ?? "..."),
+                label: "Mission health",
+                value: humanState(check?.state),
                 ok: check?.state === "OK" || check?.state === "RECOVERED",
               },
               {
                 label: "Verified payments",
-                value: String(check?.receiptVerifiedPayments ?? "-"),
+                value: String(check?.receiptVerifiedPayments ?? "—"),
                 ok: (check?.receiptVerifiedPayments ?? 0) > 0,
               },
               {
-                label: "Missed slots",
+                label: "Gaps",
                 value: String(check?.missedSlots?.length ?? 0),
                 ok: (check?.missedSlots?.length ?? 0) === 0,
               },
               {
                 label: "Network",
-                value: snap.data.config.network,
+                value: humanNetwork(snap.data.config.network),
                 ok: true,
               },
             ].map((m, i) => (
@@ -86,41 +89,49 @@ export function OperationsPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-lg font-bold">Service map</h2>
+            <h2 className="font-display text-lg font-bold">Services</h2>
             <ul className="mt-4 grid gap-3 md:grid-cols-3">
-              {services.map((s) => (
-                <li
-                  key={s.name}
-                  className={`rounded-[4px] border p-5 ${pulseTone(s.ok)}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="capitalize">{s.name.replace(/-/g, " ")}</span>
-                    <span
-                      className={`relative flex h-2.5 w-2.5`}
-                      aria-label={s.ok ? "ready" : "down"}
-                    >
-                      <span
-                        className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-40 ${
-                          s.ok ? "bg-emerald-400" : "bg-red-400"
-                        }`}
-                      />
-                      <span
-                        className={`relative inline-flex h-2.5 w-2.5 rounded-full ${
-                          s.ok ? "bg-emerald-400" : "bg-red-400"
-                        }`}
-                      />
-                    </span>
-                  </div>
-                  <p className="mt-2 text-xs text-[var(--fg-muted)]">
-                    {s.ok ? "Live" : "Unreachable"}
-                  </p>
-                </li>
-              ))}
+              {services.map((s) => {
+                const label =
+                  s.name === "runtime"
+                    ? "Runtime"
+                    : s.name === "ready"
+                      ? "Readiness"
+                      : s.name === "sentinel-check"
+                        ? "Guardian"
+                        : s.name.replace(/-/g, " ");
+                return (
+                  <li
+                    key={s.name}
+                    className={`rounded-[4px] border p-5 ${pulseTone(s.ok)}`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span>{label}</span>
+                      <span className="relative flex h-2.5 w-2.5" aria-label={s.ok ? "ready" : "down"}>
+                        <span
+                          className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-40 ${
+                            s.ok ? "bg-emerald-400" : "bg-red-400"
+                          }`}
+                        />
+                        <span
+                          className={`relative inline-flex h-2.5 w-2.5 rounded-full ${
+                            s.ok ? "bg-emerald-400" : "bg-red-400"
+                          }`}
+                        />
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs text-[var(--fg-muted)]">
+                      {s.ok ? "Online" : "Unreachable"}
+                    </p>
+                  </li>
+                );
+              })}
             </ul>
           </section>
 
-          <p className="font-mono text-xs text-[var(--fg-muted)]">
-            Synced {formatUtc(snap.data.checkedAt)}
+          <p className="text-xs text-[var(--fg-muted)]">
+            Updated {formatUtc(snap.data.checkedAt)}
+            {isDemo ? " · Demo snapshot" : " · Live runtime"}
           </p>
         </>
       )}

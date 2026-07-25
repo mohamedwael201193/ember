@@ -3,13 +3,18 @@ import { motion } from "motion/react";
 import { api } from "@/lib/api";
 import { shortHash } from "@/lib/utils";
 import { SvgPayrollStream } from "@/components/svg/SvgScene";
+import { Expandable } from "@/components/Expandable";
+import { paymentLabel } from "@/lib/product";
+import { useDemoMode } from "@/hooks/useDemoMode";
 
 export function ExecutionsPage() {
+  const { isDemo } = useDemoMode();
   const evidence = useQuery({ queryKey: ["evidence"], queryFn: api.evidence });
   const live = useQuery({
     queryKey: ["executions"],
     queryFn: () => api.executions(""),
     retry: 1,
+    enabled: !isDemo,
   });
   const cfg = useQuery({ queryKey: ["config"], queryFn: api.config });
 
@@ -23,16 +28,31 @@ export function ExecutionsPage() {
           PAYDAY
         </h1>
         <p className="mt-2 max-w-lg text-[var(--fg-muted)]">
-          The primary stream. Each pulse is a receipt-verified slot on Base.
+          Watch money move from the payer through KeeperHub to the employee — each
+          pulse verified by an onchain receipt.
         </p>
       </div>
 
-      <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4">
+      <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-6">
+        <div className="mb-4 flex flex-wrap items-center justify-center gap-3 text-sm font-medium">
+          <span className="rounded-[4px] border border-white/15 px-3 py-1">Payer</span>
+          <span className="text-[var(--accent)]">↓</span>
+          <span className="rounded-[4px] border border-[var(--accent)]/40 px-3 py-1 text-[var(--accent)]">
+            KeeperHub
+          </span>
+          <span className="text-[var(--accent)]">↓</span>
+          <span className="rounded-[4px] border border-emerald-500/40 px-3 py-1 text-emerald-400">
+            Employee
+          </span>
+        </div>
         <SvgPayrollStream />
+        <p className="mt-4 text-center text-xs text-[var(--fg-muted)]">
+          Successful transfers glow green. Receipts prove the money actually moved.
+        </p>
       </div>
 
       <section>
-        <h2 className="font-display text-lg font-bold">Payroll calendar</h2>
+        <h2 className="font-display text-lg font-bold">Verified payments</h2>
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {evidence.isLoading &&
             [0, 1, 2].map((i) => (
@@ -50,42 +70,48 @@ export function ExecutionsPage() {
               className="group relative overflow-hidden rounded-[4px] border border-emerald-500/30 bg-emerald-500/5 p-5 transition-transform hover:scale-[1.02]"
             >
               <div className="text-[10px] uppercase tracking-wider text-emerald-400">
-                Paid
+                Receipt verified
               </div>
               <div className="mt-2 font-display text-2xl font-bold">
-                Slot {s.slot}
+                {paymentLabel(i)}
               </div>
-              <div className="mt-3 font-mono text-[11px] text-[var(--fg-muted)]">
-                {shortHash(s.executionId, 10)}
-              </div>
-              <div className="mt-1 font-mono text-[11px] text-[var(--accent)] group-hover:underline">
-                {shortHash(s.transactionHash)}
+              <div className="mt-3 text-xs text-[var(--fg-muted)]">
+                Open transaction · {shortHash(s.transactionHash)}
               </div>
             </motion.a>
           ))}
         </div>
         {!evidence.isLoading && slots.length === 0 && (
-          <p className="mt-4 text-sm text-[var(--fg-muted)]">No certified slots yet.</p>
+          <p className="mt-4 text-sm text-[var(--fg-muted)]">No verified payments yet.</p>
         )}
       </section>
 
-      <section>
-        <h2 className="font-display text-lg font-bold">Live Observer</h2>
-        {live.isLoading && (
-          <p className="mt-2 text-sm text-[var(--fg-muted)]">Listening...</p>
-        )}
-        {live.isError && (
-          <p className="mt-2 text-sm text-yellow-500/90">
-            Observer list unavailable: {(live.error as Error).message}
-          </p>
-        )}
-        {live.data != null && (
-          <div className="mt-4 rounded-[4px] border border-[var(--border)] p-5 text-sm text-[var(--fg-muted)]">
-            Live execution payload received. Use certified slots above for the
-            receipt-backed story.
+      <Expandable summary="Technical payment ids">
+        {slots.map((s, i) => (
+          <div key={s.slot} className="mb-2">
+            {paymentLabel(i)} · slot {s.slot} · exec {s.executionId}
           </div>
-        )}
-      </section>
+        ))}
+      </Expandable>
+
+      {!isDemo && (
+        <section>
+          <h2 className="font-display text-lg font-bold">Live observer</h2>
+          {live.isLoading && (
+            <p className="mt-2 text-sm text-[var(--fg-muted)]">Listening…</p>
+          )}
+          {live.isError && (
+            <p className="mt-2 text-sm text-yellow-500/90">
+              Live list unavailable — certified payments above still tell the story.
+            </p>
+          )}
+          {live.data != null && (
+            <p className="mt-2 text-sm text-[var(--fg-muted)]">
+              Live executions received. Prefer the receipt-backed cards for demos.
+            </p>
+          )}
+        </section>
+      )}
     </div>
   );
 }

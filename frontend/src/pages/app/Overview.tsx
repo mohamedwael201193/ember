@@ -4,6 +4,8 @@ import { api } from "@/lib/api";
 import { formatUtc, shortHash } from "@/lib/utils";
 import { SvgArchitecture, SvgHealthRadar } from "@/components/svg/SvgScene";
 import { ExternalLink, ArrowRight } from "lucide-react";
+import { useDemoMode } from "@/hooks/useDemoMode";
+import { humanNetwork, humanState, paymentLabel } from "@/lib/product";
 
 function StateGlow({ state }: { state?: string }) {
   const color =
@@ -16,18 +18,19 @@ function StateGlow({ state }: { state?: string }) {
           : "border-white/15 text-[var(--fg-muted)]";
   return (
     <span
-      className={`inline-flex rounded-[4px] border bg-black/40 px-3 py-1 font-mono text-xs uppercase tracking-wider ${color}`}
+      className={`inline-flex rounded-[4px] border bg-black/40 px-3 py-1 text-xs font-medium tracking-wide ${color}`}
     >
-      {state ?? "UNKNOWN"}
+      {humanState(state)}
     </span>
   );
 }
 
 export function OverviewPage() {
+  const { isDemo } = useDemoMode();
   const snap = useQuery({
     queryKey: ["snapshot"],
     queryFn: api.snapshot,
-    refetchInterval: 12_000,
+    refetchInterval: isDemo ? 60_000 : 12_000,
   });
   const evidence = useQuery({ queryKey: ["evidence"], queryFn: api.evidence });
 
@@ -43,8 +46,11 @@ export function OverviewPage() {
   if (snap.isError) {
     return (
       <div className="rounded-[4px] border border-red-500/40 p-6">
-        <h1 className="font-display text-2xl font-bold">Backend unreachable</h1>
+        <h1 className="font-display text-2xl font-bold">Can’t reach the runtime</h1>
         <p className="mt-2 text-[var(--fg-muted)]">{(snap.error as Error).message}</p>
+        <p className="mt-2 text-sm text-[var(--fg-muted)]">
+          Turn on Demo Mode in the header for an instant verified walkthrough.
+        </p>
         <button
           type="button"
           className="mt-4 rounded-[4px] bg-white px-4 py-2 text-sm text-black"
@@ -59,6 +65,7 @@ export function OverviewPage() {
   const check = snap.data!.check;
   const cfg = snap.data!.config;
   const explorer = cfg.explorerBase;
+  const slots = evidence.data?.paydaySlots ?? [];
 
   return (
     <div className="mx-auto max-w-6xl space-y-10">
@@ -71,43 +78,44 @@ export function OverviewPage() {
             <StateGlow state={check?.state} />
           </div>
           <p className="mt-2 max-w-xl text-[var(--fg-muted)]">
-            Receipt-backed health. Topology updates every few seconds from the real runtime.
+            EMBER keeps payroll alive when the primary agent dies. Watch the system
+            heartbeat in real time.
           </p>
         </div>
         <Link
           to="/app/mission/new"
           className="inline-flex h-10 items-center gap-2 rounded-[4px] bg-[var(--accent)] px-4 text-sm font-medium text-white"
         >
-          Build mission
+          Create mission
           <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4 md:p-6">
+          <p className="mb-3 text-xs uppercase tracking-wider text-[var(--fg-muted)]">
+            Live topology
+          </p>
           <SvgArchitecture />
         </div>
         <div className="flex flex-col gap-4">
           <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4">
             <SvgHealthRadar className="mx-auto max-w-[240px]" />
-            <p className="mt-2 text-center font-mono text-xs text-[var(--fg-muted)]">
-              Mission {cfg.missionId} · {cfg.network}
+            <p className="mt-2 text-center text-xs text-[var(--fg-muted)]">
+              Mission pulse · {humanNetwork(cfg.network)}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {[
-              ["Verified", String(check?.receiptVerifiedPayments ?? "-")],
-              ["Missed", String(check?.missedSlots?.length ?? 0)],
-              ["Chain", String(cfg.chainId)],
+              ["Verified payments", String(check?.receiptVerifiedPayments ?? "—")],
+              ["Gaps to cover", String(check?.missedSlots?.length ?? 0)],
+              ["Network", humanNetwork(cfg.network)],
               [
-                "Runtime",
-                snap.data!.serviceReadiness.every((s) => s.ok) ? "ready" : "degraded",
+                "Services",
+                snap.data!.serviceReadiness.every((s) => s.ok) ? "All live" : "Check Ops",
               ],
             ].map(([k, v]) => (
-              <div
-                key={k}
-                className="rounded-[4px] border border-[var(--border)] p-4"
-              >
+              <div key={k} className="rounded-[4px] border border-[var(--border)] p-4">
                 <div className="text-[10px] uppercase tracking-wider text-[var(--fg-muted)]">
                   {k}
                 </div>
@@ -118,11 +126,13 @@ export function OverviewPage() {
         </div>
       </div>
 
-      {/* Journey river */}
       <section>
-        <h2 className="font-display text-lg font-bold">Mission river</h2>
+        <h2 className="font-display text-lg font-bold">Payment river</h2>
+        <p className="mt-1 text-sm text-[var(--fg-muted)]">
+          Successful transfers, gaps, and rescues — the story of continuity.
+        </p>
         <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
-          {(evidence.data?.paydaySlots ?? []).map((s) => (
+          {slots.map((s, i) => (
             <a
               key={s.slot}
               href={s.explorer ?? `${explorer}/tx/${s.transactionHash}`}
@@ -133,21 +143,21 @@ export function OverviewPage() {
               <div className="text-[10px] uppercase tracking-wider text-emerald-400">
                 Paid
               </div>
-              <div className="mt-2 font-mono text-xs">slot {s.slot}</div>
+              <div className="mt-2 text-sm font-medium">{paymentLabel(i)}</div>
               <div className="mt-1 font-mono text-[11px] text-[var(--fg-muted)]">
                 {shortHash(s.transactionHash)}
               </div>
             </a>
           ))}
-          {(check?.missedSlots ?? []).slice(0, 4).map((slot) => (
+          {(check?.missedSlots ?? []).slice(0, 4).map((_, i) => (
             <div
-              key={slot}
+              key={i}
               className="min-w-[140px] rounded-[4px] border border-red-500/30 bg-red-500/5 p-4"
             >
               <div className="text-[10px] uppercase tracking-wider text-red-400">
                 Missed
               </div>
-              <div className="mt-2 font-mono text-xs">slot {slot}</div>
+              <div className="mt-2 text-sm font-medium">Gap {i + 1}</div>
             </div>
           ))}
           {evidence.data?.rescue?.status === "COMPLETED" && (
@@ -158,10 +168,8 @@ export function OverviewPage() {
               <div className="text-[10px] uppercase tracking-wider text-[var(--accent)]">
                 Rescued
               </div>
-              <div className="mt-2 text-sm font-medium">Proof sealed</div>
-              <div className="mt-1 font-mono text-[11px] text-[var(--fg-muted)]">
-                {shortHash(evidence.data.proofCid, 8)}
-              </div>
+              <div className="mt-2 text-sm font-medium">Mission restored</div>
+              <div className="mt-1 text-[11px] text-[var(--fg-muted)]">Open the hero story</div>
             </Link>
           )}
         </div>
@@ -169,23 +177,28 @@ export function OverviewPage() {
 
       <section className="grid gap-4 md:grid-cols-3">
         {snap.data!.serviceReadiness.map((s) => (
-          <div
-            key={s.name}
-            className="rounded-[4px] border border-[var(--border)] p-5"
-          >
+          <div key={s.name} className="rounded-[4px] border border-[var(--border)] p-5">
             <div className="flex items-center justify-between">
-              <span className="capitalize">{s.name.replace("-", " ")}</span>
+              <span className="capitalize">
+                {s.name === "runtime"
+                  ? "Runtime"
+                  : s.name === "ready"
+                    ? "Ready"
+                    : s.name === "sentinel-check"
+                      ? "Guardian check"
+                      : s.name.replace("-", " ")}
+              </span>
               <span
                 className={
                   s.ok
-                    ? "h-2 w-2 rounded-full bg-emerald-400"
+                    ? "h-2 w-2 animate-pulse rounded-full bg-emerald-400"
                     : "h-2 w-2 rounded-full bg-red-400"
                 }
                 aria-label={s.ok ? "ready" : "down"}
               />
             </div>
-            <p className="mt-2 font-mono text-xs text-[var(--fg-muted)]">
-              {s.ok ? "signal live" : "signal lost"}
+            <p className="mt-2 text-xs text-[var(--fg-muted)]">
+              {s.ok ? "Heartbeat live" : "Signal lost"}
             </p>
           </div>
         ))}
@@ -193,7 +206,7 @@ export function OverviewPage() {
 
       {evidence.data && (
         <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--fg-muted)]">
-          <span>Continuity</span>
+          <span>Continuity vault</span>
           <a
             className="font-mono text-[var(--accent)] hover:underline"
             href={`${explorer}/address/${evidence.data.continuity}`}
@@ -204,7 +217,7 @@ export function OverviewPage() {
             <ExternalLink className="ml-1 inline h-3 w-3" />
           </a>
           <span className="text-white/20">|</span>
-          <span>Synced {formatUtc(snap.data!.checkedAt)}</span>
+          <span>Updated {formatUtc(snap.data!.checkedAt)}</span>
         </div>
       )}
     </div>

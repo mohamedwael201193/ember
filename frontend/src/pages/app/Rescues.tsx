@@ -6,19 +6,24 @@ import { api } from "@/lib/api";
 import { shortHash } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { SvgRescueFlow } from "@/components/svg/SvgScene";
+import { Expandable } from "@/components/Expandable";
 import { Link } from "react-router-dom";
+import { useDemoMode } from "@/hooks/useDemoMode";
+import { paymentLabel } from "@/lib/product";
 
 const PIPELINE = [
-  { key: "observe", label: "Observer", hint: "Detects unpaid slots past grace" },
-  { key: "sentinel", label: "Sentinel", hint: "Opens the rescue window" },
-  { key: "replay", label: "Replay", hint: "Org B pays missed payroll" },
-  { key: "proof", label: "Proof", hint: "Hash + IPFS pin" },
-  { key: "anchor", label: "Anchor", hint: "Sealed on Base mainnet" },
-  { key: "restored", label: "Restored", hint: "Mission continues" },
+  { key: "observe", label: "Watch", hint: "See unpaid payments after the grace window." },
+  { key: "sentinel", label: "Decide", hint: "Open the rescue window safely." },
+  { key: "replay", label: "Replay", hint: "Standby org pays only what was missed." },
+  { key: "proof", label: "Prove", hint: "Hash the rescue journal." },
+  { key: "ipfs", label: "Publish", hint: "Pin the proof so anyone can fetch it." },
+  { key: "anchor", label: "Seal", hint: "Anchor the proof onchain." },
+  { key: "restored", label: "Restored", hint: "Payroll continuity is back." },
 ] as const;
 
 export function RescuesPage() {
   const qc = useQueryClient();
+  const { isDemo } = useDemoMode();
   const evidence = useQuery({ queryKey: ["evidence"], queryFn: api.evidence });
   const reduce = useReducedMotion();
   const railRef = useRef<HTMLDivElement>(null);
@@ -35,27 +40,39 @@ export function RescuesPage() {
 
   useEffect(() => {
     if (!completed) return;
-    setActive(PIPELINE.length - 1);
-  }, [completed]);
+    let i = 0;
+    setActive(0);
+    if (reduce) {
+      setActive(PIPELINE.length - 1);
+      return;
+    }
+    const id = window.setInterval(() => {
+      i += 1;
+      setActive(Math.min(i, PIPELINE.length - 1));
+      if (i >= PIPELINE.length - 1) window.clearInterval(id);
+    }, 450);
+    return () => window.clearInterval(id);
+  }, [completed, reduce, journal?.rescueId]);
 
   useEffect(() => {
     if (reduce || !railRef.current) return;
-    const dots = railRef.current.querySelectorAll("[data-step]");
+    const dots = railRef.current.querySelectorAll("[data-glow]");
     const ctx = gsap.context(() => {
       gsap.fromTo(
         dots,
-        { scale: 0.85, opacity: 0.4 },
+        { boxShadow: "0 0 0 rgba(255,92,26,0)" },
         {
-          scale: 1,
-          opacity: 1,
-          stagger: 0.12,
-          duration: 0.5,
+          boxShadow: "0 0 22px rgba(255,92,26,0.55)",
+          stagger: 0.1,
+          duration: 0.55,
           ease: "power2.out",
+          yoyo: true,
+          repeat: 1,
         }
       );
     }, railRef);
     return () => ctx.revert();
-  }, [reduce, journal?.rescueId]);
+  }, [reduce, active, journal?.rescueId]);
 
   return (
     <div className="mx-auto max-w-5xl space-y-10">
@@ -65,44 +82,47 @@ export function RescuesPage() {
             Rescue
           </h1>
           <p className="mt-2 max-w-lg text-[var(--fg-muted)]">
-            When the agent dies, this pipeline restores the stream. Watch every step.
+            The moment EMBER earns its name — agent fails, standby restores payroll,
+            proof is sealed forever.
           </p>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => rescue.mutate()}
-          disabled={rescue.isPending}
-        >
-          {rescue.isPending ? "Running..." : "Dry-run rescue"}
-        </Button>
+        {!isDemo && (
+          <Button
+            variant="outline"
+            onClick={() => rescue.mutate()}
+            disabled={rescue.isPending}
+          >
+            {rescue.isPending ? "Running…" : "Practice rescue"}
+          </Button>
+        )}
       </div>
 
       <SvgRescueFlow />
 
-      {/* Interactive pipeline */}
       <div ref={railRef} className="relative">
         <div className="absolute left-0 right-0 top-5 hidden h-px bg-white/10 md:block" />
-        <ol className="grid gap-3 sm:grid-cols-3 md:grid-cols-6">
+        <ol className="grid gap-3 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
           {PIPELINE.map((step, i) => {
-            const lit = completed ? i <= PIPELINE.length - 1 : i <= active;
+            const lit = completed ? i <= active : i <= active;
+            const glowing = i === active;
             return (
               <li key={step.key}>
                 <button
                   type="button"
-                  data-step
+                  data-glow={glowing ? "1" : undefined}
                   onClick={() => setActive(i)}
                   className={`w-full rounded-[4px] border p-4 text-left transition-colors ${
-                    i === active
-                      ? "border-[var(--accent)] bg-[var(--accent)]/10"
+                    glowing
+                      ? "border-[var(--accent)] bg-[var(--accent)]/15"
                       : lit
                         ? "border-white/20 bg-white/[0.03]"
-                        : "border-[var(--border)] opacity-50"
+                        : "border-[var(--border)] opacity-45"
                   }`}
                 >
                   <div
                     className={`mb-3 h-2.5 w-2.5 rounded-full ${
                       lit ? "bg-[var(--accent)]" : "bg-white/20"
-                    }`}
+                    } ${glowing ? "animate-pulse" : ""}`}
                   />
                   <div className="font-display text-sm font-bold">{step.label}</div>
                   <p className="mt-1 text-xs text-[var(--fg-muted)]">{step.hint}</p>
@@ -111,10 +131,14 @@ export function RescuesPage() {
             );
           })}
         </ol>
-        <p className="mt-4 text-sm text-[var(--fg-muted)]">
-          {PIPELINE[active].hint}
-        </p>
+        <p className="mt-5 text-sm text-[var(--fg-muted)]">{PIPELINE[active].hint}</p>
       </div>
+
+      {completed && (
+        <div className="rounded-[4px] border border-emerald-500/40 bg-emerald-500/10 px-5 py-4 text-sm text-emerald-300">
+          Mission restored — missed payments replayed, proof published, anchor sealed.
+        </div>
+      )}
 
       {rescue.isError && (
         <p className="text-sm text-[var(--color-down)]">
@@ -122,28 +146,19 @@ export function RescuesPage() {
         </p>
       )}
 
-      {rescue.data && !("rescueId" in (rescue.data as object) && (rescue.data as { rescueId?: string }).rescueId) && (
-        <div className="rounded-[4px] border border-[var(--border)] p-4 text-sm text-[var(--fg-muted)]">
-          Dry-run returned. Open Operations if you need raw runtime detail.
-        </div>
-      )}
-
       {journal && (
         <article className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-6 md:p-8">
           <div className="flex flex-wrap items-center gap-3">
             <h2 className="font-display text-xl font-bold">Certified rescue</h2>
-            <span className="rounded-[4px] border border-emerald-500/40 px-2 py-0.5 font-mono text-xs text-emerald-400">
-              {journal.status}
+            <span className="rounded-[4px] border border-emerald-500/40 px-2 py-0.5 text-xs text-emerald-400">
+              {journal.status === "COMPLETED" ? "Complete" : journal.status}
             </span>
           </div>
-          <p className="mt-2 break-all font-mono text-[11px] text-[var(--fg-muted)]">
-            {journal.rescueId}
-          </p>
 
           <div className="mt-8 space-y-4">
-            <h3 className="text-sm text-[var(--fg-muted)]">Replay river</h3>
+            <h3 className="text-sm text-[var(--fg-muted)]">Replayed payments</h3>
             <div className="flex gap-3 overflow-x-auto pb-2">
-              {(journal.replays ?? []).map((r) => (
+              {(journal.replays ?? []).map((r, i) => (
                 <a
                   key={r.slot}
                   href={`${explorer}/tx/${r.txHash}`}
@@ -151,7 +166,7 @@ export function RescuesPage() {
                   rel="noreferrer"
                   className="min-w-[140px] rounded-[4px] border border-emerald-500/30 bg-emerald-500/5 p-4 transition-transform hover:scale-[1.02]"
                 >
-                  <div className="font-mono text-xs text-emerald-400">slot {r.slot}</div>
+                  <div className="text-xs text-emerald-400">{paymentLabel(i)} restored</div>
                   <div className="mt-2 font-mono text-[11px] text-[var(--fg-muted)]">
                     {shortHash(r.txHash)}
                   </div>
@@ -162,18 +177,24 @@ export function RescuesPage() {
 
           <div className="mt-8 flex flex-wrap gap-4 text-sm">
             <Link to="/app/proofs" className="text-[var(--accent)] hover:underline">
-              View proof chain
+              See the proof chain
             </Link>
             {journal.anchorTxHash && (
               <a
-                className="font-mono text-[var(--fg-muted)] hover:text-[var(--fg)]"
+                className="text-[var(--fg-muted)] hover:text-[var(--fg)]"
                 href={`${explorer}/tx/${journal.anchorTxHash}`}
                 target="_blank"
                 rel="noreferrer"
               >
-                Anchor {shortHash(journal.anchorTxHash)}
+                Open seal on explorer
               </a>
             )}
+          </div>
+
+          <div className="mt-6">
+            <Expandable summary="Technical rescue id">
+              {journal.rescueId}
+            </Expandable>
           </div>
         </article>
       )}

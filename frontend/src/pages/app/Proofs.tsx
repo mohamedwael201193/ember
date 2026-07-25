@@ -3,14 +3,35 @@ import { motion } from "motion/react";
 import { api } from "@/lib/api";
 import { shortHash } from "@/lib/utils";
 import { SvgProofChain } from "@/components/svg/SvgScene";
+import { Expandable } from "@/components/Expandable";
 import { ExternalLink } from "lucide-react";
 
 const STAGES = [
-  { id: "hash", title: "Hash", desc: "Local SHA-256 of the rescue journal" },
-  { id: "cid", title: "CID", desc: "Content identifier for the proof blob" },
-  { id: "pin", title: "Pinata", desc: "Pinned so the CID stays reachable" },
-  { id: "anchor", title: "Anchor", desc: "Transaction sealed on Base" },
-  { id: "verify", title: "Verify", desc: "Hash, CID, and chain must agree" },
+  {
+    id: "hash",
+    title: "Hash",
+    desc: "Take the rescue journal and fingerprint it so it can’t be quietly edited.",
+  },
+  {
+    id: "cid",
+    title: "Content id",
+    desc: "Give that fingerprint a permanent name the internet can fetch.",
+  },
+  {
+    id: "pin",
+    title: "Publish",
+    desc: "Pin the file so the content id stays online for anyone to verify.",
+  },
+  {
+    id: "anchor",
+    title: "Seal onchain",
+    desc: "Write the proof into the continuity contract on Base.",
+  },
+  {
+    id: "verify",
+    title: "Agree",
+    desc: "Hash, content id, and chain record must all match — or the proof fails.",
+  },
 ] as const;
 
 export function ProofsPage() {
@@ -24,21 +45,21 @@ export function ProofsPage() {
   const hash = r?.proofHash ?? r?.proofSha256;
 
   const values: Record<string, { label: string; href?: string }> = {
-    hash: { label: hash ? shortHash(hash, 12) : "pending" },
+    hash: { label: hash ? "Fingerprint ready" : "Waiting" },
     cid: {
-      label: cid ? shortHash(cid, 12) : "pending",
+      label: cid ? "Published" : "Waiting",
       href: cid ? `${gateway}${cid}` : undefined,
     },
     pin: {
-      label: cid ? "Pinned" : "pending",
+      label: cid ? "Pinned & reachable" : "Waiting",
       href: cid ? `${gateway}${cid}` : undefined,
     },
     anchor: {
-      label: anchor ? shortHash(anchor, 10) : "pending",
+      label: anchor ? "Sealed on Base" : "Waiting",
       href: anchor ? `${explorer}/tx/${anchor}` : undefined,
     },
     verify: {
-      label: cid && anchor && hash ? "Matched" : "Incomplete",
+      label: cid && anchor && hash ? "All layers agree" : "Incomplete",
     },
   };
 
@@ -49,7 +70,7 @@ export function ProofsPage() {
           Proof chain
         </h1>
         <p className="mt-2 max-w-lg text-[var(--fg-muted)]">
-          See creation, pin, and anchor. No JSON required to understand the loop.
+          Learn how a rescue becomes undeniable: fingerprint → publish → seal → agree.
         </p>
       </div>
 
@@ -86,13 +107,13 @@ export function ProofsPage() {
                     href={v.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 break-all font-mono text-sm text-[var(--accent)] hover:underline"
+                    className="inline-flex items-center gap-2 text-sm text-[var(--accent)] hover:underline"
                   >
                     {v.label}
                     <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                   </a>
                 ) : (
-                  <div className="font-mono text-sm">{v.label}</div>
+                  <div className="text-sm font-medium">{v.label}</div>
                 )}
               </div>
             </motion.li>
@@ -100,15 +121,14 @@ export function ProofsPage() {
         })}
       </ol>
 
-      {evidence.isLoading && (
-        <div className="h-24 animate-pulse rounded bg-white/5" />
-      )}
-
-      {r?.rescueId && (
-        <p className="font-mono text-[11px] text-[var(--fg-muted)]">
-          Rescue {shortHash(r.rescueId, 14)}
-        </p>
-      )}
+      <Expandable summary="Technical hash / content id / anchor">
+        <div className="space-y-2">
+          <div>Hash {hash ? shortHash(hash, 16) : "—"}</div>
+          <div>CID {cid ?? "—"}</div>
+          <div>Anchor {anchor ?? "—"}</div>
+          <div>Rescue {r?.rescueId ?? "—"}</div>
+        </div>
+      </Expandable>
     </div>
   );
 }

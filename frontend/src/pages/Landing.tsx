@@ -149,7 +149,8 @@ export function Landing() {
               When the agent dies, the mission lives.
             </h1>
             <p className="hero-reveal mt-6 max-w-md text-base leading-relaxed text-[#52525b]">
-              EMBER detects the miss, replays the payment, and seals proof on Base.
+              Detect unpaid payroll from receipts, restore it from a standby org, and seal
+              proof on Base — so AI money keeps moving.
             </p>
             <div className="hero-reveal mt-8 flex flex-wrap gap-3">
               <Link

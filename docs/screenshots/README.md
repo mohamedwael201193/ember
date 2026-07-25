@@ -1,19 +1,23 @@
 # Screenshots
 
-Capture these from a local `pnpm dev` session (DEVELOPMENT_MODE) and drop PNGs here for the README.
-
-| File | Capture |
-|------|---------|
-| `landing.png` | `/` hero — brand-first first viewport |
-| `dashboard.png` | `/app` overview / living console |
-| `mission-wizard.png` | `/app/mission/new` mission builder |
-| `proof-flow.png` | Proofs view with CID + anchor |
-| `replay-flow.png` | Rescue replay slots / intents |
-| `recovery-flow.png` | Rescue journal completed state |
+Generated with:
 
 ```bash
 pnpm dev
-# open http://127.0.0.1:5173 and capture at 1440×900
+# other terminal
+pnpm screenshots
 ```
 
-Existing brand assets live in `frontend/public/` (`ember.svg`, `ember-orbit-signal.png`).
+| File | Route |
+|------|-------|
+| `landing.png` | `/` |
+| `console.png` | `/app` |
+| `mission.png` | `/app/mission` |
+| `mission-builder.png` | `/app/mission/new` |
+| `payday.png` | `/app/executions` |
+| `rescue.png` | `/app/rescues` |
+| `proofs.png` | `/app/proofs` |
+| `operations.png` | `/app/operations` |
+| `wallets.png` | `/app/wallets` |
+
+Captures run with Demo Mode enabled (verified snapshot).

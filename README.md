@@ -132,18 +132,39 @@ flowchart TB
 
 ## Product surfaces
 
-Capture PNGs into `docs/screenshots/` (see that folder’s README). Until then, run locally:
+| Surface | Route | What a judge should understand |
+|---------|-------|--------------------------------|
+| **Landing** | `/` | Why EMBER exists in one viewport |
+| **Console** | `/app` | Living topology + payment river |
+| **Mission overview** | `/app/mission` | What’s running, who gets paid, who protects |
+| **Mission builder** | `/app/mission/new` | Stripe-calm setup with a “why” on every step |
+| **PAYDAY** | `/app/executions` | Money visualization: payer → KeeperHub → employee |
+| **Rescue** | `/app/rescues` | Hero pipeline that restores the mission |
+| **Proofs** | `/app/proofs` | Hash → publish → seal → agree |
+| **Ops** | `/app/operations` | Mission control health |
+| **Wallets** | `/app/wallets` | Pays / Rescues / Receives / Protects |
 
-| Surface | Route | What you should see |
-|---------|-------|---------------------|
-| **Landing** | `/` | Brand-first cinematic story |
-| **Dashboard** | `/app` | Living console / mission overview |
-| **Mission Wizard** | `/app/mission/new` | Guided mission builder |
-| **Proofs** | `/app/proofs` | CID, anchor tx, explorer links |
-| **Rescue / Replay** | `/app/rescues` | Unpaid slots, replay intents, journal |
-| **Ops** | `/app/ops` | Runtime readiness |
+### Demo Mode
+
+Header toggle **Demo** / **Live**, or Settings → Presentation mode.
+
+- **Demo** — verified snapshot, instant, deterministic (recording-safe)  
+- **Live** — connected runtime  
+
+Script: [`DEMO_SCRIPT.md`](./DEMO_SCRIPT.md) (≤ 3 minutes).
 
 Brand assets: `frontend/public/ember.svg`, `frontend/public/ember-orbit-signal.png`.
+
+<p>
+  <img src="docs/screenshots/landing.png" alt="EMBER landing" width="48%" />
+  <img src="docs/screenshots/console.png" alt="Living console" width="48%" />
+</p>
+<p>
+  <img src="docs/screenshots/mission-builder.png" alt="Mission builder" width="48%" />
+  <img src="docs/screenshots/rescue.png" alt="Rescue hero" width="48%" />
+</p>
+
+Regenerate: `pnpm screenshots` (with `pnpm dev` running). Details: `docs/screenshots/README.md`.
 
 ---
 

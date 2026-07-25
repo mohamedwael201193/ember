@@ -3,39 +3,45 @@ import { api } from "@/lib/api";
 
 const ROLES = [
   {
-    name: "Org A",
-    role: "Primary PAYDAY stream",
-    detail: "Funds employee slots on schedule via KeeperHub W1.",
+    name: "Payer",
+    role: "Pays",
+    detail:
+      "The primary organization wallet. While healthy, it funds every scheduled payment.",
+    bal: "orgA",
   },
   {
-    name: "Org B",
-    role: "Rescue / replay",
-    detail: "Replays missed slots when Sentinel declares MISSION_DOWN.",
+    name: "Backup",
+    role: "Rescues",
+    detail:
+      "The standby organization. When the primary agent dies, it pays only what was missed.",
+    bal: "orgB",
   },
   {
     name: "Employee",
-    role: "Recipient",
-    detail: "Receives USDC from either primary or rescue path.",
+    role: "Receives",
+    detail:
+      "The person who must keep getting paid — from the primary path or the rescue path.",
+    bal: "employee",
   },
   {
-    name: "Continuity escrow",
-    role: "Mission vault",
-    detail: "Holds mission escrow and records anchored proofs.",
+    name: "Escrow",
+    role: "Protects",
+    detail:
+      "Holds mission funds and records the final rescue seal. No blockchain jargon required.",
+    bal: "continuity",
   },
 ];
 
 export function WalletsPage() {
   const evidence = useQuery({ queryKey: ["evidence"], queryFn: api.evidence });
-  const balances = evidence.data?.balances as
-    | Record<string, string>
-    | undefined;
+  const balances = evidence.data?.balances as Record<string, string> | undefined;
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <div>
         <h1 className="font-display text-3xl font-bold tracking-tight">Wallets</h1>
         <p className="mt-2 text-[var(--fg-muted)]">
-          Agentic roles in the continuity loop. Balances from certified mainnet evidence when present.
+          Four roles. One mission. Who pays, who rescues, who receives, what protects.
         </p>
       </div>
 
@@ -46,15 +52,16 @@ export function WalletsPage() {
             className="rounded-[4px] border border-[var(--border)] p-6"
           >
             <h2 className="font-display text-xl font-bold">{w.name}</h2>
-            <p className="mt-1 text-sm text-[var(--accent)]">{w.role}</p>
-            <p className="mt-3 text-sm text-[var(--fg-muted)]">{w.detail}</p>
+            <p className="mt-1 text-sm font-medium text-[var(--accent)]">{w.role}</p>
+            <p className="mt-3 text-sm leading-relaxed text-[var(--fg-muted)]">
+              {w.detail}
+            </p>
             {balances && (
-              <p className="mt-4 font-mono text-sm">
-                {w.name === "Org A" && `USDC ${balances.orgA ?? "-"}`}
-                {w.name === "Org B" && `USDC ${balances.orgB ?? "-"}`}
-                {w.name === "Employee" && `USDC ${balances.employee ?? "-"}`}
-                {w.name === "Continuity escrow" &&
-                  `USDC ${balances.continuity ?? "-"}`}
+              <p className="mt-4 text-sm">
+                Balance{" "}
+                <span className="font-medium text-[var(--fg)]">
+                  {balances[w.bal] ?? "—"} USDC
+                </span>
               </p>
             )}
           </article>

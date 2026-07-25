@@ -5,14 +5,15 @@ import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SvgWalletNet, SvgRescueFlow } from "@/components/svg/SvgScene";
 import { cn } from "@/lib/utils";
+import { cadenceLabel, formatUsdc } from "@/lib/product";
 
 const STEPS = [
-  "Wallet",
-  "Employee",
-  "Beneficiary",
-  "Payroll",
-  "Recovery",
-  "Review",
+  { key: "wallet", label: "Payer" },
+  { key: "employee", label: "Person" },
+  { key: "payto", label: "Pay to" },
+  { key: "rhythm", label: "Rhythm" },
+  { key: "backup", label: "Backup" },
+  { key: "review", label: "Review" },
 ] as const;
 
 type Draft = {
@@ -25,12 +26,12 @@ type Draft = {
 };
 
 const initial: Draft = {
-  walletLabel: "Org A primary",
+  walletLabel: "Primary payroll wallet",
   employeeName: "",
   beneficiary: "",
   amountUsdc: "0.01",
   cadenceMin: "5",
-  recoveryOrg: "Org B guardian",
+  recoveryOrg: "Standby rescue org",
 };
 
 export function MissionBuilderPage() {
@@ -60,19 +61,18 @@ export function MissionBuilderPage() {
       </Link>
 
       <h1 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
-        Mission builder
+        Create a mission
       </h1>
       <p className="mt-2 text-[var(--fg-muted)]">
-        Six visual steps. Deploy when the story looks right.
+        Six calm steps. Each one answers why EMBER keeps payroll alive.
       </p>
 
-      {/* progress */}
       <ol className="mt-10 flex flex-wrap gap-2">
-        {STEPS.map((label, i) => (
+        {STEPS.map((s, i) => (
           <li
-            key={label}
+            key={s.key}
             className={cn(
-              "rounded-[4px] border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider",
+              "rounded-[4px] border px-3 py-1.5 text-[10px] font-medium uppercase tracking-wider",
               i === step
                 ? "border-[var(--accent)] text-[var(--accent)]"
                 : i < step
@@ -81,7 +81,7 @@ export function MissionBuilderPage() {
             )}
           >
             {i < step ? <Check className="mr-1 inline h-3 w-3" /> : null}
-            {label}
+            {s.label}
           </li>
         ))}
       </ol>
@@ -97,12 +97,12 @@ export function MissionBuilderPage() {
           >
             {step === 0 && (
               <StepFrame
-                title="Connect the paying wallet"
-                body="This is Org A. It funds the scheduled stream."
+                title="Who pays?"
+                why="This is the primary wallet. It funds the scheduled payroll while everything is healthy."
               >
                 <SvgWalletNet className="max-h-56" />
                 <Field
-                  label="Wallet label"
+                  label="Payer nickname"
                   value={draft.walletLabel}
                   onChange={(v) => setDraft({ ...draft, walletLabel: v })}
                 />
@@ -110,11 +110,11 @@ export function MissionBuilderPage() {
             )}
             {step === 1 && (
               <StepFrame
-                title="Who receives the payroll?"
-                body="Name the employee. Address comes next."
+                title="Who is getting paid?"
+                why="Give the person a name you recognize. Addresses stay optional until you deploy."
               >
                 <Field
-                  label="Employee name"
+                  label="Person"
                   value={draft.employeeName}
                   onChange={(v) => setDraft({ ...draft, employeeName: v })}
                   placeholder="Alex Rivera"
@@ -123,11 +123,11 @@ export function MissionBuilderPage() {
             )}
             {step === 2 && (
               <StepFrame
-                title="Beneficiary destination"
-                body="Wallet that must stay paid even if the primary agent fails."
+                title="Where should money arrive?"
+                why="The wallet that still receives payroll even if the primary workflow fails."
               >
                 <Field
-                  label="Beneficiary address or ENS"
+                  label="Destination address"
                   value={draft.beneficiary}
                   onChange={(v) => setDraft({ ...draft, beneficiary: v })}
                   placeholder="0x… or name.eth"
@@ -136,31 +136,34 @@ export function MissionBuilderPage() {
             )}
             {step === 3 && (
               <StepFrame
-                title="Payroll rhythm"
-                body="How much, how often. Keep it simple."
+                title="How often should they be paid?"
+                why="Keep the rhythm simple. EMBER verifies each payment with an onchain receipt."
               >
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field
-                    label="Amount (USDC)"
+                    label="Amount each time"
                     value={draft.amountUsdc}
                     onChange={(v) => setDraft({ ...draft, amountUsdc: v })}
                   />
                   <Field
-                    label="Cadence (minutes)"
+                    label="Minutes between payments"
                     value={draft.cadenceMin}
                     onChange={(v) => setDraft({ ...draft, cadenceMin: v })}
                   />
                 </div>
+                <p className="text-sm text-[var(--fg-muted)]">
+                  Preview: {formatUsdc(draft.amountUsdc)} · {cadenceLabel(draft.cadenceMin)}
+                </p>
               </StepFrame>
             )}
             {step === 4 && (
               <StepFrame
-                title="Who recovers the stream?"
-                body="Org B replays missed slots when Sentinel fires."
+                title="Who restores payroll if the primary agent dies?"
+                why="The standby organization that automatically restores unpaid payments — then seals proof."
               >
                 <SvgRescueFlow className="max-h-48" />
                 <Field
-                  label="Recovery org"
+                  label="Backup organization"
                   value={draft.recoveryOrg}
                   onChange={(v) => setDraft({ ...draft, recoveryOrg: v })}
                 />
@@ -168,18 +171,18 @@ export function MissionBuilderPage() {
             )}
             {step === 5 && (
               <StepFrame
-                title="Review before deploy"
-                body="This draft stays local until you connect a signed deploy path."
+                title="Looks right?"
+                why="This draft stays on your device until you connect a signed deploy path. Review the story first."
               >
                 <dl className="space-y-3 text-sm">
                   {(
                     [
-                      ["Wallet", draft.walletLabel],
-                      ["Employee", draft.employeeName || "-"],
-                      ["Beneficiary", draft.beneficiary || "-"],
-                      ["Amount", `${draft.amountUsdc} USDC`],
-                      ["Cadence", `${draft.cadenceMin} min`],
-                      ["Recovery", draft.recoveryOrg],
+                      ["Payer", draft.walletLabel],
+                      ["Person", draft.employeeName || "—"],
+                      ["Destination", draft.beneficiary || "—"],
+                      ["Amount", formatUsdc(draft.amountUsdc)],
+                      ["Rhythm", cadenceLabel(draft.cadenceMin)],
+                      ["Backup", draft.recoveryOrg],
                     ] as const
                   ).map(([k, v]) => (
                     <div
@@ -187,7 +190,7 @@ export function MissionBuilderPage() {
                       className="flex justify-between gap-4 border-b border-[var(--border)] pb-2"
                     >
                       <dt className="text-[var(--fg-muted)]">{k}</dt>
-                      <dd className="font-mono text-right">{v}</dd>
+                      <dd className="max-w-[60%] break-all text-right">{v}</dd>
                     </div>
                   ))}
                 </dl>
@@ -218,7 +221,7 @@ export function MissionBuilderPage() {
               nav("/app/mission");
             }}
           >
-            Save draft and open mission
+            Save draft · open overview
           </Button>
         )}
       </div>
@@ -228,17 +231,17 @@ export function MissionBuilderPage() {
 
 function StepFrame({
   title,
-  body,
+  why,
   children,
 }: {
   title: string;
-  body: string;
+  why: string;
   children: React.ReactNode;
 }) {
   return (
     <div>
       <h2 className="font-display text-2xl font-bold tracking-tight">{title}</h2>
-      <p className="mt-2 text-sm text-[var(--fg-muted)]">{body}</p>
+      <p className="mt-2 text-sm leading-relaxed text-[var(--fg-muted)]">{why}</p>
       <div className="mt-8 space-y-6">{children}</div>
     </div>
   );

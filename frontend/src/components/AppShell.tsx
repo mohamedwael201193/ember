@@ -5,6 +5,9 @@ import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { Onboarding } from "@/components/Onboarding";
+import { DemoBanner } from "@/components/DemoBanner";
+import { useDemoMode } from "@/hooks/useDemoMode";
+import { humanNetwork, humanState } from "@/lib/product";
 
 const NAV = [
   { to: "/app", end: true, label: "Console" },
@@ -19,26 +22,28 @@ const NAV = [
 
 export function AppShell() {
   const [open, setOpen] = useState(false);
+  const { isDemo, setDemo } = useDemoMode();
   const snap = useQuery({
     queryKey: ["snapshot"],
     queryFn: api.snapshot,
-    refetchInterval: 15_000,
+    refetchInterval: isDemo ? 60_000 : 15_000,
   });
 
-  const state = snap.data?.check?.state ?? "...";
-  const network = snap.data?.config.network ?? "...";
+  const rawState = snap.data?.check?.state;
+  const state = humanState(rawState);
+  const network = humanNetwork(snap.data?.config.network);
   const stateTone =
-    state === "OK" || state === "RECOVERED"
+    rawState === "OK" || rawState === "RECOVERED"
       ? "text-emerald-400"
-      : state === "MISSION_DOWN" || state === "DEGRADED"
+      : rawState === "MISSION_DOWN" || rawState === "DEGRADED"
         ? "text-red-400"
         : "text-[var(--fg-muted)]";
 
   return (
     <div className="min-h-[100dvh] bg-[var(--bg)] text-[var(--fg)]">
       <div className="grain" aria-hidden />
+      <DemoBanner />
 
-      {/* Top product chrome - not an admin sidebar */}
       <header className="sticky top-0 z-[var(--z-raised,10)] border-b border-[var(--border)] bg-[var(--bg)]/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 md:px-6">
           <button
@@ -73,13 +78,24 @@ export function AppShell() {
           </nav>
 
           <div className="ml-auto flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setDemo(!isDemo)}
+              className={cn(
+                "hidden rounded-[4px] border px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider sm:inline-flex",
+                isDemo
+                  ? "border-[var(--accent)]/50 text-[var(--accent)]"
+                  : "border-white/15 text-[var(--fg-muted)] hover:text-[var(--fg)]"
+              )}
+              title={isDemo ? "Using verified snapshot" : "Using live runtime"}
+            >
+              {isDemo ? "Demo" : "Live"}
+            </button>
             <div className="hidden text-right sm:block">
               <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--fg-muted)]">
                 {network}
               </div>
-              <div className={cn("font-mono text-xs font-medium", stateTone)}>
-                {String(state)}
-              </div>
+              <div className={cn("text-xs font-medium", stateTone)}>{state}</div>
             </div>
             <Link
               to="/app/mission/new"
@@ -92,7 +108,6 @@ export function AppShell() {
         </div>
       </header>
 
-      {/* Mobile drawer */}
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-40 w-72 border-r border-[var(--border)] bg-[var(--surface)] p-5 transition-transform lg:hidden",
@@ -139,13 +154,13 @@ export function AppShell() {
           className="inline-flex items-center gap-1 text-xs text-[var(--fg-muted)] hover:text-[var(--fg)]"
         >
           <ArrowLeft className="h-3 w-3" />
-          Story
+          Why EMBER
         </Link>
         <span className="ml-3 font-mono text-[10px] text-[var(--fg-muted)]">
           {snap.data?.checkedAt
-            ? `Synced ${new Date(snap.data.checkedAt).toLocaleTimeString()}`
+            ? `Updated ${new Date(snap.data.checkedAt).toLocaleTimeString()}`
             : snap.isLoading
-              ? "Connecting..."
+              ? "Connecting…"
               : "Offline"}
         </span>
       </div>
