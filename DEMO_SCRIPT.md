@@ -1,6 +1,6 @@
 # EMBER Demo Script (≤ 3 minutes)
 
-Use **Demo Mode** (header toggle or Settings). Speak calmly. Click slowly.
+Use **Demo Mode** (header toggle or Settings) for the UI story. For DoraHacks judging, also open a **real Base mainnet** Basescan tx (see `docs/DEMO_VIDEO_DORAHACKS.md`). Speak calmly. Click slowly. Never say Sepolia in the prize cut — product is **Base mainnet**.
 
 ---
 
@@ -104,8 +104,12 @@ Use **Demo Mode** (header toggle or Settings). Speak calmly. Click slowly.
 
 ## Recording checklist
 
-- [ ] Demo Mode badge visible  
+- [ ] Hero / badge says **Base Mainnet** (not Sepolia)  
+- [ ] Demo Mode badge visible for UI beats  
+- [ ] At least one live Basescan mainnet tx shown (KeeperHub execution)  
 - [ ] No failed red network toasts  
 - [ ] No raw `MISSION_DOWN` in the spoken script (UI shows “Needs rescue”)  
 - [ ] Browser zoom 100%, 1440×900  
 - [ ] Quiet desktop / hide bookmarks bar  
+
+**DoraHacks cut + tx links:** `docs/DEMO_VIDEO_DORAHACKS.md`

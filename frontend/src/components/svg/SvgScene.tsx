@@ -480,11 +480,12 @@ export function SvgHeroLoop({ className }: { className?: string }) {
   const cy = 280;
   const R = 142;
 
+  // One-second read: PAY → MISS → RESTORE → PROOF, executed through KeeperHub on Base.
   const stations = [
-    { deg: -90, n: "01", t: "PAY", s: "payroll runs", px: 280, py: 64, tone: C.ember },
-    { deg: 0, n: "02", t: "MISS", s: "receipt shows gap", px: 504, py: 280, tone: C.red },
-    { deg: 90, n: "03", t: "RESTORE", s: "standby org pays", px: 280, py: 496, tone: C.ember },
-    { deg: 180, n: "04", t: "PROOF", s: "sealed on base", px: 56, py: 280, tone: C.green },
+    { deg: -90, n: "01", t: "PAY", s: "via KeeperHub", px: 280, py: 56, tone: C.ember },
+    { deg: 0, n: "02", t: "MISS", s: "agent offline", px: 504, py: 280, tone: C.red },
+    { deg: 90, n: "03", t: "RESTORE", s: "standby pays", px: 280, py: 504, tone: C.ember },
+    { deg: 180, n: "04", t: "PROOF", s: "Base mainnet", px: 56, py: 280, tone: C.green },
   ];
 
   const stars = [
@@ -494,21 +495,40 @@ export function SvgHeroLoop({ className }: { className?: string }) {
     [498, 438],
     [36, 196],
     [524, 356],
+    [140, 70],
+    [420, 500],
   ];
 
   return (
     <SvgScene
-      title="EMBER continuity loop: payroll runs, a miss is detected, a standby org restores it, and proof is sealed on Base"
+      title="EMBER continuity loop: payroll runs through KeeperHub, a miss is detected, a standby org restores it, and proof is sealed on Base mainnet"
       viewBox="0 0 560 560"
       className={className}
     >
       {(uid) => (
         <g>
           {/* ambience */}
-          <circle cx={cx} cy={cy} r={232} fill={`url(#${uid}-glow)`} opacity={0.6} />
+          <circle cx={cx} cy={cy} r={232} fill={`url(#${uid}-glow)`} opacity={0.65} />
           {stars.map(([x, y]) => (
             <circle key={`${x}-${y}`} cx={x} cy={y} r={1.6} fill="#fafafa" opacity={0.5} data-pulse />
           ))}
+
+          {/* network badge — judges read this first */}
+          <g data-fade>
+            <rect
+              x={cx - 72}
+              y={18}
+              width={144}
+              height={26}
+              rx={13}
+              fill="rgba(18,18,21,0.92)"
+              stroke="rgba(34,197,94,0.45)"
+            />
+            <circle cx={cx - 48} cy={31} r={3.5} fill={C.green} data-pulse />
+            <Label x={cx - 36} y={35} anchor="start" size={10} font={F.mono} fill={C.text} track="0.18em">
+              BASE MAINNET
+            </Label>
+          </g>
 
           {/* dials */}
           <circle
@@ -527,7 +547,7 @@ export function SvgHeroLoop({ className }: { className?: string }) {
             cy={cy}
             r={176}
             fill="none"
-            stroke="rgba(255,92,26,0.10)"
+            stroke="rgba(255,92,26,0.12)"
             strokeWidth={1}
             strokeDasharray="3 9"
           />
@@ -547,10 +567,13 @@ export function SvgHeroLoop({ className }: { className?: string }) {
               d={arc(cx, cy, R, -140, -20)}
               fill="none"
               stroke={`url(#${uid}-comet)`}
-              strokeWidth={3}
+              strokeWidth={3.2}
               strokeLinecap="round"
               filter={`url(#${uid}-bloom)`}
             />
+          </g>
+          <g data-orbit="18" data-orbit-dir="-1" data-orbit-x={cx} data-orbit-y={cy}>
+            <circle cx={cx} cy={cy - R} r={3} fill="#ffd0b0" filter={`url(#${uid}-bloom)`} />
           </g>
 
           {/* the break, and the healed leg */}
@@ -566,7 +589,7 @@ export function SvgHeroLoop({ className }: { className?: string }) {
           <path
             d={arc(cx, cy, R, 100, 170)}
             fill="none"
-            stroke="rgba(34,197,94,0.5)"
+            stroke="rgba(34,197,94,0.55)"
             strokeWidth={2.5}
             strokeLinecap="round"
             data-draw
@@ -611,31 +634,31 @@ export function SvgHeroLoop({ className }: { className?: string }) {
             const p = pol(cx, cy, R, s.deg);
             return (
               <g key={s.n}>
-                <circle cx={p.x} cy={p.y} r={26} fill={C.panelDeep} />
+                <circle cx={p.x} cy={p.y} r={28} fill={C.panelDeep} />
                 <circle
                   cx={p.x}
                   cy={p.y}
-                  r={18}
+                  r={19}
                   fill="none"
                   stroke={s.tone}
-                  strokeWidth={1.6}
+                  strokeWidth={1.7}
                   data-draw
                 />
-                <circle cx={p.x} cy={p.y} r={18} fill="none" stroke={s.tone} strokeWidth={1} data-blip />
-                <circle cx={p.x} cy={p.y} r={5} fill={s.tone} data-pulse />
+                <circle cx={p.x} cy={p.y} r={19} fill="none" stroke={s.tone} strokeWidth={1} data-blip />
+                <circle cx={p.x} cy={p.y} r={5.5} fill={s.tone} data-pulse />
                 <g data-fade>
                   <rect
-                    x={s.px - 52}
+                    x={s.px - 54}
                     y={s.py - 17}
-                    width={104}
+                    width={108}
                     height={34}
                     rx={17}
-                    fill="rgba(18,18,21,0.92)"
+                    fill="rgba(18,18,21,0.94)"
                     stroke={C.line}
                   />
-                  <circle cx={s.px - 34} cy={s.py} r={3.5} fill={s.tone} />
+                  <circle cx={s.px - 36} cy={s.py} r={3.5} fill={s.tone} />
                   <Label
-                    x={s.px - 22}
+                    x={s.px - 24}
                     y={s.py + 4}
                     anchor="start"
                     size={11.5}
@@ -655,14 +678,17 @@ export function SvgHeroLoop({ className }: { className?: string }) {
 
           {/* core */}
           <circle cx={cx} cy={cy} r={94} fill={`url(#${uid}-glow)`} opacity={0.9} />
-          <circle cx={cx} cy={cy} r={58} fill={C.panelDeep} stroke="rgba(255,92,26,0.35)" strokeWidth={1.4} />
-          <circle cx={cx} cy={cy} r={46} fill="none" stroke={C.lineSoft} strokeWidth={1} />
-          <circle cx={cx} cy={cy - 30} r={3} fill={C.ember} data-pulse />
-          <Label x={cx} y={cy + 2} size={21} font={F.display} fill={C.text} weight={800} track="0.16em">
+          <circle cx={cx} cy={cy} r={60} fill={C.panelDeep} stroke="rgba(255,92,26,0.4)" strokeWidth={1.5} />
+          <circle cx={cx} cy={cy} r={48} fill="none" stroke={C.lineSoft} strokeWidth={1} />
+          <circle cx={cx} cy={cy - 32} r={3} fill={C.ember} data-pulse />
+          <Label x={cx} y={cy + 2} size={22} font={F.display} fill={C.text} weight={800} track="0.16em">
             EMBER
           </Label>
-          <Label x={cx} y={cy + 22} size={8} font={F.mono} fill={C.dim} track="0.28em">
+          <Label x={cx} y={cy + 20} size={8} font={F.mono} fill={C.dim} track="0.22em">
             CONTINUITY
+          </Label>
+          <Label x={cx} y={cy + 34} size={7.5} font={F.mono} fill="rgba(255,92,26,0.85)" track="0.2em">
+            KEEPERHUB EXEC
           </Label>
         </g>
       )}
@@ -1410,8 +1436,8 @@ export function SvgOrbitSignal({ className }: { className?: string }) {
           <circle cx={cx} cy={cy} r={40} fill={C.panelDeep} stroke="rgba(255,92,26,0.3)" strokeWidth={1.2} />
           <circle cx={cx} cy={cy} r={9} fill={C.ember} data-pulse filter={`url(#${uid}-bloom)`} />
           <g data-fade>
-            <Label x={cx} y={cy + 28} size={11} font={F.mono} fill={C.muted} track="0.24em">
-              LIVE
+            <Label x={cx} y={cy + 28} size={10} font={F.mono} fill={C.muted} track="0.2em">
+              MAINNET
             </Label>
           </g>
         </g>

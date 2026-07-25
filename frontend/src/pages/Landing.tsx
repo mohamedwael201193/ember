@@ -149,8 +149,8 @@ export function Landing() {
               When the agent dies, the mission lives.
             </h1>
             <p className="hero-reveal mt-6 max-w-md text-base leading-relaxed text-[#52525b]">
-              Detect unpaid payroll from receipts, restore it from a standby org, and seal
-              proof on Base — so AI money keeps moving.
+              Detect unpaid payroll from receipts, restore it from a standby org through
+              KeeperHub, and seal proof on Base mainnet — so AI money keeps moving.
             </p>
             <div className="hero-reveal mt-8 flex flex-wrap gap-3">
               <Link
@@ -190,7 +190,7 @@ export function Landing() {
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#ff5c1a]" />
               </span>
               <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#71717a]">
-                Live on Base Sepolia
+                Live on Base Mainnet
               </span>
             </div>
             <SvgHeroLoop className="relative z-10 w-full max-w-[min(88vw,600px)]" />
