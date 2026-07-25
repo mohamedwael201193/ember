@@ -151,7 +151,8 @@ Header toggle **Demo** / **Live**, or Settings → Presentation mode.
 - **Demo** — verified snapshot, instant, deterministic (recording-safe)  
 - **Live** — connected runtime  
 
-Script: [`DEMO_SCRIPT.md`](./DEMO_SCRIPT.md) (≤ 3 minutes).
+Script: [`DEMO_SCRIPT.md`](./DEMO_SCRIPT.md) (≤ 3 minutes).  
+DoraHacks video cut + mainnet tx links: [`docs/DEMO_VIDEO_DORAHACKS.md`](./docs/DEMO_VIDEO_DORAHACKS.md).
 
 Brand assets: `frontend/public/ember.svg`, `frontend/public/ember-orbit-signal.png`.
 
