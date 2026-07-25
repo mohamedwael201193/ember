@@ -100,7 +100,7 @@ export function MissionBuilderPage() {
                 title="Who pays?"
                 why="This is the primary wallet. It funds the scheduled payroll while everything is healthy."
               >
-                <SvgWalletNet className="max-h-56" />
+                <SvgWalletNet />
                 <Field
                   label="Payer nickname"
                   value={draft.walletLabel}
@@ -161,7 +161,7 @@ export function MissionBuilderPage() {
                 title="Who restores payroll if the primary agent dies?"
                 why="The standby organization that automatically restores unpaid payments — then seals proof."
               >
-                <SvgRescueFlow className="max-h-48" />
+                <SvgRescueFlow />
                 <Field
                   label="Backup organization"
                   value={draft.recoveryOrg}

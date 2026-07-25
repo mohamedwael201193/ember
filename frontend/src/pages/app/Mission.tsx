@@ -108,18 +108,18 @@ export function MissionPage() {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4">
-          <p className="mb-2 text-xs uppercase tracking-wider text-[var(--fg-muted)]">
-            Who protects it
-          </p>
-          <SvgArchitecture />
-        </div>
-        <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4">
-          <p className="mb-2 text-xs uppercase tracking-wider text-[var(--fg-muted)]">
+      <div className="space-y-6">
+        <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4 md:p-6">
+          <p className="mb-4 text-xs uppercase tracking-wider text-[var(--fg-muted)]">
             Money flow
           </p>
           <SvgPayrollStream />
+        </div>
+        <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4 md:p-6">
+          <p className="mb-4 text-xs uppercase tracking-wider text-[var(--fg-muted)]">
+            Who protects it
+          </p>
+          <SvgArchitecture />
         </div>
       </div>
 
@@ -158,7 +158,7 @@ export function MissionPage() {
 
       <div className="grid gap-6 md:grid-cols-[0.8fr_1.2fr]">
         <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4">
-          <SvgEscrow className="max-h-48" />
+          <SvgEscrow className="mx-auto max-w-[300px]" />
           <p className="mt-3 text-sm text-[var(--fg-muted)]">
             Escrow protects mission funds and records the final rescue seal.
           </p>

@@ -88,7 +88,7 @@ export function Onboarding() {
     >
       <motion.div
         layout
-        className="w-full max-w-lg overflow-hidden rounded-[4px] border border-[var(--border)] bg-[var(--surface)] shadow-2xl"
+        className="w-full max-w-xl overflow-hidden rounded-[4px] border border-[var(--border)] bg-[var(--surface)] shadow-2xl"
       >
         <div className="border-b border-[var(--border)] bg-black/40 p-4">
           <AnimatePresence mode="wait">
@@ -99,7 +99,7 @@ export function Onboarding() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
             >
-              <Visual className="max-h-40" />
+              <Visual className="mx-auto max-h-[34vh] w-full" />
             </motion.div>
           </AnimatePresence>
         </div>

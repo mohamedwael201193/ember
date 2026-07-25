@@ -9,7 +9,7 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import {
   SvgArchitecture,
   SvgFail,
-  SvgOrbitSignal,
+  SvgHeroLoop,
   SvgProofChain,
   SvgRescueFlow,
 } from "@/components/svg/SvgScene";
@@ -141,11 +141,11 @@ export function Landing() {
 
         {/* ATTENTION — editorial split */}
         <section className="grid min-h-[100dvh] grid-cols-1 lg:grid-cols-2">
-          <div className="flex flex-col justify-end bg-[#f4f4f5] px-6 pb-16 pt-24 text-[#18181b] md:px-12 lg:pb-24">
+          <div className="flex flex-col justify-center bg-[#f4f4f5] px-6 pb-16 pt-24 text-[#18181b] md:px-12">
             <p className="hero-reveal mb-4 text-xs font-medium uppercase tracking-[0.22em] text-[#52525b]">
               Continuity for AI payroll
             </p>
-            <h1 className="hero-reveal font-display max-w-xl text-[clamp(2.6rem,5.2vw,4.5rem)] font-extrabold leading-[0.96] tracking-[-0.04em] text-balance">
+            <h1 className="hero-reveal font-display max-w-2xl text-[clamp(2.3rem,4.2vw,3.7rem)] font-extrabold leading-[0.98] tracking-[-0.04em] text-balance">
               When the agent dies, the mission lives.
             </h1>
             <p className="hero-reveal mt-6 max-w-md text-base leading-relaxed text-[#52525b]">
@@ -167,10 +167,33 @@ export function Landing() {
                 Watch the story
               </a>
             </div>
+            <dl className="hero-reveal mt-10 grid max-w-lg grid-cols-3 gap-px overflow-hidden rounded-[4px] border border-[#18181b]/10 bg-[#18181b]/10">
+              {[
+                { k: "Detect", v: "from receipts" },
+                { k: "Restore", v: "from standby" },
+                { k: "Prove", v: "on Base" },
+              ].map((b) => (
+                <div key={b.k} className="bg-[#f4f4f5] px-4 py-3">
+                  <dt className="font-display text-sm font-bold tracking-tight">{b.k}</dt>
+                  <dd className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[#71717a]">
+                    {b.v}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </div>
-          <div className="relative flex min-h-[48dvh] items-center justify-center bg-[#09090b] px-8 lg:min-h-[100dvh]">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_60%_40%,rgba(255,92,26,0.18),transparent_55%)]" />
-            <SvgOrbitSignal className="relative z-10 max-w-md" />
+          <div className="relative flex min-h-[62dvh] items-center justify-center overflow-hidden bg-[#09090b] px-6 py-16 lg:min-h-[100dvh] lg:py-0">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_55%_45%,rgba(255,92,26,0.16),transparent_60%)]" />
+            <div className="absolute left-6 top-24 flex items-center gap-2 md:left-10">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff5c1a]" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#ff5c1a]" />
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#71717a]">
+                Live on Base Sepolia
+              </span>
+            </div>
+            <SvgHeroLoop className="relative z-10 w-full max-w-[min(88vw,600px)]" />
           </div>
         </section>
 
@@ -258,10 +281,11 @@ export function Landing() {
         >
           <div className="mx-auto max-w-6xl">
             <h2 className="arch-panel font-display max-w-3xl text-4xl font-bold tracking-tight md:text-5xl">
-              The system as a living map.
+              Four layers, one promise.
             </h2>
             <p className="arch-panel mt-4 max-w-xl text-[#a1a1aa]">
-              Mission at the center. PAYDAY streams. Observer watches. Sentinel recovers. Proof closes the loop.
+              You watch from the console. KeeperHub runs the workflows. Four agents do the
+              work. Base and IPFS keep the receipts.
             </p>
             <div className="arch-panel mt-14">
               <SvgArchitecture />

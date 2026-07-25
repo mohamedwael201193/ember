@@ -49,7 +49,7 @@ export function humanNetwork(network?: string | null): string {
   return network;
 }
 
-export function paymentLabel(index: number, slot?: number | string): string {
+export function paymentLabel(index: number): string {
   return `Payment ${index + 1}`;
 }
 

@@ -156,13 +156,23 @@ Script: [`DEMO_SCRIPT.md`](./DEMO_SCRIPT.md) (≤ 3 minutes).
 Brand assets: `frontend/public/ember.svg`, `frontend/public/ember-orbit-signal.png`.
 
 <p>
-  <img src="docs/screenshots/landing.png" alt="EMBER landing" width="48%" />
-  <img src="docs/screenshots/console.png" alt="Living console" width="48%" />
+  <img src="docs/screenshots/landing.png" alt="EMBER landing — the continuity loop" width="48%" />
+  <img src="docs/screenshots/console.png" alt="Living console with layered topology" width="48%" />
+</p>
+<p>
+  <img src="docs/screenshots/rescue.png" alt="Rescue pipeline" width="48%" />
+  <img src="docs/screenshots/proofs.png" alt="Proof chain from receipt to Base anchor" width="48%" />
+</p>
+<p>
+  <img src="docs/screenshots/payday.png" alt="PAYDAY money stream" width="48%" />
+  <img src="docs/screenshots/wallets.png" alt="Wallet roles" width="48%" />
 </p>
 <p>
   <img src="docs/screenshots/mission-builder.png" alt="Mission builder" width="48%" />
-  <img src="docs/screenshots/rescue.png" alt="Rescue hero" width="48%" />
+  <img src="docs/screenshots/operations.png" alt="Mission control health" width="48%" />
 </p>
+
+Every diagram is a hand-built SVG in [`frontend/src/components/svg/SvgScene.tsx`](./frontend/src/components/svg/SvgScene.tsx) — no image assets, no chart library. `SvgScene` provides the shared gradients, filters, and a small declarative animation engine (`data-draw`, `data-flow`, `data-travel`, `data-orbit`, `data-seq`) that respects `prefers-reduced-motion`.
 
 Regenerate: `pnpm screenshots` (with `pnpm dev` running). Details: `docs/screenshots/README.md`.
 

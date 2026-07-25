@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { SvgWalletNet } from "@/components/svg/SvgScene";
 
 const ROLES = [
   {
@@ -43,6 +44,10 @@ export function WalletsPage() {
         <p className="mt-2 text-[var(--fg-muted)]">
           Four roles. One mission. Who pays, who rescues, who receives, what protects.
         </p>
+      </div>
+
+      <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4 md:p-6">
+        <SvgWalletNet />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">

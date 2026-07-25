@@ -34,13 +34,18 @@ export function ExecutionsPage() {
       </div>
 
       <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-6">
-        <div className="mb-4 flex flex-wrap items-center justify-center gap-3 text-sm font-medium">
+        <div className="mb-6 flex flex-wrap items-center justify-center gap-2 text-sm font-medium">
           <span className="rounded-[4px] border border-white/15 px-3 py-1">Payer</span>
-          <span className="text-[var(--accent)]">↓</span>
-          <span className="rounded-[4px] border border-[var(--accent)]/40 px-3 py-1 text-[var(--accent)]">
+          <span aria-hidden className="font-mono text-xs text-[var(--accent)]">
+            ——▸
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-[4px] border border-[var(--accent)]/40 bg-[var(--accent)]/10 px-3 py-1 text-[var(--accent)]">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--accent)]" />
             KeeperHub
           </span>
-          <span className="text-[var(--accent)]">↓</span>
+          <span aria-hidden className="font-mono text-xs text-[var(--accent)]">
+            ——▸
+          </span>
           <span className="rounded-[4px] border border-emerald-500/40 px-3 py-1 text-emerald-400">
             Employee
           </span>

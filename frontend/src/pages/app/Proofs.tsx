@@ -76,32 +76,27 @@ export function ProofsPage() {
 
       <SvgProofChain />
 
-      <ol className="relative space-y-0">
-        <div className="absolute bottom-4 left-[15px] top-4 w-px bg-gradient-to-b from-[var(--accent)] via-[#60a5fa]/50 to-transparent md:left-1/2" />
+      <ol className="relative ml-3 border-l border-[var(--border)] pl-8">
+        <div className="absolute -left-px bottom-6 top-6 w-px bg-gradient-to-b from-[var(--accent)] via-[#60a5fa]/60 to-emerald-500/40" />
         {STAGES.map((stage, i) => {
           const v = values[stage.id];
-          const left = i % 2 === 0;
           return (
             <motion.li
               key={stage.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
+              initial={{ opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
-              className={`relative grid items-center gap-4 py-6 md:grid-cols-2 ${
-                left ? "" : "md:[&>*:first-child]:order-2"
-              }`}
+              className="relative flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border)] py-6 last:border-b-0"
             >
-              <div className={`${left ? "md:pr-12 md:text-right" : "md:pl-12"}`}>
+              <span className="absolute -left-[41px] flex h-5 w-5 items-center justify-center rounded-full border border-[var(--accent)]/60 bg-[var(--bg)] font-mono text-[9px] text-[var(--accent)]">
+                {i + 1}
+              </span>
+              <div className="max-w-md">
                 <h2 className="font-display text-xl font-bold">{stage.title}</h2>
                 <p className="mt-1 text-sm text-[var(--fg-muted)]">{stage.desc}</p>
               </div>
-              <div
-                className={`relative rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-5 ${
-                  left ? "md:ml-8" : "md:mr-8"
-                }`}
-              >
-                <span className="absolute left-[-23px] top-1/2 hidden h-3 w-3 -translate-y-1/2 rounded-full border-2 border-[var(--accent)] bg-[var(--bg)] md:left-auto md:right-full md:block md:translate-x-1/2" />
+              <div className="shrink-0 rounded-[4px] border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
                 {v.href ? (
                   <a
                     href={v.href}

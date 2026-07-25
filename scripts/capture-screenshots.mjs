@@ -12,14 +12,14 @@ mkdirSync(OUT, { recursive: true });
 
 const pages = [
   { path: "/", file: "landing.png" },
-  { path: "/app", file: "console.png" },
-  { path: "/app/mission", file: "mission.png" },
+  { path: "/app", file: "console.png", full: true },
+  { path: "/app/mission", file: "mission.png", full: true },
   { path: "/app/mission/new", file: "mission-builder.png" },
-  { path: "/app/executions", file: "payday.png" },
-  { path: "/app/rescues", file: "rescue.png" },
-  { path: "/app/proofs", file: "proofs.png" },
-  { path: "/app/operations", file: "operations.png" },
-  { path: "/app/wallets", file: "wallets.png" },
+  { path: "/app/executions", file: "payday.png", full: true },
+  { path: "/app/rescues", file: "rescue.png", full: true },
+  { path: "/app/proofs", file: "proofs.png", full: true },
+  { path: "/app/operations", file: "operations.png", full: true },
+  { path: "/app/wallets", file: "wallets.png", full: true },
 ];
 
 const browser = await chromium.launch({ headless: true });
@@ -30,6 +30,7 @@ const context = await browser.newContext({
 const page = await context.newPage();
 await page.addInitScript(() => {
   localStorage.setItem("ember.demoMode", "1");
+  localStorage.setItem("ember.onboarding.v2", "1");
   localStorage.setItem(
     "ember.mission.draft",
     JSON.stringify({
@@ -43,11 +44,29 @@ await page.addInitScript(() => {
   );
 });
 
+/**
+ * Scroll-triggered draw/fade animations only settle once an element has been
+ * inside the viewport, so walk the page top to bottom before capturing.
+ */
+async function settleAnimations() {
+  await page.evaluate(async () => {
+    const step = Math.round(window.innerHeight * 0.6);
+    for (let y = 0; y < document.body.scrollHeight; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 120));
+    }
+    window.scrollTo(0, 0);
+    await new Promise((r) => setTimeout(r, 500));
+  });
+}
+
 for (const item of pages) {
   await page.goto(`${BASE}${item.path}`, { waitUntil: "networkidle", timeout: 60000 });
-  await page.waitForTimeout(800);
+  await page.waitForTimeout(900);
+  await settleAnimations();
+  await page.waitForTimeout(600);
   const file = resolve(OUT, item.file);
-  await page.screenshot({ path: file, fullPage: false });
+  await page.screenshot({ path: file, fullPage: Boolean(item.full) });
   console.log("wrote", item.file);
 }
 

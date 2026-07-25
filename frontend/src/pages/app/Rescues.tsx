@@ -99,11 +99,27 @@ export function RescuesPage() {
 
       <SvgRescueFlow />
 
-      <div ref={railRef} className="relative">
-        <div className="absolute left-0 right-0 top-5 hidden h-px bg-white/10 md:block" />
-        <ol className="grid gap-3 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
+      <div ref={railRef}>
+        <div className="flex items-baseline justify-between gap-4">
+          <h2 className="font-display text-lg font-bold">Seven beats, in order</h2>
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--fg-muted)]">
+            step {active + 1} of {PIPELINE.length}
+          </span>
+        </div>
+
+        <div className="relative mt-5 h-px bg-white/10">
+          <div
+            className="absolute inset-y-0 left-0 bg-[var(--accent)] transition-[width] duration-700 ease-out"
+            style={{
+              width: `${((active + 1) / PIPELINE.length) * 100}%`,
+              boxShadow: "0 0 18px rgba(255,92,26,0.6)",
+            }}
+          />
+        </div>
+
+        <ol className="mt-4 flex flex-wrap gap-2">
           {PIPELINE.map((step, i) => {
-            const lit = completed ? i <= active : i <= active;
+            const lit = i <= active;
             const glowing = i === active;
             return (
               <li key={step.key}>
@@ -111,27 +127,30 @@ export function RescuesPage() {
                   type="button"
                   data-glow={glowing ? "1" : undefined}
                   onClick={() => setActive(i)}
-                  className={`w-full rounded-[4px] border p-4 text-left transition-colors ${
+                  className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm transition-colors ${
                     glowing
-                      ? "border-[var(--accent)] bg-[var(--accent)]/15"
+                      ? "border-[var(--accent)] bg-[var(--accent)]/15 text-[var(--fg)]"
                       : lit
-                        ? "border-white/20 bg-white/[0.03]"
-                        : "border-[var(--border)] opacity-45"
+                        ? "border-white/20 bg-white/[0.03] text-[var(--fg)]"
+                        : "border-[var(--border)] text-[var(--fg-muted)]"
                   }`}
                 >
-                  <div
-                    className={`mb-3 h-2.5 w-2.5 rounded-full ${
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${
                       lit ? "bg-[var(--accent)]" : "bg-white/20"
                     } ${glowing ? "animate-pulse" : ""}`}
                   />
-                  <div className="font-display text-sm font-bold">{step.label}</div>
-                  <p className="mt-1 text-xs text-[var(--fg-muted)]">{step.hint}</p>
+                  <span className="font-mono text-[10px] text-[var(--fg-muted)]">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {step.label}
                 </button>
               </li>
             );
           })}
         </ol>
-        <p className="mt-5 text-sm text-[var(--fg-muted)]">{PIPELINE[active].hint}</p>
+
+        <p className="mt-5 max-w-xl text-base text-[var(--fg)]">{PIPELINE[active].hint}</p>
       </div>
 
       {completed && (

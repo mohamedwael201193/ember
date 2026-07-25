@@ -56,7 +56,12 @@
       "proof_anchored",
       "done"
     ],
+    "workflowHashExpected": "0x0ccdc52804ea95ce83e7990b8b8e6a66c42b717c30a88a05248cf95310dd30e2",
+    "workflowHashComputed": "0x0ccdc52804ea95ce83e7990b8b8e6a66c42b717c30a88a05248cf95310dd30e2",
+    "proofHash": "0x61206b518afc1a501054276fe3b55bf0596efa549ad569e095eda45d5501460c",
+    "proofSha256": "61206b518afc1a501054276fe3b55bf0596efa549ad569e095eda45d5501460c",
     "proofCid": "bafybeigembevelopmentsampleproofcid000000000000000000001",
+    "proofIpfsUri": "ipfs://bafybeigembevelopmentsampleproofcid000000000000000000001",
     "anchorTxHash": "0x5555555555555555555555555555555555555555555555555555555555555555"
   },
   "proofCid": "bafybeigembevelopmentsampleproofcid000000000000000000001",

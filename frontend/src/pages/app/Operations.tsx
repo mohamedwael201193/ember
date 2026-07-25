@@ -43,10 +43,10 @@ export function OperationsPage() {
         <>
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4">
-              <SvgOrbitSignal className="mx-auto max-h-64" />
+              <SvgOrbitSignal className="mx-auto max-h-80" />
             </div>
             <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4">
-              <SvgHealthRadar className="mx-auto max-h-64" />
+              <SvgHealthRadar className="mx-auto max-h-80" />
             </div>
           </div>
 
