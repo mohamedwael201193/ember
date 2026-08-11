@@ -8,6 +8,7 @@ import { Onboarding } from "@/components/Onboarding";
 import { DemoBanner } from "@/components/DemoBanner";
 import { useDemoMode } from "@/hooks/useDemoMode";
 import { humanNetwork, humanState } from "@/lib/product";
+import { ProvenanceBadge } from "@/components/ProvenanceBadge";
 
 const NAV = [
   { to: "/app", end: true, label: "Console" },
@@ -87,10 +88,18 @@ export function AppShell() {
                   ? "border-[var(--accent)]/50 text-[var(--accent)]"
                   : "border-white/15 text-[var(--fg-muted)] hover:text-[var(--fg)]"
               )}
-              title={isDemo ? "Using verified snapshot" : "Using live runtime"}
+              title={
+                isDemo
+                  ? "CERTIFIED MAINNET SNAPSHOT / DEMO FIXTURE"
+                  : "LIVE RUNTIME observer probes"
+              }
             >
-              {isDemo ? "Demo" : "Live"}
+              {isDemo ? "CERTIFIED SNAPSHOT" : "LIVE OBSERVER"}
             </button>
+            <ProvenanceBadge
+              provenance={snap.data?.provenance}
+              className="hidden max-w-[220px] truncate xl:inline-flex"
+            />
             <div className="hidden text-right sm:block">
               <div className="font-mono text-[10px] uppercase tracking-wider text-[var(--fg-muted)]">
                 {network}

@@ -25,7 +25,7 @@ function send(res, status, data) {
   const body = JSON.stringify(data);
   res.writeHead(status, {
     "content-type": "application/json",
-    "access-control-allow-origin": "*",
+    "access-control-allow-origin": "*"
   });
   res.end(body);
 }
@@ -37,8 +37,9 @@ const server = createServer(async (req, res) => {
   if (req.method === "OPTIONS") {
     res.writeHead(204, {
       "access-control-allow-origin": "*",
-      "access-control-allow-headers": "content-type,authorization,x-ember-timestamp,x-ember-nonce,x-ember-body-sha256,x-ember-signature",
-      "access-control-allow-methods": "GET,POST,OPTIONS",
+      "access-control-allow-headers":
+        "content-type,authorization,x-ember-timestamp,x-ember-nonce,x-ember-body-sha256,x-ember-signature",
+      "access-control-allow-methods": "GET,POST,OPTIONS"
     });
     res.end();
     return;
@@ -49,7 +50,7 @@ const server = createServer(async (req, res) => {
       ok: true,
       service: "ember-runtime",
       mode: "development",
-      children: { observer: true, payday: true, sentinel: true },
+      children: { observer: true, payday: true, sentinel: true }
     });
   }
   if (path === "/readyz") {
@@ -65,7 +66,7 @@ const server = createServer(async (req, res) => {
     return send(res, 200, {
       ...(evidence.rescue || {}),
       mode: "development",
-      dryRun: true,
+      dryRun: true
     });
   }
   if (path === "/v1/executions" || path.startsWith("/v1/executions")) {
@@ -74,8 +75,8 @@ const server = createServer(async (req, res) => {
       items: (evidence.paydaySlots || []).map((slot) => ({
         id: slot.executionId,
         status: "SUCCEEDED",
-        transactionHash: slot.transactionHash,
-      })),
+        transactionHash: slot.transactionHash
+      }))
     });
   }
   if (path === "/metrics") {

@@ -10,5 +10,8 @@
   "dependencies": {
     "@ember/kh-client": "workspace:*",
     "@ember/mission-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3"
   }
 }

@@ -12,5 +12,8 @@
     "@ember/mission-core": "workspace:*",
     "@ember/receipt-checker": "workspace:*",
     "viem": "^2.55.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3"
   }
 }

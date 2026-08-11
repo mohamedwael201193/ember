@@ -100,7 +100,9 @@ const evidence = {
   lastCheck,
   rescue,
   journalExists: existsSync(journalPath),
-  pass: rescue.status === 200 && (rescue.json.ok === true || rescue.json.status === "completed" || rescue.json.rescueId)
+  pass:
+    rescue.status === 200 &&
+    (rescue.json.ok === true || rescue.json.status === "completed" || rescue.json.rescueId)
 };
 writeFileSync("docs/evidence/mainnet-rescue-2026-07-23.json", JSON.stringify(evidence, null, 2));
 process.exit(evidence.pass ? 0 : 1);

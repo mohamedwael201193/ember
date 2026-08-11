@@ -66,5 +66,6 @@
   },
   "proofCid": "bafybeigembevelopmentsampleproofcid000000000000000000001",
   "anchorTx": "0x5555555555555555555555555555555555555555555555555555555555555555",
-  "rescueId": "dev-rescue-sample-001"
+  "rescueId": "dev-rescue-sample-001",
+  "note": "DEMO FIXTURE only. Fake hashes for local DEVELOPMENT_MODE. Never treat as live or mainnet."
 }

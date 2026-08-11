@@ -19,7 +19,7 @@ const data = {
   rescue: journal,
   proofCid: journal?.proofCid,
   anchorTx: journal?.anchorTxHash,
-  rescueId: journal?.rescueId,
+  rescueId: journal?.rescueId
 };
 
 const dir = resolve(root, "frontend/api/evidence");
@@ -43,8 +43,8 @@ const vercel = JSON.parse(readFileSync(vercelPath, "utf8"));
 vercel.rewrites = [
   {
     source: "/((?!api/).*)",
-    destination: "/index.html",
-  },
+    destination: "/index.html"
+  }
 ];
 writeFileSync(vercelPath, `${JSON.stringify(vercel, null, 2)}\n`);
 console.log("wrote api/evidence/mainnet.ts", out.length);

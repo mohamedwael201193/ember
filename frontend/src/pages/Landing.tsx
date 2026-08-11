@@ -143,7 +143,7 @@ export function Landing() {
         <section className="grid min-h-[100dvh] grid-cols-1 lg:grid-cols-2">
           <div className="flex flex-col justify-center bg-[#f4f4f5] px-6 pb-16 pt-24 text-[#18181b] md:px-12">
             <p className="hero-reveal mb-4 text-xs font-medium uppercase tracking-[0.22em] text-[#52525b]">
-              Continuity for AI payroll
+              KeeperHub executes · EMBER recovers
             </p>
             <h1 className="hero-reveal font-display max-w-2xl text-[clamp(2.3rem,4.2vw,3.7rem)] font-extrabold leading-[0.98] tracking-[-0.04em] text-balance">
               When the agent dies, the mission lives.
@@ -190,7 +190,7 @@ export function Landing() {
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#ff5c1a]" />
               </span>
               <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#71717a]">
-                Live on Base Mainnet
+                Certified on Base Mainnet
               </span>
             </div>
             <SvgHeroLoop className="relative z-10 w-full max-w-[min(88vw,600px)]" />

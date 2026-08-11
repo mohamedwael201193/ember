@@ -176,30 +176,91 @@ export function publicConfig() {
   };
 }
 
+export type EvidenceProvenance =
+  | "live_runtime"
+  | "certified_mainnet_snapshot"
+  | "demo_fixture";
+
+export type ProvenanceMeta = {
+  source: EvidenceProvenance;
+  label: string;
+  timestamp: string;
+  evidenceId?: string;
+  network: string;
+  chainId: number;
+  note?: string;
+};
+
+function provenanceLabel(source: EvidenceProvenance): string {
+  if (source === "live_runtime") return "LIVE RUNTIME";
+  if (source === "certified_mainnet_snapshot") return "CERTIFIED MAINNET SNAPSHOT";
+  return "DEMO FIXTURE";
+}
+
+function withProvenance<T extends Record<string, unknown>>(
+  data: T,
+  source: EvidenceProvenance,
+  extras: Partial<ProvenanceMeta> = {}
+): T & { provenance: ProvenanceMeta } {
+  const network = String(data.network ?? extras.network ?? "unknown");
+  const chainId = Number(data.chainId ?? extras.chainId ?? 0);
+  return {
+    ...data,
+    provenance: {
+      source,
+      label: provenanceLabel(source),
+      timestamp: extras.timestamp ?? new Date().toISOString(),
+      evidenceId: extras.evidenceId,
+      network,
+      chainId,
+      note: extras.note,
+    },
+  };
+}
+
 function loadEvidence() {
   if (isDevMode()) {
     const sample = readFixture<Record<string, unknown>>("sample-evidence.json");
-    if (sample) return sample;
+    if (sample) {
+      return withProvenance(sample, "demo_fixture", {
+        evidenceId: "fixtures/dev/sample-evidence.json",
+        note: "Local DEVELOPMENT_MODE fixture. Not a live or mainnet claim.",
+      });
+    }
   }
 
   const payday = bundledPayday as Record<string, unknown>;
   const rescueWrap = bundledRescue as { journal?: Record<string, unknown> };
   const journal = rescueWrap?.journal ?? null;
 
-  return {
-    continuity:
-      (payday?.continuity as string) ||
-      "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
-    missionId: String(payday?.missionId || journal?.missionId || "1"),
-    chainId: (payday?.chainId as number) || 8453,
-    network: (payday?.network as string) || "mainnet",
-    paydaySlots: (payday?.slots as unknown[]) || [],
-    balances: payday?.balances,
-    rescue: journal,
-    proofCid: journal?.proofCid,
-    anchorTx: journal?.anchorTxHash,
-    rescueId: journal?.rescueId,
-  };
+  return withProvenance(
+    {
+      continuity:
+        (payday?.continuity as string) ||
+        "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
+      missionId: String(payday?.missionId || journal?.missionId || "1"),
+      chainId: (payday?.chainId as number) || 8453,
+      network: (payday?.network as string) || "mainnet",
+      paydaySlots: (payday?.slots as unknown[]) || [],
+      balances: payday?.balances,
+      rescue: journal,
+      proofCid: journal?.proofCid,
+      anchorTx: journal?.anchorTxHash,
+      rescueId: journal?.rescueId,
+      primaryWorkflowId: payday?.workflowId,
+      primaryExecutionId: (payday?.slots as Array<{ executionId?: string }> | undefined)?.[0]
+        ?.executionId,
+      primaryTransactionHash: (
+        payday?.slots as Array<{ transactionHash?: string }> | undefined
+      )?.[0]?.transactionHash,
+    },
+    "certified_mainnet_snapshot",
+    {
+      evidenceId: "docs/evidence/mainnet-payday-slots-2026-07-23.json",
+      timestamp: String(payday?.verifiedAt ?? "2026-07-23T01:13:19.765Z"),
+      note: "Bundled certified Base mainnet evidence. Production PAYDAY/anchor may be observer-only.",
+    }
+  );
 }
 
 export type ApiRequest = {
@@ -301,11 +362,18 @@ export async function handleApi(req: ApiRequest): Promise<ApiResult> {
     if (sampleSnapshot) {
       return {
         status: 200,
-        data: {
-          ...sampleSnapshot,
-          checkedAt: new Date().toISOString(),
-          config: publicConfig(),
-        },
+        data: withProvenance(
+          {
+            ...sampleSnapshot,
+            checkedAt: new Date().toISOString(),
+            config: publicConfig(),
+          },
+          "demo_fixture",
+          {
+            evidenceId: "fixtures/dev/sample-snapshot.json",
+            note: "Local DEVELOPMENT_MODE snapshot fixture.",
+          }
+        ),
       };
     }
 
@@ -326,20 +394,29 @@ export async function handleApi(req: ApiRequest): Promise<ApiResult> {
 
     return {
       status: 200,
-      data: {
-        checkedAt: new Date().toISOString(),
-        config: cfg,
-        health: health.json,
-        ready: ready.json,
-        status: status.json,
-        check,
-        checkStatus,
-        serviceReadiness: [
-          { name: "runtime", ok: health.status === 200, detail: health.json },
-          { name: "ready", ok: ready.status === 200, detail: ready.json },
-          { name: "sentinel-check", ok: checkStatus === 200, detail: check },
-        ],
-      },
+      data: withProvenance(
+        {
+          checkedAt: new Date().toISOString(),
+          config: cfg,
+          health: health.json,
+          ready: ready.json,
+          status: status.json,
+          check,
+          checkStatus,
+          serviceReadiness: [
+            { name: "runtime", ok: health.status === 200, detail: health.json },
+            { name: "ready", ok: ready.status === 200, detail: ready.json },
+            { name: "sentinel-check", ok: checkStatus === 200, detail: check },
+          ],
+        },
+        "live_runtime",
+        {
+          evidenceId: "runtime/snapshot",
+          network: cfg.network,
+          chainId: cfg.chainId,
+          note: "Live observer/runtime probe. Payment cards may still use certified evidence.",
+        }
+      ),
     };
   }
 

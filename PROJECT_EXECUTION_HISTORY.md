@@ -630,3 +630,41 @@ Chrome: top product nav (not admin sidebar). Onboarding v2 with SVG scenes (`emb
 
 ### Docs
 - `frontend/README.md`, `frontend/DESIGN.md`, root `DESIGN.md`, `memory.md` §10
+
+---
+
+## 2026-08-11 — First-Place Sprint execution log
+
+### Research
+- Re-verified `KeeperHub/cli` issue #53 (open: public mock/fixture suite) and PR #95 (open, changes-requested: `--require-verified` receipts). Adoption pack targets #53; avoids overlapping #95.
+- MCP artifact captured earlier same day via live `get_execution` for certified PAYDAY run (no new spend).
+
+### Implementation
+- Activated GitHub Actions CI; fixed TS/lint/secret-scan blockers from Phase 0.
+- Provenance model wired through BFF + Vercel serverless path; UI badges and Continuity SLO.
+- Packaged Continuity Kit + continuity-guardian starter with setup/doctor.
+- Added Execution Recovery Contract Pack v1 under `docs/keeperhub-contribution/`.
+- Rewrote judge-facing README, evidence README, SUBMISSION, pitch, demo script.
+
+### Tests / verification (to be filled after gate run)
+- Commands: `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, example doctor/inspect, recovery contract vitest.
+
+### Decisions
+- No fresh mainnet USDC spend for screenshots.
+- Production honesty: LIVE OBSERVER + CERTIFIED SNAPSHOT when writes disabled.
+- Upstream contribution = fixture contract pack, not Continuity merge into KeeperHub core.
+
+### Gate results (2026-08-11 local)
+- format:check / lint / typecheck / test (82) / build / security:secrets — PASS
+- continuity-guardian setup/doctor/inspect — PASS
+- Remaining operator actions: push for CI green, redeploy Vercel, record ≤2:30 KH UI demo, open upstream CLI PR from pack, rotate exposed credentials
+
+---
+
+## 2026-08-11 — Final KeeperHub sprint log
+
+- Workshop gap analysis + MCP_DEMO + agent lifecycle evidence JSON
+- Live MCP smoke exec 2qvzsmq24d6nsjm0fzlhp; certified inspect reconfirmed
+- Render PASS; Vercel provenance pending redeploy
+- Local gates: 82 tests PASS after serializing vitest fileParallelism
+- Next: git push, CI wait, vercel --prod, optional upstream PR, record demo

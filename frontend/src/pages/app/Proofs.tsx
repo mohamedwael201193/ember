@@ -4,7 +4,9 @@ import { api } from "@/lib/api";
 import { shortHash } from "@/lib/utils";
 import { SvgProofChain } from "@/components/svg/SvgScene";
 import { Expandable } from "@/components/Expandable";
+import { ProvenanceBadge } from "@/components/ProvenanceBadge";
 import { ExternalLink } from "lucide-react";
+import { keeperHubExecutionUrl, ipfsGatewayUrl } from "@/lib/keeperhub";
 
 const STAGES = [
   {
@@ -43,6 +45,9 @@ export function ProofsPage() {
   const cid = r?.proofCid ?? evidence.data?.proofCid;
   const anchor = r?.anchorTxHash ?? evidence.data?.anchorTx;
   const hash = r?.proofHash ?? r?.proofSha256;
+  const anchorExec = typeof r?.anchorExecutionId === "string" ? r.anchorExecutionId : undefined;
+  const khAnchor = keeperHubExecutionUrl(undefined, anchorExec);
+  const ipfsHref = ipfsGatewayUrl(gateway, cid);
 
   const values: Record<string, { label: string; href?: string }> = {
     hash: { label: hash ? "Fingerprint ready" : "Waiting" },
@@ -65,13 +70,40 @@ export function ProofsPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-10">
-      <div>
-        <h1 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
-          Proof chain
-        </h1>
-        <p className="mt-2 max-w-lg text-[var(--fg-muted)]">
-          Learn how a rescue becomes undeniable: fingerprint → publish → seal → agree.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
+            Proof chain
+          </h1>
+          <p className="mt-2 max-w-lg text-[var(--fg-muted)]">
+            Learn how a rescue becomes undeniable: fingerprint → publish → seal → agree.
+          </p>
+        </div>
+        <div className="flex flex-col items-end gap-2">
+          <ProvenanceBadge provenance={evidence.data?.provenance} />
+          {ipfsHref ? (
+            <a
+              href={ipfsHref}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-xs text-[var(--accent)] hover:underline"
+            >
+              Open IPFS
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          ) : null}
+          {khAnchor ? (
+            <a
+              href={khAnchor}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-xs text-[var(--accent)] hover:underline"
+            >
+              Open KeeperHub anchor execution
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          ) : null}
+        </div>
       </div>
 
       <SvgProofChain />

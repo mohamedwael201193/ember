@@ -34,12 +34,15 @@ export function resolveActiveNetworkConfig(
     return {
       network,
       chainId: Number(env.CHAIN_ID_MAINNET ?? 8453),
-      continuityAddress: firstDefined(env.CONTINUITY_ADDRESS_MAINNET, env.CONTINUITY_ADDRESS_SEPOLIA),
+      continuityAddress: firstDefined(
+        env.CONTINUITY_ADDRESS_MAINNET,
+        env.CONTINUITY_ADDRESS_SEPOLIA
+      ),
       missionId: firstDefined(env.MISSION_ID_MAINNET, env.MISSION_ID_SEPOLIA),
       workflowHash: firstDefined(env.WORKFLOW_HASH_MAINNET, env.WORKFLOW_HASH_SEPOLIA),
       usdcAddress: firstDefined(env.USDC_ADDRESS_BASE, env.USDC_ADDRESS_BASE_SEPOLIA),
-      rpcUrls: [env.BASE_RPC_URL, env.BASE_RPC_URL_FALLBACK].filter(
-        (value): value is string => Boolean(value)
+      rpcUrls: [env.BASE_RPC_URL, env.BASE_RPC_URL_FALLBACK].filter((value): value is string =>
+        Boolean(value)
       )
     };
   }

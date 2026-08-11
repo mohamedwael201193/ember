@@ -1,0 +1,9 @@
+{
+  "expectedCadenceSeconds": 300,
+  "primaryWorkflowId": "5goaid2zjgzyb32661se3",
+  "standbyWorkflowId": "pvhwggqr8318wac68jb62",
+  "graceMissedRuns": 2,
+  "maxReplaySlots": 2,
+  "receiptConfirmations": 2,
+  "durableSlotIdentityNote": "Slot ids are durable schedule anchors (startAt + cadence * index). Do not infer historical coverage from standby replay block timestamps."
+}

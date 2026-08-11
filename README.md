@@ -4,22 +4,53 @@
 
 # EMBER
 
-**AI continuity for onchain payment missions.**
+**When the agent dies, the mission survives.**
 
-EMBER keeps a payroll-style USDC mission alive when the primary KeeperHub agent dies. It detects unpaid slots from receipts, replays only what is missing from an isolated standby organization, pins a canonical rescue proof to IPFS, and anchors that proof in `Continuity.sol`.
+KeeperHub executes.  
+EMBER recovers missed obligations.
 
+[Live app](https://ember-web-seven.vercel.app) · [Evidence](./docs/evidence/README.md) · [Mission Continuity Kit](./packages/continuity-kit) · [Adoption](./docs/KEEPERHUB_CONTINUITY_ADOPTION.md) · [Submission](./SUBMISSION.md)
+
+[![CI](https://github.com/mohamedwael201193/ember/actions/workflows/ci.yml/badge.svg)](https://github.com/mohamedwael201193/ember/actions/workflows/ci.yml)
+[![Base mainnet](https://img.shields.io/badge/Base-mainnet%208453-0052FF)](https://basescan.org/tx/0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2)
+[![KeeperHub](https://img.shields.io/badge/KeeperHub-workflows%20%2B%20MCP-111)](https://app.keeperhub.com/workflows/5goaid2zjgzyb32661se3)
 [![Node >=20](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](#quick-start)
 [![pnpm 10](https://img.shields.io/badge/pnpm-10-orange)](#quick-start)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![DEVELOPMENT_MODE](https://img.shields.io/badge/dev%20mode-zero%20secrets-purple)](#development-mode)
+
+---
+
+## 30-second judge card
+
+| | |
+| --- | --- |
+| **Problem** | Autonomous payment agents die mid-cadence. Retries of a *requested* run are not the same as recovering a slot that was *never requested*. |
+| **Why KeeperHub** | Every USDC transfer and anchor lands through KeeperHub workflows on Base. |
+| **What EMBER adds** | Missed-slot detection, dual-org standby replay, journal exactly-once, IPFS proof, `Continuity.sol` seal. |
+| **Primary mainnet tx** | [`0xd26e6174…341ea2`](https://basescan.org/tx/0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2) |
+| **Primary KH run** | workflow `5goaid2zjgzyb32661se3` · execution `667ekg3qk5f45127eqjyy` |
+| **Rescue tx** | [`0x47437621…8e41`](https://basescan.org/tx/0x474376218593b8d3fbecb103286129b91dd6590fad779514b636cc480d6c8e41) |
+| **Proof CID** | [`QmVr6yWD…Woyn`](https://ipfs.io/ipfs/QmVr6yWDfuWbWE4m9UADtbJzSadqKXnUmpCHUERjsLWoyn) |
+| **Anchor** | [`0x74ba1eac…211f`](https://basescan.org/tx/0x74ba1eac3e35c269175c06629782f66da454775141b6c94f14d608065c8d211f) |
+| **MCP evidence** | [`docs/evidence/mcp-continuity-demo-2026-08-11.json`](./docs/evidence/mcp-continuity-demo-2026-08-11.json) |
+
+### Provenance labels (always)
+
+| Label | Meaning |
+| --- | --- |
+| **LIVE RUNTIME / LIVE OBSERVER** | Talking to live APIs; production payment writes may be disabled |
+| **CERTIFIED MAINNET SNAPSHOT** | Frozen Base mainnet evidence — real history, not a fresh spend |
+| **DEMO FIXTURE** | Local sample data only |
+
+Production public UI prefers certified snapshots for the payment story when live writes are off. That is intentional honesty, not theater.
 
 ```bash
-git clone <repo-url> ember && cd ember
+git clone https://github.com/mohamedwael201193/ember.git && cd ember
 corepack enable && pnpm install
-pnpm setup && pnpm doctor && pnpm dev
+pnpm setup && pnpm doctor && pnpm test && pnpm build
 ```
 
-Open **http://127.0.0.1:5173** — no KeeperHub account required in development mode.
+No private keys required for inspect / test / build. Writes stay gated.
 
 ---
 
@@ -29,6 +60,8 @@ Open **http://127.0.0.1:5173** — no KeeperHub account required in development 
 - [Solution](#solution)
 - [How EMBER works](#how-ember-works)
 - [Architecture](#architecture)
+- [Mission Continuity Kit](#mission-continuity-kit)
+- [KeeperHub surfaces](#keeperhub-surfaces)
 - [Product surfaces](#product-surfaces)
 - [Folder structure](#folder-structure)
 - [Quick Start](#quick-start)
@@ -36,11 +69,11 @@ Open **http://127.0.0.1:5173** — no KeeperHub account required in development 
 - [Environment variables](#environment-variables)
 - [API reference](#api-reference)
 - [Contracts](#contracts)
-- [KeeperHub](#keeperhub)
 - [IPFS](#ipfs)
-- [Mainnet](#mainnet)
+- [Mainnet evidence](#mainnet-evidence)
 - [Production / Deploy](#production--deploy)
 - [MCP](#mcp)
+- [Adoption](#adoption)
 - [Troubleshooting](#troubleshooting)
 - [FAQ](#faq)
 - [Contributing](#contributing)
@@ -70,6 +103,7 @@ EMBER is a small, explicit control plane:
 | **Sentinel** | Detects gaps, replays unpaid slots via Org B W1', pins + anchors proof |
 | **Continuity.sol** | Onchain rescue proof anchor |
 | **Frontend + BFF** | Operator product UI — secrets never enter the browser |
+| **Continuity Kit** | Reusable policy + journal helpers for other missions |
 
 ---
 
@@ -119,341 +153,220 @@ flowchart TB
     Observer
     Sentinel
   end
-  PAYDAY --> KeeperHub
-  Observer --> KeeperHub
-  Sentinel --> KeeperHub
+  PAYDAY --> KH[KeeperHub Org A]
+  Sentinel --> KHB[KeeperHub Org B]
+  KH --> Base[Base USDC]
+  KHB --> Base
   Sentinel --> IPFS
-  Sentinel --> Continuity
+  Sentinel --> Cont[Continuity.sol]
 ```
 
-**Trust rule:** Org A `kh_` keys never load into Sentinel. Org B keys never load into PAYDAY or Observer. The browser receives zero secrets.
+---
+
+## Mission Continuity Kit
+
+Reusable package: [`packages/continuity-kit`](./packages/continuity-kit)  
+Safe starter: [`examples/continuity-guardian`](./examples/continuity-guardian)
+
+```bash
+pnpm --filter @ember/example-continuity-guardian run setup
+pnpm --filter @ember/example-continuity-guardian run doctor
+pnpm --filter @ember/example-continuity-guardian inspect
+```
+
+Inspect-only by default. `WRITE_MODE=1` still refuses accidental mainnet writes unless explicitly configured for a confirmed path.
+
+Same primitive protects payroll, treasury sweeps, liquidation bots, recurring grants, and settlement agents.
+
+---
+
+## KeeperHub surfaces
+
+| Surface | How EMBER uses it |
+| --- | --- |
+| Workflow UI | Primary + standby canvases, Run, Runs/audit |
+| MCP | `get_execution` evidence chain (see MCP artifact) |
+| REST / SDK | Execute, poll, verify receipts |
+| Deep links | Executions / Rescues / Proofs pages link into KeeperHub + BaseScan + IPFS |
 
 ---
 
 ## Product surfaces
 
-| Surface | Route | What a judge should understand |
-|---------|-------|--------------------------------|
-| **Landing** | `/` | Why EMBER exists in one viewport |
-| **Console** | `/app` | Living topology + payment river |
-| **Mission overview** | `/app/mission` | What’s running, who gets paid, who protects |
-| **Mission builder** | `/app/mission/new` | Stripe-calm setup with a “why” on every step |
-| **PAYDAY** | `/app/executions` | Money visualization: payer → KeeperHub → employee |
-| **Rescue** | `/app/rescues` | Hero pipeline that restores the mission |
-| **Proofs** | `/app/proofs` | Hash → publish → seal → agree |
-| **Ops** | `/app/operations` | Mission control health |
-| **Wallets** | `/app/wallets` | Pays / Rescues / Receives / Protects |
+Operator console under `/app`: Overview, Mission, Executions, Rescues, Proofs, Operations (Continuity SLO), Wallets, Settings.
 
-### Demo Mode
-
-Header toggle **Demo** / **Live**, or Settings → Presentation mode.
-
-- **Demo** — verified snapshot, instant, deterministic (recording-safe)  
-- **Live** — connected runtime  
-
-Script: [`DEMO_SCRIPT.md`](./DEMO_SCRIPT.md) (≤ 3 minutes).  
-DoraHacks video cut + mainnet tx links: [`docs/DEMO_VIDEO_DORAHACKS.md`](./docs/DEMO_VIDEO_DORAHACKS.md).
-
-Brand assets: `frontend/public/ember.svg`, `frontend/public/ember-orbit-signal.png`.
-
-<p>
-  <img src="docs/screenshots/landing.png" alt="EMBER landing — the continuity loop" width="48%" />
-  <img src="docs/screenshots/console.png" alt="Living console with layered topology" width="48%" />
-</p>
-<p>
-  <img src="docs/screenshots/rescue.png" alt="Rescue pipeline" width="48%" />
-  <img src="docs/screenshots/proofs.png" alt="Proof chain from receipt to Base anchor" width="48%" />
-</p>
-<p>
-  <img src="docs/screenshots/payday.png" alt="PAYDAY money stream" width="48%" />
-  <img src="docs/screenshots/wallets.png" alt="Wallet roles" width="48%" />
-</p>
-<p>
-  <img src="docs/screenshots/mission-builder.png" alt="Mission builder" width="48%" />
-  <img src="docs/screenshots/operations.png" alt="Mission control health" width="48%" />
-</p>
-
-Every diagram is a hand-built SVG in [`frontend/src/components/svg/SvgScene.tsx`](./frontend/src/components/svg/SvgScene.tsx) — no image assets, no chart library. `SvgScene` provides the shared gradients, filters, and a small declarative animation engine (`data-draw`, `data-flow`, `data-travel`, `data-orbit`, `data-seq`) that respects `prefers-reduced-motion`.
-
-Regenerate: `pnpm screenshots` (with `pnpm dev` running). Details: `docs/screenshots/README.md`.
+Continuity SLO shows expected/confirmed/missed slots, recovery metrics, and provenance — **Unavailable** when a metric is not known (never fabricated).
 
 ---
 
 ## Folder structure
 
-```
-ember/
-├── contracts/               # Continuity.sol + Foundry tests
-├── docs/                    # runbooks, OpenAPI, MCP examples, evidence
-├── fixtures/dev/            # sample missions, proofs, wallets (dev mode)
-├── frontend/                # React UI + BFF + Vercel api/
-├── packages/
-│   ├── mission-core/        # schedule, HMAC, proof, env schemas
-│   ├── kh-client/           # KeeperHub REST/MCP client
-│   └── receipt-checker/     # USDC Transfer verification
-├── scripts/
-│   ├── setup.mjs            # pnpm setup
-│   ├── doctor.mjs           # pnpm doctor
-│   ├── dev.mjs              # pnpm dev
-│   ├── start-ember-runtime.mjs
-│   └── …
-├── services/
-│   ├── payday/
-│   ├── primary-observer/
-│   └── sentinel/
-├── workflows/               # W1 / W2 / W3 JSON artifacts
-├── .env.example             # every documented variable
-├── ARCHITECTURE.md
-├── LOCAL_SETUP.md
-├── DEPLOYMENT.md
-├── API_REFERENCE.md
-├── MCP_GUIDE.md
-├── CONTRIBUTING.md
-└── LICENSE
+```text
+packages/          mission-core, kh-client, receipt-checker, continuity-kit
+services/          payday, primary-observer, sentinel, gateway
+frontend/          Vite app + BFF
+examples/          continuity-guardian starter
+workflows/         KeeperHub workflow exports
+contracts/         Continuity.sol (Foundry)
+docs/evidence/     Certified mainnet + rehearsal artifacts
 ```
 
 ---
 
 ## Quick Start
 
-### Requirements
-
-- Node.js **≥ 20** (24 recommended for Render parity)  
-- **pnpm 10** via Corepack (`packageManager` field pins `pnpm@10.34.5`)  
-- Git  
-
-No global CLIs, no Cursor requirement, no pre-seeded secrets.
-
-### Install + run
+**Prerequisites:** Node ≥ 20, pnpm 10 (`corepack enable`). Foundry/`forge` optional locally (required in CI).
 
 ```bash
 corepack enable
 pnpm install
-pnpm setup          # creates .env in DEVELOPMENT_MODE, folders, fixtures check
-pnpm doctor         # toolchain + env + ports + optional probes
-pnpm dev            # mock runtime + BFF + Vite + watcher
+pnpm setup
+pnpm doctor
+pnpm test
+pnpm typecheck
+pnpm build
+pnpm lint
 ```
 
-| URL | Purpose |
-|-----|---------|
-| http://127.0.0.1:5173 | Product UI |
-| http://127.0.0.1:8780/api/health | BFF |
-| http://127.0.0.1:10000/healthz | Runtime |
+Dev UI (no secrets):
 
-Deep dive: [`LOCAL_SETUP.md`](./LOCAL_SETUP.md)
+```bash
+pnpm --filter @ember/frontend dev
+```
+
+Open **http://127.0.0.1:5173**.
+
+### Modes
+
+| Mode | Secrets | Spend |
+| --- | --- | --- |
+| Development / demo fixtures | None required | Never |
+| Live observer | Read API keys optional | No writes if `PAYDAY_ENABLE=0` |
+| Live write | Explicit env + confirmation | Real USDC — gated |
 
 ---
 
 ## Development mode
 
-When `DEVELOPMENT_MODE=1` (default from `pnpm setup`):
-
-- Mock runtime serves `/healthz`, `/check`, `/rescue`, `/v1/executions`  
-- BFF loads `fixtures/dev/sample-*.json`  
-- UI works for landing, dashboard, mission wizard, proofs, rescue history  
-- **No** real KeeperHub, Pinata, or funded wallets required  
-
-Turn off for live integration:
-
-```env
-DEVELOPMENT_MODE=0
-EMBER_NETWORK=mainnet   # or rehearsal / sepolia values you intend
-```
-
-Then fill live credentials and run `pnpm doctor` until it passes.
+Development mode ships zero-secret fixtures labeled **DEMO FIXTURE**. Do not present them as mainnet.
 
 ---
 
 ## Environment variables
 
-**Source of truth:** [`.env.example`](./.env.example)  
-Frontend/BFF subset: [`frontend/.env.example`](./frontend/.env.example)
-
-Never require an undocumented variable. If you add one, update both examples, `pnpm doctor`, and this README.
-
-### Mode
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DEVELOPMENT_MODE` | `1` | `1` = sample stack |
-| `EMBER_DEV_MODE` | `1` | Alias for development mode |
-| `EMBER_NETWORK` | `development` | `development` \| `mainnet` \| sepolia-style configs |
-| `EMBER_RUNTIME_URL` | `http://127.0.0.1:10000` | Runtime base URL for BFF |
-
-### KeeperHub
-
-| Variable | Required live | Description |
-|----------|---------------|-------------|
-| `KH_API_BASE` | yes | API host |
-| `KH_MCP_URL` | for anchor | MCP host |
-| `KH_API_KEY_PRIMARY_EXECUTOR` | yes | Org A executor |
-| `KH_API_KEY_PRIMARY_OBSERVER` | yes | Org A observer |
-| `KH_API_KEY_STANDBY` | yes | Org B standby |
-| `KH_ORG_*_WORKFLOW_ID` | yes | W1 / W1' / W2 / W3 ids |
-| `ORG_*_WALLET_*` | yes | Wallet addresses / integration ids |
-
-Auth is always `Authorization: Bearer kh_…` — never `X-API-Key`.
-
-### Chain / mission / IPFS / services
-
-See `.env.example` for the full list: RPC URLs, USDC addresses, continuity addresses, mission IDs, workflow hashes, Pinata, ports, HMAC secrets, journal directories, Render deploy tooling.
-
-**HMAC rule:** `SENTINEL_SHARED_SECRET` ≠ `PRIMARY_OBSERVER_SHARED_SECRET`.
+See [`.env.example`](./.env.example). Never commit `.env`. Auth to KeeperHub is `Authorization: Bearer kh_...` only.
 
 ---
 
 ## API reference
 
-See [`API_REFERENCE.md`](./API_REFERENCE.md) and [`docs/openapi/ember-services.openapi.yaml`](./docs/openapi/ember-services.openapi.yaml).
-
-Quick BFF:
-
-```bash
-curl -s http://127.0.0.1:8780/api/health
-curl -s http://127.0.0.1:8780/api/snapshot
-curl -s http://127.0.0.1:8780/api/evidence/mainnet
-```
+See [`docs/openapi`](./docs/openapi) and the BFF routes under `frontend/server`.
 
 ---
 
 ## Contracts
 
-- Solidity: `contracts/src/Continuity.sol`  
-- Tests: Foundry (`forge test`)  
-- Optional — not required for `pnpm dev` in development mode  
+`Continuity.sol` on Base mainnet: [`0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770`](https://basescan.org/address/0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770)
 
 ```bash
-cd contracts
-forge test
+forge test --root contracts -vv   # CI / local Foundry
 ```
-
----
-
-## KeeperHub
-
-- Typed client: `packages/kh-client`  
-- Workflow artifacts: `workflows/`  
-- Dual-org model: Org A primary, Org B standby replay  
-
-MCP configuration for Cursor / Claude / VS Code: [`MCP_GUIDE.md`](./MCP_GUIDE.md)
 
 ---
 
 ## IPFS
 
-When `PROOF_ANCHOR_ENABLE=1`:
+Rescue proofs are pinned (Pinata in production evidence). Fetch-back hash must match before anchor.
 
-- `PINATA_JWT` required  
-- `IPFS_GATEWAY` used for fetch-back verification  
-- Proof bytes must hash-equal before `anchorProof`  
-
-In development mode anchoring is off by default.
+Certified CID: `QmVr6yWDfuWbWE4m9UADtbJzSadqKXnUmpCHUERjsLWoyn`
 
 ---
 
-## Mainnet
+## Mainnet evidence
 
-Mainnet is **explicit** (`EMBER_NETWORK=mainnet`) and operationally gated:
+Full index: [`docs/evidence/README.md`](./docs/evidence/README.md)
 
-- Funded org wallets + spend caps  
-- Real workflow IDs / continuity address  
-- Human approval before enabling PAYDAY (`PAYDAY_ENABLE`)  
+| Kind | Link |
+| --- | --- |
+| Primary PAYDAY | https://basescan.org/tx/0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2 |
+| Rescue replay | https://basescan.org/tx/0x474376218593b8d3fbecb103286129b91dd6590fad779514b636cc480d6c8e41 |
+| Anchor | https://basescan.org/tx/0x74ba1eac3e35c269175c06629782f66da454775141b6c94f14d608065c8d211f |
+| MCP capture | [`mcp-continuity-demo-2026-08-11.json`](./docs/evidence/mcp-continuity-demo-2026-08-11.json) |
 
-Historical certification notes live in `FINAL_BACKEND_CERTIFICATION.md` and `docs/evidence/`. Treat them as evidence, not as your local defaults.
+x402 marketplace fee txs are **not** continuity payroll.
 
 ---
 
 ## Production / Deploy
 
-| Surface | Platform | Entry |
-|---------|----------|-------|
-| Runtime | Render (or any Node host) | `pnpm build && pnpm start` |
-| Frontend + BFF | Vercel | `frontend/` + `frontend/vercel.json` |
-
-Full guide: [`DEPLOYMENT.md`](./DEPLOYMENT.md)
+- Frontend: Vercel (`ember-web-seven.vercel.app`)
+- Runtime: Render combined service (observer posture when payment enables are off)
+- Secrets only in host env — never in the browser
 
 ---
 
 ## MCP
 
-Documented end-to-end in [`MCP_GUIDE.md`](./MCP_GUIDE.md).
+Official remote server: `https://app.keeperhub.com/mcp`  
+Full demo path: [`docs/MCP_DEMO.md`](./docs/MCP_DEMO.md) · workshop gap notes: [`docs/KEEPERHUB_WORKSHOP_GAP_ANALYSIS.md`](./docs/KEEPERHUB_WORKSHOP_GAP_ANALYSIS.md)
 
-Examples:
+### Claude Code (copy-paste)
 
-- `docs/mcp/cursor.mcp.json.example`  
-- `docs/mcp/claude-desktop.mcp.json.example`  
-- `docs/mcp/vscode.mcp.json.example`  
+```bash
+claude mcp add --transport http --scope user keeperhub https://app.keeperhub.com/mcp
+```
+
+Then run `/mcp` for OAuth. Headless: add `--header "Authorization: Bearer kh_…"`.
+
+### Cursor
+
+See [`docs/mcp/cursor.mcp.json.example`](./docs/mcp/cursor.mcp.json.example) and [`MCP_GUIDE.md`](./MCP_GUIDE.md).
+
+### Agent lifecycle (safe)
+
+1. `tools_documentation`  
+2. `get_workflow` / `validate_workflow` on `5goaid2zjgzyb32661se3`  
+3. `execute_workflow` on smoke `vewqfp44zmpa9dtctlrdr` (Sepolia read — no spend)  
+4. `get_execution`  
+5. Inspect certified mainnet run `667ekg3qk5f45127eqjyy` (read-only)
+
+Capture script: `scripts/capture-mcp-continuity-evidence.ts` (read-only by default).  
+Artifacts: `docs/evidence/mcp-continuity-demo-2026-08-11.json`, `docs/evidence/mcp-agent-lifecycle-2026-08-11.json`.
+
+---
+
+## Adoption
+
+[`docs/KEEPERHUB_CONTINUITY_ADOPTION.md`](./docs/KEEPERHUB_CONTINUITY_ADOPTION.md)  
+Execution Recovery Contract Pack v1: [`docs/keeperhub-contribution/execution-recovery-contract-pack-v1/`](./docs/keeperhub-contribution/execution-recovery-contract-pack-v1/)  
+Targets open [`KeeperHub/cli` #53](https://github.com/KeeperHub/cli/issues/53); does not overlap PR #95.
 
 ---
 
 ## Troubleshooting
 
-| Symptom | Fix |
-|---------|-----|
-| `pnpm: command not found` | `corepack enable && corepack prepare pnpm@10.34.5 --activate` |
-| Node too old | Install Node 20+ |
-| Port in use | `pnpm doctor` → free 5173/8780/10000 or change env ports |
-| BFF 500 missing secrets | Run `pnpm setup` or set HMAC secrets |
-| Runtime 502 on Render | Cold start — retry `/healthz`; check disk + env |
-| Doctor fails live checks | Set `DEVELOPMENT_MODE=1` for UI work, or fill real keys |
-| Foundry path errors | Use your local `forge`; ignore any old WSL absolute paths in historical notes |
-
-Always start with:
-
-```bash
-pnpm doctor
-```
+- `pnpm doctor` — env / tool presence  
+- `pnpm security:secrets` — secret scan  
+- CI: `.github/workflows/ci.yml` (format, lint, typecheck, test, build, forge)
 
 ---
 
 ## FAQ
 
-**Do I need KeeperHub to try the UI?**  
-No — `DEVELOPMENT_MODE=1` is enough.
+**Is production “live spending”?** Often **LIVE OBSERVER** + **CERTIFIED MAINNET SNAPSHOT** for the payment story. Check provenance badges in the UI.
 
-**Do I need Docker?**  
-No. Optional compose files are not the primary path.
+**Does EMBER replace KeeperHub?** No. KeeperHub executes. EMBER recovers missed obligations.
 
-**Do I need Cursor?**  
-No. MCP is optional for operators who use agent tooling.
-
-**Where do secrets live?**  
-Root `.env` and host env vars (Render/Vercel). Never the browser.
-
-**Can I rename the Render URL?**  
-Service slugs are immutable on Render. Create a new service or attach a custom domain — see `DEPLOYMENT.md`.
-
-**Is there a database?**  
-No. Journals on disk are enough for the reference single-instance design.
+**Can I clone without keys?** Yes for setup/doctor/test/build/inspect.
 
 ---
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](./CONTRIBUTING.md).
-
-```bash
-pnpm lint && pnpm typecheck && pnpm test
-```
+See adoption docs before proposing KeeperHub upstream changes. Prefer small fixture PRs over large merges.
 
 ---
 
 ## License
 
-[MIT](./LICENSE) © EMBER contributors
-
----
-
-## Docs index
-
-| Doc | Purpose |
-|-----|---------|
-| [`LOCAL_SETUP.md`](./LOCAL_SETUP.md) | Clone → running |
-| [`DEPLOYMENT.md`](./DEPLOYMENT.md) | Vercel + Render |
-| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | System design |
-| [`API_REFERENCE.md`](./API_REFERENCE.md) | HTTP surfaces |
-| [`MCP_GUIDE.md`](./MCP_GUIDE.md) | Agent / IDE MCP |
-| [`CONTRIBUTING.md`](./CONTRIBUTING.md) | PR workflow |
-| [`docs/RUNBOOK.md`](./docs/RUNBOOK.md) | Chaos + ops |
-| [`docs/SERVICE_AUTH.md`](./docs/SERVICE_AUTH.md) | HMAC details |
-| [`docs/THREAT_MODEL.md`](./docs/THREAT_MODEL.md) | Threat model |
+MIT — see [`LICENSE`](./LICENSE).

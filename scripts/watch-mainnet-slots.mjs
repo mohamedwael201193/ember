@@ -15,8 +15,7 @@ loadEnv(".env");
 const startAt = Number(process.env.MISSION_START_AT);
 const cadence = Number(process.env.CADENCE_SECONDS || 300);
 const targetSlots = Number(process.env.WATCH_SLOTS || 3);
-const journalPath =
-  process.env.PAYDAY_JOURNAL_FILE || "runtime/mainnet/payday/payday.ndjson";
+const journalPath = process.env.PAYDAY_JOURNAL_FILE || "runtime/mainnet/payday/payday.ndjson";
 const base = process.env.WATCH_BASE || "http://127.0.0.1:10000";
 const secret = process.env.SENTINEL_SHARED_SECRET;
 
@@ -36,7 +35,6 @@ async function hmacCheck() {
   const body = "{}";
   const ts = String(Math.floor(Date.now() / 1000));
   const nonce = `n-${Date.now()}`;
-  const bodyHash = createHmac("sha256", "").update(body).digest("hex"); // placeholder replaced below
   const { createHash } = await import("node:crypto");
   const sha = createHash("sha256").update(body).digest("hex");
   const payload = ["POST", "/check", ts, nonce, sha].join("\n");

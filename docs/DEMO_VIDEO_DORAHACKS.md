@@ -1,136 +1,94 @@
-# DoraHacks demo video — Agents Onchain / The Last Mile
+# DoraHacks demo video — Agents Onchain (canonical ≤2:30)
 
-Judges reward **working onchain execution through KeeperHub**, not polish alone.
-This pack is how EMBER wins the submission checklist and the story in ≤ 90 seconds.
+Judges must see **KeeperHub executing**, not only EMBER + BaseScan.
 
 Live product: https://ember-web-seven.vercel.app  
 Repo: https://github.com/mohamedwael201193/ember  
-Hackathon: https://dorahacks.io/hackathon/agents-onchain/detail
+MCP setup: [`MCP_DEMO.md`](./MCP_DEMO.md)  
+Workshop gap: [`KEEPERHUB_WORKSHOP_GAP_ANALYSIS.md`](./KEEPERHUB_WORKSHOP_GAP_ANALYSIS.md)
+
+**Target: 2:20–2:30.** Every visible ID must match across MCP, KeeperHub, EMBER, BaseScan, proof, anchor.
 
 ---
 
-## Can Cursor auto-record a narrated demo?
+## Identity lock
 
-**Not with the MCPs currently installed in this workspace.**
-
-| Capability | Status here |
-|---|---|
-| Chrome DevTools MCP (navigate / screenshot) | Available — no full video + TTS |
-| NarrateAI DemoMaker / Playback / DemoSmith / demo-recorder-mcp | **Not installed** — those *can* record + voiceover if you add them |
-| Agent inventing fake txs | Forbidden — only use real Basescan links below |
-
-### If you want agent-recorded video later
-
-Add one of these to Cursor MCP, then ask the agent to record:
-
-1. **NarrateAI DemoMaker** — [narrateai-app/demomaker-plugin](https://github.com/narrateai-app/demomaker-plugin) (narrated MP4 from a plan)
-2. **Playback** — [playback.mov](https://playback.mov/) macOS capture + MCP edit (`playback-mcp`)
-3. **DemoSmith** — [G0d2i11a/demosmith-mcp](https://github.com/G0d2i11a/demosmith-mcp) (Playwright + TTS)
-4. **demo-recorder-mcp** — [Schimuneck/demo-recorder-mcp](https://github.com/Schimuneck/demo-recorder-mcp)
-
-Until then: record with OBS / Loom / Windows Game Bar using the script below. Screenshots for B-roll: `docs/screenshots/`.
+| Surface | Value |
+| --- | --- |
+| Primary workflow | `5goaid2zjgzyb32661se3` |
+| Primary execution | `667ekg3qk5f45127eqjyy` |
+| Primary tx | `0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2` |
+| Smoke workflow (no spend) | `vewqfp44zmpa9dtctlrdr` |
+| Smoke execution (live MCP) | `2qvzsmq24d6nsjm0fzlhp` |
+| Standby workflow | `pvhwggqr8318wac68jb62` |
+| Rescue execution | `tjab2kqsitnwsfbr6e9ra` |
+| Rescue tx | `0x474376218593b8d3fbecb103286129b91dd6590fad779514b636cc480d6c8e41` |
+| Proof CID | `QmVr6yWDfuWbWE4m9UADtbJzSadqKXnUmpCHUERjsLWoyn` |
+| Anchor tx | `0x74ba1eac3e35c269175c06629782f66da454775141b6c94f14d608065c8d211f` |
 
 ---
 
-## Submission links (paste into DoraHacks)
+## Beat sheet (KeeperHub-first)
 
-| Field | Value |
-|---|---|
-| Source code | https://github.com/mohamedwael201193/ember |
-| Demo video | *(upload after recording)* |
-| KeeperHub / onchain tx (primary) | https://basescan.org/tx/0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2 |
-| Continuity contract | https://basescan.org/address/0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770 |
+### 0:00–0:15 — Problem
 
-### Backup mainnet txs (show if asked)
+> “AI payroll agents can decide to pay, but a missed execution can silently break the mission.”
 
-- PAYDAY slot 1: https://basescan.org/tx/0xeb670541f1646dc55e2403d97ba683c7f325c7e38161b1c415da5e8b5bb86888
-- PAYDAY slot 2: https://basescan.org/tx/0x9288d13aa65976b2fb996b4764be4ab098f22631094a28a5e5f8ea6e36b9eec3
-- Rescue replay: https://basescan.org/tx/0x474376218593b8d3fbecb103286129b91dd6590fad779514b636cc480d6c8e41
-- Deploy Continuity: https://basescan.org/tx/0x050014bf756531fcc94b13dd3f254ef4d0f661049e3759600a5e4466e0a6a3a6
-- Marketplace fee settlements (x402): https://basescan.org/tx/0xabbe77bc77f922d67d7430c77486f4dc6d913c8bb4a810bb07dade644bdd3563
+### 0:15–0:35 — KeeperHub MCP
 
-Evidence JSON: `docs/evidence/mainnet-payday-slots-2026-07-23.json`, `mainnet-rescue-2026-07-23.json`, `mainnet-continuity-deploy-2026-07-23.json`.
+Show Cursor/Claude connected to `https://app.keeperhub.com/mcp`.  
+Agent: `list_workflows` / `get_workflow` / `validate_workflow` on payday-stream-mainnet.
 
----
+### 0:35–0:55 — KeeperHub workflow + Run
 
-## Win framing (say this once, early)
+Canvas: Manual Trigger → Pay Employee USDC.  
+Open **Runs** for `667ekg3qk5f45127eqjyy` (or show smoke Run live, then cut to certified PAYDAY Run).
 
-> “Agents can decide. The last mile is moving value. EMBER detects unpaid AI payroll, restores it from a standby org, and every transfer executes on Base mainnet through KeeperHub — with an audit trail and sealed proof.”
+Optional live no-spend: execute smoke workflow, show Run `2qvzsmq24d6nsjm0fzlhp`.
 
-That maps to judging: **execution · KeeperHub surfaces · reliability · usefulness**.
+### 0:55–1:20 — EMBER
 
----
+Console: Observer · Sentinel · PAYDAY · Rescue · Proof · Anchor · Continuity SLO.  
+Provenance badge visible (CERTIFIED SNAPSHOT / LIVE OBSERVER).
 
-## 75–90s recording script (recommended)
+> “EMBER watches continuity, detects a missed slot, replays through KeeperHub, and seals evidence.”
 
-Record at **1440×900**, browser zoom 100%, hide bookmarks. Prefer **Live** mode when showing Basescan; Demo Mode is fine for UI story beats.
+### 1:20–1:45 — Real evidence
 
-### 0:00–0:12 · Hook + landing
+Same execution ID + tx on BaseScan `0xd26e6174…`.
 
-**Open:** https://ember-web-seven.vercel.app/
+### 1:45–2:05 — Recovery
 
-**Show:** Hero badge **Live on Base Mainnet** + orbit (PAY → MISS → RESTORE → PROOF).
+MISSED → SENTINEL → REPLAY → PROOF → ANCHOR → RESTORED  
+(drill labeled CERTIFIED DRILL — NO LIVE SPEND, paired with real rescue tx).
 
-**Say:**
-> “When an AI payroll agent dies, money stops. EMBER is continuity for onchain payroll — detect, restore, prove — executed through KeeperHub on Base mainnet.”
+### 2:05–2:20 — Proof
 
-### 0:12–0:28 · Living console
+IPFS CID + Continuity anchor.
 
-**Open:** `/app`
+### 2:20–2:30 — Close
 
-**Say:**
-> “This is the ops console. Topology, health, and the payment river. Green means verified receipts. Gaps are what the standby org must rescue.”
-
-### 0:28–0:42 · PAYDAY = real KeeperHub money
-
-**Open:** `/app/executions` then click a payment → open Basescan in a new tab.
-
-**Say:**
-> “PAYDAY is not a mock. Org A pays the employee through a KeeperHub workflow. Here’s the Base mainnet transaction.”
-
-**Show URL bar:** `basescan.org/tx/0xd26e61…`
-
-### 0:42–1:05 · Rescue (hero beat)
-
-**Open:** `/app/rescues`
-
-**Say:**
-> “Primary agent goes down. Observer sees unpaid slots from receipts. Sentinel replays payroll from the standby org — again through KeeperHub — then we publish and seal proof.”
-
-**Optional cut:** Basescan rescue tx `0x474376…`
-
-### 1:05–1:20 · Proof + close
-
-**Open:** `/app/proofs` then Continuity contract on Basescan.
-
-**Say:**
-> “Fingerprint, IPFS publish, onchain seal. If any layer disagrees, the proof fails. That’s the last mile: agents decide, KeeperHub executes, EMBER keeps the mission alive.”
-
-**End frame:** Landing or GitHub README for 2 seconds.
+> “KeeperHub executes the action. EMBER makes sure the mission continues when execution fails.”
 
 ---
 
-## Longer cut (≤ 3 min)
+## Must appear on screen
 
-Use root `DEMO_SCRIPT.md` for Mission Builder + Wallets. Keep the **Basescan open** beat — judges need to see a real hash.
+1. KeeperHub org/workflow  
+2. Workflow canvas  
+3. MCP / AI client tools  
+4. Agent using a KeeperHub tool  
+5. KeeperHub Run  
+6. Execution ID  
+7. EMBER console  
+8. Real transaction  
+9. BaseScan  
+10. Rescue evidence  
+11. Proof  
+12. Anchor  
 
 ---
 
-## Voiceover tips
+## Non-claims
 
-- Calm, slightly slow; no hype adjectives.
-- Say **KeeperHub** and **Base mainnet** out loud at least twice.
-- Never say Sepolia in the DoraHacks cut.
-- If UI still shows an old Sepolia workflow in KeeperHub cloud, open **`payday-stream-mainnet`** / mainnet evidence instead — do not film Sepolia as the hero claim.
-
----
-
-## Pre-flight checklist
-
-- [ ] Hero says **Live on Base Mainnet**
-- [ ] At least one Basescan tx is visible on camera
-- [ ] KeeperHub mentioned + workflow/audit trail visible if possible
-- [ ] Continuity contract link ready
-- [ ] Video under ~2 minutes (90s ideal)
-- [ ] GitHub public, README has demo + tx links
-- [ ] DoraHacks BUIDL has: repo · video · tx link
+Do not claim private routing, gas sponsorship, or KH-native missed-slot detection unless visibly proven.

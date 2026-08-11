@@ -6,6 +6,21 @@ export type MissionHealthState =
   | "RESCUING"
   | "RECOVERED";
 
+export type EvidenceProvenance =
+  | "live_runtime"
+  | "certified_mainnet_snapshot"
+  | "demo_fixture";
+
+export interface ProvenanceMeta {
+  source: EvidenceProvenance;
+  label: string;
+  timestamp: string;
+  evidenceId?: string;
+  network: string;
+  chainId: number;
+  note?: string;
+}
+
 export interface PublicConfig {
   network: string;
   chainId: number;
@@ -47,6 +62,7 @@ export interface DashboardSnapshot {
   check: CheckResponse | null;
   checkStatus: number;
   serviceReadiness: ServiceReadiness[];
+  provenance?: ProvenanceMeta;
 }
 
 export interface RescueJournal {
@@ -90,4 +106,8 @@ export interface MainnetEvidence {
     employee?: string;
     continuity?: string;
   };
+  primaryWorkflowId?: string;
+  primaryExecutionId?: string;
+  primaryTransactionHash?: string;
+  provenance?: ProvenanceMeta;
 }

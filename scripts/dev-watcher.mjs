@@ -25,7 +25,13 @@ async function tick() {
   } catch (err) {
     health = { error: err instanceof Error ? err.message : String(err) };
   }
-  const row = { at, ok, runtime, health, mode: process.env.DEVELOPMENT_MODE === "1" ? "development" : "live" };
+  const row = {
+    at,
+    ok,
+    runtime,
+    health,
+    mode: process.env.DEVELOPMENT_MODE === "1" ? "development" : "live"
+  };
   writeFileSync(resolve(outDir, "heartbeat.json"), JSON.stringify(row, null, 2));
   console.log(`[watcher] ${at} ok=${ok} runtime=${runtime}`);
 }

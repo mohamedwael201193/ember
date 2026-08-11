@@ -51,6 +51,3 @@ Thumbs.db
 tmp/
 temp/
 
-# Requires GitHub token workflow scope to publish
-.github/workflows/
-

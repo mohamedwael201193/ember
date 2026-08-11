@@ -25,3 +25,7 @@ Live platform behavior that differs from earlier specs or from `IMPLEMENTATION_P
 | 2026-07-22 | PAYDAY restart idempotency | Local journal alone prevents duplicate slot execution | Live KeeperHub accepts `Idempotency-Key`; restarting in the same slot returned execution `2hop…gs6` and the same tx | Key each W1 invocation by mission + slot and retain the local single-flight guard |
 | 2026-07-22 | RPC fallback network | Generic `BASE_RPC_URL_FALLBACK` was available to Sepolia receipt checks | The configured generic fallback is Base mainnet, so it is not a valid Sepolia fallback | Add `BASE_SEPOLIA_RPC_URL_FALLBACK`; never cross network boundaries |
 | 2026-07-22 | Render free disks | Blueprint assumed persistent disks for journals | Free plan rejects disks; journals must use ephemeral `/tmp/ember/*` | Free Blueprint uses `/tmp`; promote plan + disks before mainnet |
+
+| 2026-08-11 | Plan assumed local Foundry for contract tests | `forge` not installed on Windows workstation | Contract tests run in GitHub Actions via foundry-toolchain |
+| 2026-08-11 | Plan suggested opening upstream CLI PR immediately | `gh` not authenticated in this environment | Pack + UPSTREAM_PR.md shipped in-repo for manual PR |
+| 2026-08-11 | Older demo video >2:30 / no KH UI | Canonical beat sheet now ≤2:30 with KH UI requirement | `docs/DEMO_VIDEO_DORAHACKS.md` — recording still operator-owned |

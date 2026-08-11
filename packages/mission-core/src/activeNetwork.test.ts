@@ -21,9 +21,6 @@ describe("resolveActiveNetwork", () => {
     expect(config.chainId).toBe(8453);
     expect(config.continuityAddress).toBe("0xmain");
     expect(config.usdcAddress).toBe("0xusdc");
-    expect(config.rpcUrls).toEqual([
-      "https://example.invalid/rpc",
-      "https://mainnet.base.org"
-    ]);
+    expect(config.rpcUrls).toEqual(["https://example.invalid/rpc", "https://mainnet.base.org"]);
   });
 });

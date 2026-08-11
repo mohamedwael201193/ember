@@ -111,3 +111,15 @@ drains the HTTP server, and has a bounded forced-exit timeout.
 
 1. Agentic `wallet add` HTTP 500 — retry; if persistent, collect request/response/headers/timestamp/request-id into `docs/evidence/`.
 2. Free-plan `402 upgrade_required` on HTTP Request / Code — keep Sentinel self-poll + direct `/rescue` until Pro or documented free workaround.
+
+## Provenance labels (First-Place)
+
+Public APIs and UI must label data as one of:
+
+- `LIVE RUNTIME` / `LIVE OBSERVER`
+- `CERTIFIED MAINNET SNAPSHOT`
+- `DEMO FIXTURE`
+
+Never present fixtures or certified history as a fresh live spend. Continuity Guardian example: `pnpm --filter @ember/example-continuity-guardian run setup && run doctor && inspect` — WRITE_MODE refuses writes.
+
+MCP evidence capture (read-only): `pnpm exec tsx scripts/capture-mcp-continuity-evidence.ts` (requires KH credentials in env; does not execute spends by default).

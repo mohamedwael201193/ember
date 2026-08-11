@@ -21,7 +21,7 @@ import {
   logOk,
   logSection,
   logWarn,
-  writeIfMissing,
+  writeIfMissing
 } from "./lib/common.mjs";
 
 const MIN_NODE = 20;
@@ -60,7 +60,7 @@ async function main() {
     try {
       execSync("corepack prepare pnpm@10.34.5 --activate", {
         cwd: ROOT,
-        stdio: "ignore",
+        stdio: "ignore"
       });
       pnpm = checkPnpm();
     } catch {
@@ -115,10 +115,8 @@ async function main() {
       MISSION_ID_SEPOLIA: "1",
       MISSION_ID_MAINNET: "1",
       MISSION_START_AT: "1784768419",
-      WORKFLOW_HASH_SEPOLIA:
-        "0xdev000000000000000000000000000000000000000000000000000000000001",
-      WORKFLOW_HASH_MAINNET:
-        "0xdev000000000000000000000000000000000000000000000000000000000001",
+      WORKFLOW_HASH_SEPOLIA: "0xdev000000000000000000000000000000000000000000000000000000000001",
+      WORKFLOW_HASH_MAINNET: "0xdev000000000000000000000000000000000000000000000000000000000001",
       EMPLOYEE_ADDRESS: "0x3333333333333333333333333333333333333333",
       ORG_A_WALLET_ADDRESS: "0x1111111111111111111111111111111111111111",
       ORG_B_WALLET_ADDRESS: "0x2222222222222222222222222222222222222222",
@@ -126,9 +124,9 @@ async function main() {
       ORG_B_WALLET_INTEGRATION_ID: "dev-org-b-wallet",
       KH_API_BASE: "https://app.keeperhub.com",
       KH_MCP_URL: "https://app.keeperhub.com/mcp",
-      KH_API_KEY_PRIMARY_EXECUTOR: "kh_dev_executor_not_for_production",
-      KH_API_KEY_PRIMARY_OBSERVER: "kh_dev_observer_not_for_production",
-      KH_API_KEY_STANDBY: "kh_dev_standby_not_for_production",
+      KH_API_KEY_PRIMARY_EXECUTOR: "kh_xxxxxxxxxxxxxxxxxxxx",
+      KH_API_KEY_PRIMARY_OBSERVER: "kh_xxxxxxxxxxxxxxxxxxxx",
+      KH_API_KEY_STANDBY: "kh_xxxxxxxxxxxxxxxxxxxx",
       KH_ORG_A_W1_WORKFLOW_ID: "dev-org-a-w1",
       KH_ORG_B_W1_REPLAY_WORKFLOW_ID: "dev-org-b-w1-replay",
       KH_ORG_B_W2_WORKFLOW_ID: "dev-org-b-w2",
@@ -136,7 +134,7 @@ async function main() {
       PINATA_JWT: "dev-pinata-jwt-not-for-production",
       RESCUE_JOURNAL_DIR: "./runtime/rescues",
       PAYDAY_JOURNAL_DIR: "./runtime/payday",
-      LOG_LEVEL: "info",
+      LOG_LEVEL: "info"
     });
     logOk("created .env with DEVELOPMENT_MODE=1 (safe local defaults)");
   } else {
@@ -153,7 +151,7 @@ async function main() {
         DEVELOPMENT_MODE: "1",
         SENTINEL_SHARED_SECRET: "dev-sentinel-hmac-secret-32chars!!",
         PRIMARY_OBSERVER_SHARED_SECRET: "dev-observer-hmac-secret-32chars!!",
-        BFF_PORT: "8780",
+        BFF_PORT: "8780"
       });
       logOk("created frontend/.env for local BFF");
     } else {
@@ -168,7 +166,7 @@ async function main() {
     "fixtures/dev/sample-snapshot.json",
     "fixtures/dev/sample-evidence.json",
     "fixtures/dev/sample-wallets.json",
-    "fixtures/dev/sample-missions.json",
+    "fixtures/dev/sample-missions.json"
   ];
   for (const rel of fixtureFiles) {
     if (existsSync(resolve(ROOT, rel))) logOk(rel);

@@ -12,7 +12,7 @@ export const REQUIRED_DIRS = [
   "runtime/payday",
   "runtime/watcher",
   "fixtures/dev",
-  "tmp",
+  "tmp"
 ];
 
 export const DEFAULT_PORTS = {
@@ -21,7 +21,7 @@ export const DEFAULT_PORTS = {
   runtime: 10000,
   sentinel: 8787,
   observer: 8788,
-  payday: 8789,
+  payday: 8789
 };
 
 export function loadEnvFile(path = resolve(ROOT, ".env")) {
@@ -78,7 +78,7 @@ export function checkNode(min = 20) {
     message:
       major >= min
         ? `Node.js ${process.versions.node}`
-        : `Node.js ${process.versions.node} is too old (need >= ${min})`,
+        : `Node.js ${process.versions.node} is too old (need >= ${min})`
   };
 }
 
@@ -87,14 +87,14 @@ export function checkPnpm() {
     const version = execSync("pnpm --version", {
       cwd: ROOT,
       encoding: "utf8",
-      stdio: ["ignore", "pipe", "ignore"],
+      stdio: ["ignore", "pipe", "ignore"]
     }).trim();
     return { ok: true, version, message: `pnpm ${version}` };
   } catch {
     return {
       ok: false,
       version: null,
-      message: "pnpm not found — run: corepack enable && corepack prepare pnpm@10.34.5 --activate",
+      message: "pnpm not found — run: corepack enable && corepack prepare pnpm@10.34.5 --activate"
     };
   }
 }
@@ -118,7 +118,7 @@ export async function checkPorts(ports) {
       name,
       port,
       ok: free,
-      message: free ? `${name} :${port} available` : `${name} :${port} is already in use`,
+      message: free ? `${name} :${port} available` : `${name} :${port} is already in use`
     });
   }
   return results;
@@ -143,7 +143,7 @@ export function run(command, args, opts = {}) {
     cwd: ROOT,
     stdio: "inherit",
     shell: process.platform === "win32",
-    ...opts,
+    ...opts
   });
 }
 

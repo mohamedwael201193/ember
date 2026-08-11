@@ -16,7 +16,7 @@ import {
   loadEnvFile,
   ensureDirs,
   checkNode,
-  checkPnpm,
+  checkPnpm
 } from "./lib/common.mjs";
 
 applyEnv(loadEnvFile());
@@ -45,7 +45,7 @@ function start(name, command, args, env = {}) {
     stdio: "inherit",
     shell: true,
     env: { ...process.env, ...env },
-    windowsHide: true,
+    windowsHide: true
   });
   child.on("exit", (code, signal) => {
     if (shuttingDown) return;
@@ -83,14 +83,14 @@ if (dev) {
     execSync("pnpm build", { cwd: ROOT, stdio: "inherit" });
   }
   start("runtime", "node", ["scripts/start-ember-runtime.mjs"], {
-    PORT: process.env.PORT || "10000",
+    PORT: process.env.PORT || "10000"
   });
 }
 
 start("watcher", "node", ["scripts/dev-watcher.mjs"]);
 start("frontend", "pnpm", ["--filter", "@ember/frontend", "dev"], {
   EMBER_RUNTIME_URL: process.env.EMBER_RUNTIME_URL || "http://127.0.0.1:10000",
-  DEVELOPMENT_MODE: dev ? "1" : process.env.DEVELOPMENT_MODE || "0",
+  DEVELOPMENT_MODE: dev ? "1" : process.env.DEVELOPMENT_MODE || "0"
 });
 
 console.log(`

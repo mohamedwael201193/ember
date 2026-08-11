@@ -1,67 +1,124 @@
 # EMBER evidence index
 
-EMBER contract, mission, replay, recovery, and proof activity in this index is
-Base Sepolia. The Phase 11 Marketplace evidence separately records x402 fee
-settlements on Base mainnet, as required by KeeperHub's paid workflow protocol;
-those payments are not an EMBER mainnet deployment. JSON files contain public
-workflow IDs, execution IDs, transaction hashes, addresses, and proof data.
-They contain no API key or private key.
+**Lead with Base mainnet — Phase 13.**  
+JSON in this folder stores public workflow IDs, execution IDs, transaction hashes, addresses, and proof CIDs. **No API keys or private keys.**
 
-## Passing evidence
+Every public claim must be labeled:
 
-| Artifact                          | Result              | What it proves                                                                                                               |
-| --------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `platform-verification.md`        | Mixed, dated matrix | Live KeeperHub API, MCP, CLI, free-plan, and wallet behavior. Failed external gates remain visibly failed.                   |
-| `rescue-live2slots.json`          | Pass                | Initial two-slot Org B replay with real KeeperHub executions and transactions.                                               |
-| `rescue-idempotency-check.json`   | Pass after fix      | Same rescue is stable and later rescue slot IDs do not overlap prior covered slots.                                          |
-| `chaos-sentinel-kill.json`        | Pass                | Sentinel process restart resumes a completed rescue without new replay transactions.                                         |
-| `chaos-sentinel-mid-replay.json`  | Pass                | Sentinel was killed with a durable `EXECUTING` intent; restart reused the execution, finished two transfers and anchored.    |
-| `chaos-payday-kill.json`          | Pass                | PAYDAY outage is observable and readiness recovers after restart.                                                            |
-| `payday-restart-idempotency.json` | Pass                | Same-slot restart returns the same KeeperHub execution and transaction; receipt is valid.                                    |
-| `proof-live2slots.json`           | Pass                | Canonical proof pin, gateway fetch-back hash, KeeperHub anchor execution, `ProofAnchored` event, and stored proof all agree. |
-| `post-fix-three-drills.json`      | Pass                | Three bounded batches: six unique verified transfers, three fetched-back proofs, three anchors, stable explicit reruns.      |
-| `render-free-deploy.json`         | Pass                | Combined Render web service (retargeted); public `/healthz`/`/readyz` and HMAC `/check` verified live.                       |
-| `render-combined-public-checks.json` | Pass             | Single-runtime probes: children health, unauth 401s, receipt-backed HMAC `/check`.                                           |
-| `soak-12h.json`                   | Pass                | 12h process soak: 695 checks, zero health/PID/journal mutations.                                                             |
-| `validation-suite-2026-07-22.json`| Pass                | Full local+live validation after soak (unit/typecheck/drills/anchor/Render/KH smoke).                                        |
-| `phase11-wallet-retry.json`       | Partial             | Agentic wallet now provisions; paid settlement blocked on 0 USDC balance.                                                    |
-| `phase11-paid-settlement-2026-07-22.json` | Pass with external listing bug | Two real 0.01 Base USDC x402 receipts; alternate paid workflow completed after `wallet-snapshot-base` charged then failed. |
-| `runtime-hardening-local-2026-07-22.json` | Pass | Child credential allowlists, strict environment startup, health/readiness/auth, and graceful parent/child shutdown. |
-| `render-final-deploy-2026-07-22.json` | Pass with plan/durability blockers | Final hardening commit deployed live; health, readiness, auth, request limit, metrics, and receipt-backed HMAC check passed. |
-| `backend-certification-2026-07-22.json` | Rehearsal certified; mainnet blocked | Consolidated final local, contract, KeeperHub, wallet, Marketplace, runtime, Render, security, and stop-gate result. |
-| `phase11-paid-retry-2026-07-23.json` | Pass with external listing bug | Retried funded x402 success (`defi-onchain-intelligence-base`) and confirmed `wallet-snapshot-base` still fails after charge. |
-| `render-durable-disk-2026-07-23.json` | Pass | Persistent 1 GB disk mounted at `/var/data/ember`; journals moved off `/tmp`. |
-| `mainnet-deploy-blocker-2026-07-23.json` | Fail / funding stop | Forge Deploy broadcast blocked by deployer Base ETH = 0 despite Phase 13 approval and prepared mainnet workflows. |
+| Label | Meaning |
+| --- | --- |
+| `LIVE RUNTIME` | Current process / observer talking to live APIs |
+| `CERTIFIED MAINNET SNAPSHOT` | Historical Base mainnet run, verified and frozen |
+| `DEMO FIXTURE` | Local/dev sample data — never claim as live |
 
-Public proof:
+---
+
+## BASE MAINNET — PHASE 13 (judge-critical)
+
+Provenance: **CERTIFIED MAINNET SNAPSHOT**
+
+| Claim | ID / link | Artifact |
+| --- | --- | --- |
+| Continuity.sol | [`0x068bB96e…5770`](https://basescan.org/address/0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770) | `mainnet-continuity-deploy-2026-07-23.json` |
+| Primary workflow | `5goaid2zjgzyb32661se3` | `mainnet-payday-slots-2026-07-23.json` |
+| Primary execution | `667ekg3qk5f45127eqjyy` | `mainnet-slot0-2026-07-23.json` |
+| Primary USDC tx | [`0xd26e6174…341ea2`](https://basescan.org/tx/0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2) | same |
+| Standby / rescue workflow | `pvhwggqr8318wac68jb62` | `mainnet-rescue-2026-07-23.json` |
+| Rescue replay exec | `tjab2kqsitnwsfbr6e9ra` | same |
+| Rescue USDC tx | [`0x47437621…8e41`](https://basescan.org/tx/0x474376218593b8d3fbecb103286129b91dd6590fad779514b636cc480d6c8e41) | same |
+| Second rescue tx | [`0x83f721bf…5432`](https://basescan.org/tx/0x83f721bfbafc20ba4327d2a955afd05db9ec7d063e41ae0484c851edf0c15432) | same |
+| IPFS proof CID | [`QmVr6yWDfuWbWE4m9UADtbJzSadqKXnUmpCHUERjsLWoyn`](https://ipfs.io/ipfs/QmVr6yWDfuWbWE4m9UADtbJzSadqKXnUmpCHUERjsLWoyn) | same |
+| Anchor execution | `04hqz6i716c0soebv5n3p` | same |
+| Anchor tx | [`0x74ba1eac…211f`](https://basescan.org/tx/0x74ba1eac3e35c269175c06629782f66da454775141b6c94f14d608065c8d211f) | same |
+| MCP → KH → Base chain | `get_execution` on `667ekg3qk5f45127eqjyy` | `mcp-continuity-demo-2026-08-11.json` |
+
+Identity check (must match across surfaces):
+
+```text
+EMBER evidence
+  ↕ workflow 5goaid2zjgzyb32661se3
+  ↕ execution 667ekg3qk5f45127eqjyy
+  ↕ MCP get_execution
+  ↕ tx 0xd26e6174…341ea2
+  ↕ BaseScan
+```
+
+Additional certified PAYDAY slots (same mission):
+
+- Slot 1: https://basescan.org/tx/0xeb670541f1646dc55e2403d97ba683c7f325c7e38161b1c415da5e8b5bb86888
+- Slot 2: https://basescan.org/tx/0x9288d13aa65976b2fb996b4764be4ab098f22631094a28a5e5f8ea6e36b9eec3
+
+---
+
+## KeeperHub surfaces exercised
+
+- Workflow canvas / Run / Runs (primary + standby)
+- MCP: `tools_documentation`, `get_execution` (see MCP artifact)
+- REST execute + receipt verify (runtime)
+- Continuity.sol `anchorProof` via KeeperHub
+
+Deep links:
+
+- Primary workflow: https://app.keeperhub.com/workflows/5goaid2zjgzyb32661se3
+- Primary run: https://app.keeperhub.com/workflows/5goaid2zjgzyb32661se3/executions/667ekg3qk5f45127eqjyy
+- Standby workflow: https://app.keeperhub.com/workflows/pvhwggqr8318wac68jb62
+
+---
+
+## Base Sepolia — rehearsal (not the grand-prize claim)
+
+Historical Sepolia rescue/proof/chaos drills remain valid engineering evidence for reliability, but they are **not** the Phase 13 mainnet claim.
+
+| Artifact | What it proves |
+| --- | --- |
+| `rescue-live2slots.json` | Two-slot Org B replay |
+| `rescue-idempotency-check.json` | No overlapping slot IDs after fix |
+| `chaos-sentinel-kill.json` | Restart without new spend |
+| `chaos-sentinel-mid-replay.json` | Mid-replay crash resume |
+| `proof-live2slots.json` | Pin + fetch-back + anchor agree |
+| `post-fix-three-drills.json` | Bounded multi-drill suite |
+| `payday-restart-idempotency.json` | Same-slot restart reuse |
+| `soak-12h.json` | 12h process soak |
+
+Public Sepolia proof example (historical):
 
 - CID: `Qmaq9qJ8KEcvR4yv8JitRXLwViDDdm5mnH8AkrMzrvzE6P`
-- Anchor transaction:
-  https://sepolia.basescan.org/tx/0xad0fe495639b4222cf80d25bbf434dccfa42f023cf145339afd9702d401ed87b
-- Replay transaction 1:
-  https://sepolia.basescan.org/tx/0x698ddc0afe9a34cc27a878e9b1bffe31c5b2cd26a433a5102a6dca71a02f2695
-- Replay transaction 2:
-  https://sepolia.basescan.org/tx/0x5701a6a01aeb557376f6014a1db6df49003ddbc44b134f2b389a256400c293dc
-- PAYDAY restart transaction:
-  https://sepolia.basescan.org/tx/0x47465f069fce41effa7d1a0e85d48b29a94fecd94a58b34f7cb8a80ede79c1db
-- Phase 11 x402 settlement 1:
-  https://basescan.org/tx/0xabbe77bc77f922d67d7430c77486f4dc6d913c8bb4a810bb07dade644bdd3563
-- Phase 11 x402 settlement 2:
-  https://basescan.org/tx/0x87f5c75fac79d090df15da27c8a330002c206e74ca3b20cb02114e0dda93e71f
+- Anchor: https://sepolia.basescan.org/tx/0xad0fe495639b4222cf80d25bbf434dccfa42f023cf145339afd9702d401ed87b
 
-## Historical failure evidence
+---
 
-`rescue-live2slots-rerun.json` is intentionally retained as a failed pre-fix
-artifact. It shows the same historical slot IDs being paid again because replay
-transaction block times landed in the current slot. This is not passing
-evidence. The correction binds slot IDs to verified Org B transactions across
-all mission journals; `rescue-idempotency-check.json` is the post-fix result.
+## x402 / Marketplace experiments
 
-## External blockers
+Base mainnet x402 fee settlements prove KeeperHub paid-workflow rails. They are **not** continuity payroll:
 
-- KeeperHub HTTP and Code workflow actions return `402 upgrade_required`.
-- `wallet-snapshot-base` charges successfully but its workflow currently fails;
-  an alternate paid listing completed, so this is listing-specific rather than
-  a wallet/x402 settlement failure.
-- Mainnet activity requires explicit Phase 13 human approval.
-- Frontend remains deferred.
+- https://basescan.org/tx/0xabbe77bc77f922d67d7430c77486f4dc6d913c8bb4a810bb07dade644bdd3563
+- https://basescan.org/tx/0x87f5c75fac79d090df15da27c8a330002c206e74ca3b20cb02114e0dda93e71f
+
+See `phase11-*.json`.
+
+---
+
+## Development fixtures
+
+`fixtures/dev/sample-evidence.json` is labeled **DEMO FIXTURE**. Explorer links and hashes there must not be presented as live mainnet.
+
+---
+
+## Passing ops / platform evidence
+
+| Artifact | Result |
+| --- | --- |
+| `platform-verification.md` | Mixed dated matrix — failed gates stay failed |
+| `render-*.json` | Combined Render runtime health / HMAC |
+| `runtime-hardening-local-2026-07-22.json` | Credential allowlists + shutdown |
+| `backend-certification-2026-07-22.json` | Consolidated certification snapshot |
+| `validation-suite-2026-07-22.json` | Full local+live validation |
+
+---
+
+## Historical failures (retained on purpose)
+
+- `rescue-live2slots-rerun.json` — pre-fix double-pay risk (slot ID binding bug). Post-fix: `rescue-idempotency-check.json`.
+- `mainnet-deploy-blocker-2026-07-23.json` — funding stop before Continuity deploy succeeded.
+
+Never promote a failed artifact to “pass” because a later run succeeded.

@@ -8,6 +8,7 @@
     "dev:vite": "vite",
     "dev:bff": "tsx watch server/bff.ts",
     "build": "tsc -b && vite build",
+    "typecheck": "tsc -b --pretty false",
     "preview": "vite preview",
     "start:bff": "tsx server/bff.ts",
     "lint": "oxlint"

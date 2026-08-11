@@ -81,7 +81,7 @@ const ALLOW = [
   "WORKFLOW_HASH_MAINNET",
   "WORKFLOW_HASH_SEPOLIA",
   "X402_FEE_USDC",
-  "X402_MAX_FEE_USDC",
+  "X402_MAX_FEE_USDC"
 ];
 
 const forced = {
@@ -97,8 +97,7 @@ const forced = {
   KH_API_BASE: process.env.KH_API_BASE || "https://app.keeperhub.com",
   KH_MCP_URL: process.env.KH_MCP_URL || "https://app.keeperhub.com/mcp",
   LOG_LEVEL: "info",
-  W1_CANONICAL_PATH:
-    process.env.W1_CANONICAL_PATH || "workflows/w1-payday-stream.mainnet.json",
+  W1_CANONICAL_PATH: process.env.W1_CANONICAL_PATH || "workflows/w1-payday-stream.mainnet.json"
 };
 
 const body = [];
@@ -112,13 +111,13 @@ for (const k of ALLOW) {
 const headers = {
   authorization: `Bearer ${apiKey}`,
   accept: "application/json",
-  "content-type": "application/json",
+  "content-type": "application/json"
 };
 
 const put = await fetch(`https://api.render.com/v1/services/${SERVICE_ID}/env-vars`, {
   method: "PUT",
   headers,
-  body: JSON.stringify(body),
+  body: JSON.stringify(body)
 });
 const out = await put.json();
 const keys = (Array.isArray(out) ? out : [])
@@ -138,8 +137,8 @@ console.log(
         PRIMARY_OBSERVER_SHARED_SECRET: keys.includes("PRIMARY_OBSERVER_SHARED_SECRET"),
         PINATA_JWT: keys.includes("PINATA_JWT"),
         KH_API_KEY_PRIMARY_OBSERVER: keys.includes("KH_API_KEY_PRIMARY_OBSERVER"),
-        BASE_RPC_URL: keys.includes("BASE_RPC_URL"),
-      },
+        BASE_RPC_URL: keys.includes("BASE_RPC_URL")
+      }
     },
     null,
     2
@@ -153,7 +152,7 @@ if (put.status !== 200 || keys.length < 40) {
 const dep = await fetch(`https://api.render.com/v1/services/${SERVICE_ID}/deploys`, {
   method: "POST",
   headers,
-  body: JSON.stringify({ clearCache: "do_not_clear" }),
+  body: JSON.stringify({ clearCache: "do_not_clear" })
 });
 const depBody = await dep.text();
 console.log("deploy", dep.status, depBody.slice(0, 220));

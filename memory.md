@@ -303,3 +303,64 @@ pnpm --filter @ember/frontend dev
 - Env from `frontend/.env.example` (HMAC secrets server-side only)
 - Bundled evidence: `frontend/server/data/*.json`
 
+
+---
+
+## 2026-08-11 — First-Place Sprint (DoraHacks Agents Onchain)
+
+Last updated: 2026-08-11 ~01:00 UTC+3  
+Mode: **implementation agent executing approved First-Place plan**
+
+### Context locks (updated)
+- Bearer-only KH auth preserved
+- No new mainnet spend without explicit user approval
+- Provenance mandatory: LIVE RUNTIME | CERTIFIED MAINNET SNAPSHOT | DEMO FIXTURE
+- Frontend allowed only for truth labels, SLO, deep links, judge clarity
+- Prefer certified historical txs for evidence
+
+### Completed this sprint
+- Release blockers: receipt-checker Node types, lint/prettier, CI activated (`.github/workflows/ci.yml`), secrets placeholders
+- Provenance on BFF evidence + Vercel `api/[...path].ts`; UI badges (Landing/AppShell/Executions/Rescues/Proofs/Operations)
+- `@ember/continuity-kit` + `examples/continuity-guardian` (setup/doctor/inspect; WRITE_MODE refuses writes)
+- MCP evidence: `docs/evidence/mcp-continuity-demo-2026-08-11.json` + `scripts/capture-mcp-continuity-evidence.ts`
+- Continuity SLO + KeeperHub deep links helper
+- Docs: README trust stack, evidence README mainnet-first, `KEEPERHUB_CONTINUITY_ADOPTION.md`, Recovery Contract Pack v1 (CLI #53 still open; PR #95 open changes-requested — do not overlap), SUBMISSION.md, FINALIST_PITCH, DEMO beat sheet ≤2:30
+- Tests: continuity-kit, deep links, recovery contract pack
+
+### Certified identity lock
+- WF `5goaid2zjgzyb32661se3` / exec `667ekg3qk5f45127eqjyy` / tx `0xd26e6174…341ea2`
+- Rescue WF `pvhwggqr8318wac68jb62` / exec `tjab2kqsitnwsfbr6e9ra` / tx `0x47437621…`
+- CID `QmVr6yWD…` / anchor `0x74ba1eac…` / Continuity `0x068bB96e…5770`
+
+### Remaining / honest gaps
+- Final ≤2:30 video with authenticated KeeperHub UI not yet recorded/uploaded
+- CI green on GitHub requires push (local gates must pass first)
+- `forge` not installed locally — contract tests via CI only
+- Upstream CLI PR not opened (pack ready in-repo; gh auth unavailable in this environment)
+- Credential rotation still advised (historical chat exposure)
+
+### Next
+1. Run full local gate (format/lint/typecheck/test/build)
+2. Write `FINAL_FIRST_PLACE_CERTIFICATION.md` with honest incomplete items
+3. Record demo video (operator) matching identity lock
+
+---
+
+## 2026-08-11 — Final KeeperHub sprint (workshop + MCP + deploy prep)
+
+### Workshop
+- Watched https://www.youtube.com/watch?v=k6D7iIKKRiM via /watch (captions + keyframes).
+- Wrote docs/KEEPERHUB_WORKSHOP_GAP_ANALYSIS.md — simple Manual→Pay is correct; demo must show KH UI + MCP.
+
+### Live MCP (no USDC spend)
+- validate_workflow 5goaid2zjgzyb32661se3 → valid
+- execute smoke vewqfp44zmpa9dtctlrdr → execution 2qvzsmq24d6nsjm0fzlhp success
+- get_execution 667ekg3qk5f45127eqjyy → tx 0xd26e6174… matches certified evidence
+
+### Production probes
+- Render healthz 200 children true
+- Vercel /api/health + /api/config OK; evidence provenance missing until frontend redeploy
+
+### Engineering
+- vitest fileParallelism=false (Windows integration flake)
+- docs: MCP_DEMO, FINAL_VERIFICATION_MATRIX, scorecard rescore, certification rewrite

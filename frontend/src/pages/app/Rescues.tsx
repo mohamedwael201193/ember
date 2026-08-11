@@ -7,9 +7,12 @@ import { shortHash } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { SvgRescueFlow } from "@/components/svg/SvgScene";
 import { Expandable } from "@/components/Expandable";
+import { ProvenanceBadge } from "@/components/ProvenanceBadge";
 import { Link } from "react-router-dom";
 import { useDemoMode } from "@/hooks/useDemoMode";
 import { paymentLabel } from "@/lib/product";
+import { keeperHubExecutionUrl } from "@/lib/keeperhub";
+import { ExternalLink } from "lucide-react";
 
 const PIPELINE = [
   { key: "observe", label: "Watch", hint: "See unpaid payments after the grace window." },
@@ -25,6 +28,7 @@ export function RescuesPage() {
   const qc = useQueryClient();
   const { isDemo } = useDemoMode();
   const evidence = useQuery({ queryKey: ["evidence"], queryFn: api.evidence });
+  const cfg = useQuery({ queryKey: ["config"], queryFn: api.config });
   const reduce = useReducedMotion();
   const railRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -35,7 +39,7 @@ export function RescuesPage() {
   });
 
   const journal = evidence.data?.rescue;
-  const explorer = "https://basescan.org";
+  const explorer = cfg.data?.explorerBase ?? "https://basescan.org";
   const completed = journal?.status === "COMPLETED";
 
   useEffect(() => {
@@ -86,16 +90,24 @@ export function RescuesPage() {
             proof is sealed forever.
           </p>
         </div>
-        {!isDemo && (
-          <Button
-            variant="outline"
-            onClick={() => rescue.mutate()}
-            disabled={rescue.isPending}
-          >
-            {rescue.isPending ? "Running…" : "Practice rescue"}
-          </Button>
-        )}
+        <div className="flex flex-col items-end gap-2">
+          <ProvenanceBadge provenance={evidence.data?.provenance} />
+          {!isDemo && (
+            <Button
+              variant="outline"
+              onClick={() => rescue.mutate()}
+              disabled={rescue.isPending}
+            >
+              {rescue.isPending ? "Running…" : "Practice rescue"}
+            </Button>
+          )}
+        </div>
       </div>
+
+      <p className="rounded-[4px] border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-xs text-amber-200">
+        CERTIFIED DRILL — NO LIVE SPEND when viewing snapshot evidence. Pair this story with
+        real KeeperHub run IDs and BaseScan hashes below.
+      </p>
 
       <SvgRescueFlow />
 
@@ -177,20 +189,39 @@ export function RescuesPage() {
           <div className="mt-8 space-y-4">
             <h3 className="text-sm text-[var(--fg-muted)]">Replayed payments</h3>
             <div className="flex gap-3 overflow-x-auto pb-2">
-              {(journal.replays ?? []).map((r, i) => (
-                <a
-                  key={r.slot}
-                  href={`${explorer}/tx/${r.txHash}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="min-w-[140px] rounded-[4px] border border-emerald-500/30 bg-emerald-500/5 p-4 transition-transform hover:scale-[1.02]"
-                >
-                  <div className="text-xs text-emerald-400">{paymentLabel(i)} restored</div>
-                  <div className="mt-2 font-mono text-[11px] text-[var(--fg-muted)]">
-                    {shortHash(r.txHash)}
+              {(journal.replays ?? []).map((r, i) => {
+                const khHref = keeperHubExecutionUrl(
+                  cfg.data?.orgBReplayWorkflowId,
+                  r.executionId
+                );
+                return (
+                  <div
+                    key={r.slot}
+                    className="min-w-[160px] rounded-[4px] border border-emerald-500/30 bg-emerald-500/5 p-4"
+                  >
+                    <div className="text-xs text-emerald-400">{paymentLabel(i)} restored</div>
+                    <a
+                      href={`${explorer}/tx/${r.txHash}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 block font-mono text-[11px] text-[var(--fg-muted)] hover:text-[var(--accent)]"
+                    >
+                      BaseScan · {shortHash(r.txHash)}
+                    </a>
+                    {khHref ? (
+                      <a
+                        href={khHref}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-1 inline-flex items-center gap-1 text-[11px] text-[var(--accent)] hover:underline"
+                      >
+                        KeeperHub run
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    ) : null}
                   </div>
-                </a>
-              ))}
+                );
+              })}
             </div>
           </div>
 

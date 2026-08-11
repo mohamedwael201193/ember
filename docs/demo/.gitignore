@@ -1,0 +1,5 @@
+*.mp4
+watch-kh-workshop/download/
+watch-kh-workshop/frames/
+!.gitkeep
+

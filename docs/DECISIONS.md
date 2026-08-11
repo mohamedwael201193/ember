@@ -15,3 +15,8 @@
 | 2026-07-22 | Rescue replay fsyncs an intent before KeeperHub execution                  | A process can die after broadcast but before response; mission/slot idempotency closes the double-pay window | `services/sentinel/src/rescue.ts`                               |
 | 2026-07-22 | Sentinel anchors through Org B remote MCP, never a local signer            | The standby identity is KeeperHub's custodial wallet; local private keys would violate the trust boundary    | `proof_anchored` journal step                                   |
 | 2026-07-22 | Ambiguous anchor recovery reads `rescueProof` before retrying              | KeeperHub idempotency is time-bounded, while the contract is the durable source of truth                     | `scripts/verify-anchor-recovery.ts`                             |
+
+| 2026-08-11 | Provenance triad on every public evidence surface | Judges must distinguish LIVE / CERTIFIED SNAPSHOT / DEMO; production often observer-only | `frontend/server/bff-core.ts`, UI badges |
+| 2026-08-11 | Continuity Kit extract without rewriting sentinel | Ship reusable policy/journal; keep production rescue in services/sentinel | `packages/continuity-kit`, `examples/continuity-guardian` |
+| 2026-08-11 | Upstream contribution = Execution Recovery Contract Pack for CLI #53 | Issue #53 still open; avoid overlapping PR #95 receipt gate | `docs/keeperhub-contribution/execution-recovery-contract-pack-v1/` |
+| 2026-08-11 | No new mainnet spend for First-Place demo evidence | Certified Phase 13 txs already prove the story | `docs/evidence/README.md` |

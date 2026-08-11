@@ -3,7 +3,7 @@
  * Environment and stack health checks.
  * Usage: pnpm doctor
  */
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import {
   ROOT,
@@ -17,7 +17,7 @@ import {
   logFail,
   logOk,
   logSection,
-  logWarn,
+  logWarn
 } from "./lib/common.mjs";
 
 const setupMode = process.argv.includes("--setup");
@@ -57,13 +57,17 @@ async function main() {
 
   logSection("Toolchain");
   const node = checkNode(20);
-  node.ok ? pass(node.message) : fail(node.message);
+  if (node.ok) pass(node.message);
+  else fail(node.message);
   if (node.major < 24) warn("Node 24+ recommended for production / Render parity");
   const pnpm = checkPnpm();
-  pnpm.ok ? pass(pnpm.message) : fail(pnpm.message);
-  existsSync(resolve(ROOT, "node_modules"))
-    ? pass("workspace dependencies installed")
-    : fail("node_modules missing — run pnpm install or pnpm setup");
+  if (pnpm.ok) pass(pnpm.message);
+  else fail(pnpm.message);
+  if (existsSync(resolve(ROOT, "node_modules"))) {
+    pass("workspace dependencies installed");
+  } else {
+    fail("node_modules missing — run pnpm install or pnpm setup");
+  }
 
   logSection("Mode");
   if (dev) pass("DEVELOPMENT_MODE=1 (sample data, no live secrets required)");
@@ -102,11 +106,15 @@ async function main() {
     "KH_API_KEY_PRIMARY_OBSERVER",
     "KH_API_KEY_STANDBY",
     "KH_ORG_A_W1_WORKFLOW_ID",
-    "KH_ORG_B_W1_REPLAY_WORKFLOW_ID",
+    "KH_ORG_B_W1_REPLAY_WORKFLOW_ID"
   ];
   for (const key of khKeys) {
     if (!env[key]) (dev ? warn : fail)(`${key} missing`);
-    else if (String(env[key]).includes("dev_") || String(env[key]).includes("_not_for_production")) {
+    else if (
+      String(env[key]).includes("dev_") ||
+      String(env[key]).includes("_not_for_production") ||
+      /^kh_x{16,}$/i.test(String(env[key]))
+    ) {
       if (dev) pass(`${key} (development placeholder)`);
       else fail(`${key} still has development placeholder`);
     } else pass(`${key} configured`);
@@ -153,15 +161,17 @@ async function main() {
     "services/sentinel/package.json",
     "services/primary-observer/package.json",
     "packages/mission-core/package.json",
-    "packages/kh-client/package.json",
+    "packages/kh-client/package.json"
   ]) {
-    existsSync(resolve(ROOT, rel)) ? pass(rel) : fail(`${rel} missing`);
+    if (existsSync(resolve(ROOT, rel))) pass(rel);
+    else fail(`${rel} missing`);
   }
 
   logSection("Ports");
   const ports = await checkPorts(DEFAULT_PORTS);
   for (const p of ports) {
-    p.ok ? pass(p.message) : warn(p.message);
+    if (p.ok) pass(p.message);
+    else warn(p.message);
   }
 
   logSection("Live probes (optional)");
@@ -185,7 +195,11 @@ async function main() {
   logSection("Wallet configuration");
   for (const key of ["ORG_A_WALLET_ADDRESS", "ORG_B_WALLET_ADDRESS", "EMPLOYEE_ADDRESS"]) {
     if (!env[key]) (dev ? warn : fail)(`${key} missing`);
-    else if (String(env[key]).startsWith("0x1111") || String(env[key]).startsWith("0x2222") || String(env[key]).startsWith("0x3333")) {
+    else if (
+      String(env[key]).startsWith("0x1111") ||
+      String(env[key]).startsWith("0x2222") ||
+      String(env[key]).startsWith("0x3333")
+    ) {
       if (dev) pass(`${key} (sample)`);
       else fail(`${key} still uses sample development address`);
     } else pass(`${key} set`);
@@ -208,7 +222,9 @@ async function main() {
       console.log("Live credentials look present. Ready for: pnpm build && pnpm start");
     }
   } else {
-    console.log(`Doctor: FAIL (${failures} error${failures === 1 ? "" : "s"}, ${warnings} warning${warnings === 1 ? "" : "s"})`);
+    console.log(
+      `Doctor: FAIL (${failures} error${failures === 1 ? "" : "s"}, ${warnings} warning${warnings === 1 ? "" : "s"})`
+    );
     console.log("Fix the ✗ items above, or run: pnpm setup");
   }
   console.log(`────────────────────────────────────────\n`);

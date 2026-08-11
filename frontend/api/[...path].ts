@@ -101,6 +101,7 @@ function loadEvidence() {
   const payday = bundledPayday as Record<string, unknown>;
   const rescueWrap = bundledRescue as { journal?: Record<string, unknown> };
   const journal = rescueWrap?.journal ?? null;
+  const slots = (payday?.slots as Array<{ executionId?: string; transactionHash?: string }>) || [];
   return {
     continuity: (payday?.continuity as string) || "0x068bB96e849F0DE3D49944Ec0F4aEd3D6B165770",
     missionId: String(payday?.missionId || journal?.missionId || "1"),
@@ -112,6 +113,18 @@ function loadEvidence() {
     proofCid: journal?.proofCid,
     anchorTx: journal?.anchorTxHash,
     rescueId: journal?.rescueId,
+    primaryWorkflowId: payday?.workflowId,
+    primaryExecutionId: slots[0]?.executionId,
+    primaryTransactionHash: slots[0]?.transactionHash,
+    provenance: {
+      source: "certified_mainnet_snapshot",
+      label: "CERTIFIED MAINNET SNAPSHOT",
+      timestamp: String(payday?.verifiedAt ?? "2026-07-23T01:13:19.765Z"),
+      evidenceId: "docs/evidence/mainnet-payday-slots-2026-07-23.json",
+      network: String(payday?.network || "mainnet"),
+      chainId: Number(payday?.chainId || 8453),
+      note: "Bundled certified Base mainnet evidence. Not a live spend path.",
+    },
   };
 }
 

@@ -19,13 +19,13 @@ const pages = [
   { path: "/app/rescues", file: "rescue.png", full: true },
   { path: "/app/proofs", file: "proofs.png", full: true },
   { path: "/app/operations", file: "operations.png", full: true },
-  { path: "/app/wallets", file: "wallets.png", full: true },
+  { path: "/app/wallets", file: "wallets.png", full: true }
 ];
 
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({
   viewport: { width: 1440, height: 900 },
-  deviceScaleFactor: 1,
+  deviceScaleFactor: 1
 });
 const page = await context.newPage();
 await page.addInitScript(() => {
@@ -39,7 +39,7 @@ await page.addInitScript(() => {
       beneficiary: "0xBDfCeE82Bd42FEfA58ee850B3709636a8B6b0034",
       amountUsdc: "0.01",
       cadenceMin: "5",
-      recoveryOrg: "Standby rescue org",
+      recoveryOrg: "Standby rescue org"
     })
   );
 });
@@ -50,6 +50,7 @@ await page.addInitScript(() => {
  */
 async function settleAnimations() {
   await page.evaluate(async () => {
+    /* eslint-disable no-undef -- browser context inside Playwright page.evaluate */
     const step = Math.round(window.innerHeight * 0.6);
     for (let y = 0; y < document.body.scrollHeight; y += step) {
       window.scrollTo(0, y);
@@ -57,6 +58,7 @@ async function settleAnimations() {
     }
     window.scrollTo(0, 0);
     await new Promise((r) => setTimeout(r, 500));
+    /* eslint-enable no-undef */
   });
 }
 

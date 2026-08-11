@@ -35,7 +35,10 @@ try {
   files = walk();
 }
 const patterns = [
-  { name: "KeeperHub API key", value: /\bkh_(?!x{20,}\b)[A-Za-z0-9_-]{20,}\b/g },
+  {
+    name: "KeeperHub API key",
+    value: /\bkh_(?!x{20,}\b|dev_[A-Za-z0-9_-]*_not_for_production\b)[A-Za-z0-9_-]{20,}\b/g
+  },
   { name: "JWT", value: /\beyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\b/g },
   {
     name: "GitHub token",

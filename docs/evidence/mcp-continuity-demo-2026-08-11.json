@@ -1,0 +1,74 @@
+{
+  "title": "MCP continuity evidence — certified PAYDAY execution",
+  "capturedAt": "2026-08-11T00:55:00.000Z",
+  "provenance": {
+    "source": "certified_mainnet_snapshot",
+    "label": "CERTIFIED MAINNET SNAPSHOT",
+    "note": "Captured via live KeeperHub MCP get_execution against a historical successful run. No new spend. No API keys stored."
+  },
+  "tools": [
+    {
+      "name": "tools_documentation",
+      "purpose": "Confirm authoritative MCP lifecycle: execute_workflow → get_execution"
+    },
+    {
+      "name": "get_execution",
+      "args": {
+        "executionId": "667ekg3qk5f45127eqjyy"
+      }
+    }
+  ],
+  "workflow": {
+    "id": "5goaid2zjgzyb32661se3",
+    "name": "payday-stream-mainnet",
+    "chainId": 8453,
+    "network": "base-mainnet"
+  },
+  "execution": {
+    "id": "667ekg3qk5f45127eqjyy",
+    "status": "success",
+    "startedAt": "2026-07-23T01:01:51.867Z",
+    "completedAt": "2026-07-23T01:01:57.502Z",
+    "durationMs": 5592,
+    "input": {
+      "slot": 1784768419
+    },
+    "steps": [
+      {
+        "nodeId": "trigger-1",
+        "nodeName": "Manual Trigger",
+        "status": "success"
+      },
+      {
+        "nodeId": "transfer-usdc",
+        "nodeName": "Pay Employee USDC",
+        "status": "success",
+        "amount": "0.01",
+        "symbol": "USDC",
+        "recipient": "0x230640f6508c7a1086444c5ba62d230f395ba0e1"
+      }
+    ]
+  },
+  "transaction": {
+    "hash": "0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2",
+    "explorer": "https://basescan.org/tx/0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2",
+    "chainId": 8453
+  },
+  "verification": {
+    "mcpStatus": "success",
+    "txHashMatchesCertifiedEvidence": true,
+    "workflowIdMatchesCertifiedEvidence": true,
+    "executionIdMatchesCertifiedEvidence": true,
+    "basescanLinkPresent": true
+  },
+  "keeperHubDeepLinks": {
+    "workflow": "https://app.keeperhub.com/workflows/5goaid2zjgzyb32661se3",
+    "execution": "https://app.keeperhub.com/workflows/5goaid2zjgzyb32661se3/executions/667ekg3qk5f45127eqjyy"
+  },
+  "redactions": [
+    "No API keys",
+    "No Authorization headers",
+    "No private keys",
+    "Triggered-by IP retained only as public KH log field already returned by MCP; treat as operational metadata"
+  ]
+}
