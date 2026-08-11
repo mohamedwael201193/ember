@@ -364,3 +364,43 @@ Mode: **implementation agent executing approved First-Place plan**
 ### Engineering
 - vitest fileParallelism=false (Windows integration flake)
 - docs: MCP_DEMO, FINAL_VERIFICATION_MATRIX, scorecard rescore, certification rewrite
+
+---
+
+## 2026-08-11 — Honest completion audit (not 100%)
+
+### Videos studied
+- Workshop: https://www.youtube.com/watch?v=k6D7iIKKRiM (ETHGlobal MCP + canvas + Claude)
+- Tempo live: https://www.youtube.com/watch?v=KhtYnc1uRXw (5 Tempo payment workflows built/run live via NL → KH canvas → Run)
+
+### Verdict vs First-Place sprint
+**NOT 100% complete.** Real mainnet + MCP lifecycle + docs + Vercel/Render are strong (~8.0/10 in-repo). Remaining blockers that prevent YES on every judge question:
+
+1. **Final DoraHacks demo video** with KeeperHub UI + MCP on camera — SCRIPT ONLY (BLOCKED)
+2. **GitHub Actions CI** — workflow file not on origin (token lacks `workflow` scope) (BLOCKED)
+3. **Upstream KeeperHub/cli PR** — pack ready, PR not opened (BLOCKED)
+4. **Foundry** — not executed locally (CI would cover when CI lands)
+5. Production provenance briefly regressed when an older deploy was promoted; re-forced deploy from `389b746`
+
+### What IS real and verified
+- Primary tx / exec / WF IDs cross-checked via MCP
+- Smoke MCP execute `2qvzsmq24d6nsjm0fzlhp` (no spend)
+- Render healthz children true
+- Continuity Kit + guardian starter
+- Gap analysis + MCP_DEMO + verification matrix + certification
+
+### Do NOT claim
+- Tempo native demos as EMBER features
+- Workshop-style live NL workflow creation on camera (not recorded)
+- CI green badge until workflow is pushed with proper token scope
+
+### Docs
+- Rewrote `video.md` as structured deep brief from both watched videos (ETHGlobal workshop + Tempo 5-workflows), including what the team loves vs dislikes and EMBER mapping.
+
+### Independent re-audit (2026-08-11 06:21 +03:00)
+- Audit file: FIRST_PLACE_AUDIT.md
+- Smoke MCP exec: 0ujf4va5dm3ysl5xtkxez
+- Upstream PR: https://github.com/KeeperHub/cli/pull/97
+- Render restore deploy: dep-d9t96r9t0dsc73anog3g (PAYDAY_ENABLE=0)
+- CI on GitHub: BLOCKED (need workflow scope)
+- Demo upload: FAIL (operator)

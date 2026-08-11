@@ -668,3 +668,23 @@ Chrome: top product nav (not admin sidebar). Onboarding v2 with SVG scenes (`emb
 - Render PASS; Vercel provenance pending redeploy
 - Local gates: 82 tests PASS after serializing vitest fileParallelism
 - Next: git push, CI wait, vercel --prod, optional upstream PR, record demo
+
+---
+
+## 2026-08-11 — Completion honesty pass
+
+Watched Tempo payment workflows video (KhtYnc1uRXw) in addition to ETHGlobal workshop.
+Updated completion stance: **not first-place 100%**. Critical remaining: KH-first demo recording, CI workflow push (needs `workflow` PAT scope), upstream PR open.
+Re-promoted/redeployed ember-web to restore evidence provenance after an older production deploy overtook tip briefly.
+
+## 2026-08-11 06:21 +03:00 — Independent first-place re-audit
+
+- Wrote `FIRST_PLACE_AUDIT.md` from live GitHub/Render/Vercel/MCP/Chrome verification (not prior cert claims).
+- MCP: validate W1 PASS; smoke exec `0ujf4va5dm3ysl5xtkxez` PASS; certified primary+rescue get_execution PASS.
+- Chrome: Org A `5goaid2zjgzyb32661se3` + Org B `pvhwggqr8318wac68jb62` canvas+Runs PASS.
+- Found live `PAYDAY_ENABLE=1` causing failed cadence Runs (insufficient BASE gas, no USDC spend). Set `PAYDAY_ENABLE=0`.
+- INCIDENT: Render bulk env PUT wiped vars to 1 key; restored 58 keys; redeploy `dep-d9t96r9t0dsc73anog3g` live; `/healthz` ok.
+- Upstream: opened https://github.com/KeeperHub/cli/pull/97 (execution recovery fixtures for #53).
+- CI: still BLOCKED — PAT has `repo` only, not `workflow`.
+- Demo video: rehearsal PASS; recording/upload still operator-owned.
+- Scorecard rescore: 123/150 (~8.2). Secrets rotation recommended after exposure in tooling.

@@ -1,45 +1,33 @@
 # FINAL VERIFICATION MATRIX
 
-**Date:** 2026-08-11  
-**Standard:** PASS or BLOCKED with exact reason
+Last verified: **2026-08-11** (independent re-audit). Live system > prior docs.
 
-| Area | Test | Command / URL | Expected | Actual | Status | Evidence |
-| --- | --- | --- | --- | --- | --- | --- |
-| Local setup | setup | `pnpm setup` | exits 0 | PASS (prior sprint) | PASS | `scripts/setup.mjs` |
-| Doctor | doctor | `pnpm doctor` | healthy / warns only | PASS | PASS | doctor output |
-| Continuity example | setup/doctor/inspect | `pnpm --filter @ember/example-continuity-guardian run setup/doctor` + `inspect` | inspect-only OK | PASS | PASS | example README |
-| Format | prettier | `pnpm format:check` | clean | PASS | PASS | CI local |
-| Lint | eslint | `pnpm lint` | clean | PASS | PASS | local |
-| Typecheck | tsc | `pnpm typecheck` | clean (incl frontend) | PASS | PASS | local |
-| Unit/integration | vitest | `pnpm test` | 82 pass | 82 pass | PASS | vitest; `fileParallelism:false` |
-| Build | packages+fe | `pnpm build` | success | PASS | PASS | local |
-| Secret scan | check-secrets | `pnpm security:secrets` | no secrets | PASS | PASS | 342 files |
-| Foundry | forge test | `forge test --root contracts` | green | forge not installed locally | BLOCKED | CI installs Foundry |
-| GitHub CI | Actions | push → workflow | green | pending push/result | BLOCKED→pending | `.github/workflows/ci.yml` |
-| Render health | healthz | https://ember-api-8qzg.onrender.com/healthz | children true | `observer/payday/sentinel: true` | PASS | 200 JSON |
-| Vercel BFF health | /api/health | https://ember-web-seven.vercel.app/api/health | upstream 200 | PASS | PASS | 200 |
-| Vercel config | /api/config | same host | mainnet 8453 + WF ids | PASS | PASS | orgA `5goaid…` |
-| Vercel evidence provenance | /api/evidence/mainnet | same | `provenance` present | **false before redeploy** | BLOCKED→redeploy | needs Vercel prod deploy |
-| Primary tx on BaseScan | explorer | basescan.org/tx/0xd26e6174… | success USDC | matches MCP | PASS | MCP get_execution |
-| MCP validate | validate_workflow | WF `5goaid2zjgzyb32661se3` | valid true | valid true | PASS | live MCP |
-| MCP smoke execute | execute+get | WF `vewqfp44zmpa9dtctlrdr` | success no spend | exec `2qvzsmq24d6nsjm0fzlhp` | PASS | `mcp-agent-lifecycle-2026-08-11.json` |
-| MCP certified inspect | get_execution | `667ekg3qk5f45127eqjyy` | tx match | match | PASS | `mcp-continuity-demo-2026-08-11.json` |
-| KeeperHub workflow UI | app | payday-stream-mainnet canvas | Manual→Pay USDC | confirmed (user screenshot + get_workflow) | PASS | WF id matches |
-| Rescue evidence | JSON | mainnet-rescue | txs + CID + anchor | present | PASS | docs/evidence |
-| IPFS | gateway | QmVr6yWD… | reachable | certified | PASS | rescue journal |
-| Continuity anchor | BaseScan | 0x74ba1eac… | success | certified | PASS | rescue journal |
-| README | trust stack | README.md | 30s judge card | updated | PASS | README |
-| MCP docs | MCP_DEMO | docs/MCP_DEMO.md | copy-paste setup | written | PASS | docs |
-| Workshop gap | analysis | docs/KEEPERHUB_WORKSHOP_GAP_ANALYSIS.md | 12 Qs answered | written | PASS | /watch |
-| Demo script | ≤2:30 KH-first | DEMO_VIDEO_DORAHACKS.md | KH UI mandatory | updated | PASS | docs |
-| Demo video file | recording | DoraHacks upload | ≤2:30 with KH UI | **not recorded this session** | BLOCKED | operator action |
-| Upstream PR | CLI #53 pack | open PR | PR URL | pack ready; PR not opened | BLOCKED | `docs/keeperhub-contribution/…` |
-| Submission | SUBMISSION.md | DoraHacks fields | complete | present | PASS | SUBMISSION.md |
-
-## Blockers remaining (exact manual actions)
-
-1. **Push** branch and wait for GitHub Actions green (then badge is truthful).  
-2. **Vercel production redeploy** of `frontend` so `/api/evidence/mainnet` includes `provenance`.  
-3. **Record ≤2:30 demo** with KeeperHub canvas + MCP + matching IDs (`docs/DEMO_VIDEO_DORAHACKS.md`).  
-4. **Open upstream PR** for Execution Recovery Contract Pack against KeeperHub/cli #53.  
-5. **Foundry locally** optional; rely on CI `forge test`.
+| REQUIREMENT | EVIDENCE | STATUS | PROOF URL / ID | TEST / COMMAND | LAST VERIFIED |
+| --- | --- | --- | --- | --- | --- |
+| Real KeeperHub execution | MCP get_execution primary | PASS | exec `667ekg3qk5f45127eqjyy` | Cursor MCP `get_execution` | 2026-08-11 |
+| Real Base mainnet evidence | BaseScan + MCP tx match | PASS | `0xd26e6174…341ea2` | MCP ↔ Vercel `/api/evidence/mainnet` | 2026-08-11 |
+| MCP | Cursor KH MCP servers | PASS | smoke `0ujf4va5dm3ysl5xtkxez` | validate + execute smoke + get_execution | 2026-08-11 |
+| KeeperHub UI | Chrome Org A/B | PASS | app.keeperhub.com workflows | Chrome DevTools snapshot | 2026-08-11 |
+| Workflow canvas | Manual → Pay USDC | PASS | W1 + Org B replay | Browser + MCP get_workflow | 2026-08-11 |
+| Run | UI Run button present | PASS | Org A/B canvases | Browser | 2026-08-11 |
+| Runs | Audit list + step errors | PASS | Org A Run #49 failed gas; Org B Run #1/#2 | Browser Runs tab | 2026-08-11 |
+| Audit trail | Steps + ERROR text | PASS | Insufficient BASE balance message | Browser | 2026-08-11 |
+| Agent → MCP interaction | Cursor session | PASS | `FIRST_PLACE_AUDIT.md` | This Cursor agent | 2026-08-11 |
+| Reliability story | Journals + contract pack | PASS | vitest 82 + pack 9 | `pnpm test` | 2026-08-11 |
+| Recovery story | Rescue exec + journal COMPLETED | PASS | `tjab2kqsitnwsfbr6e9ra` | MCP + evidence JSON | 2026-08-11 |
+| Idempotency | Chaos/evidence fixtures | PASS | docs/evidence chaos* | historical + tests | 2026-08-11 |
+| Failure handling | Missed-slot product + live fail Runs | PASS | gas fail shows KH failure UX | Browser | 2026-08-11 |
+| Observability | health/ready/metrics + provenance | PASS | Render + Vercel | HTTP probes | 2026-08-11 |
+| Production deployment | Render + Vercel | PASS | commit `389b746` | Render API + healthz | 2026-08-11 |
+| GitHub source | origin/main | PASS | mohamedwael201193/ember | `gh api` | 2026-08-11 |
+| GitHub CI green | Actions | **BLOCKED** | no remote workflow | need PAT `workflow` scope | 2026-08-11 |
+| Vercel current | provenance badges | PASS | CERTIFIED MAINNET SNAPSHOT | `/api/evidence/mainnet` | 2026-08-11 |
+| Render current | env restored, PAYDAY_ENABLE=0 | PASS | deploy `dep-d9t96r9t0dsc73anog3g` | healthz + env count 58 | 2026-08-11 |
+| Upstream contribution | PR opened | PASS | https://github.com/KeeperHub/cli/pull/97 | `gh pr create` | 2026-08-11 |
+| README accurate | CI badge may 404 until workflow push | PARTIAL | README still links CI | fix after workflow lands | 2026-08-11 |
+| Submission accurate | SUBMISSION.md | PARTIAL | update after push SHA | human check DoraHacks form | 2026-08-11 |
+| Demo script accurate | DEMO_VIDEO_DORAHACKS.md | PASS | KH-first ≤2:30 | doc review | 2026-08-11 |
+| Demo video uploaded | DoraHacks / YouTube | **FAIL** | — | operator record | 2026-08-11 |
+| All evidence IDs matching | MCP ↔ Vercel ↔ docs | PASS | primary/rescue/CID/anchor | cross-check | 2026-08-11 |
+| PAYDAY live writes | PAYDAY_ENABLE | PASS (off) | `0` on Render | Render env API | 2026-08-11 |
+| Secrets rotation | keys appeared in tooling | **FAIL / ACTION** | rotate after submit | human | 2026-08-11 |

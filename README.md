@@ -12,6 +12,7 @@ EMBER recovers missed obligations.
 [Live app](https://ember-web-seven.vercel.app) · [Evidence](./docs/evidence/README.md) · [Mission Continuity Kit](./packages/continuity-kit) · [Adoption](./docs/KEEPERHUB_CONTINUITY_ADOPTION.md) · [Submission](./SUBMISSION.md)
 
 [![CI](https://github.com/mohamedwael201193/ember/actions/workflows/ci.yml/badge.svg)](https://github.com/mohamedwael201193/ember/actions/workflows/ci.yml)
+<!-- CI badge turns green only after `.github/workflows/ci.yml` is pushed with a PAT that includes the `workflow` scope. Local gates: pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build -->
 [![Base mainnet](https://img.shields.io/badge/Base-mainnet%208453-0052FF)](https://basescan.org/tx/0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2)
 [![KeeperHub](https://img.shields.io/badge/KeeperHub-workflows%20%2B%20MCP-111)](https://app.keeperhub.com/workflows/5goaid2zjgzyb32661se3)
 [![Node >=20](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](#quick-start)

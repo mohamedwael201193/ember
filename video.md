@@ -1,74 +1,308 @@
-Hey guys, uh welcome. I am Luca and I head up growth at Kebab. This also includes developer relations and we have decided to partner with ETH Global for the Open Agents Hackathon. This is actually our first hackathon. So we are of course especially excited and equally as nervous. Uh but what this means is we'll also be on our best behavior and we'll do our most to help you guys out in any way we can. and also just to be available uh to answer any sort of questions that you may have. The
+# KeeperHub team videos — deep brief for EMBER
 
-workshop today, the objective of it at least is to give you the tools required to build on top of the infrastructure that is keep up but also hopefully uh give you guys the inspiration to do so as well. I'm going to make sure or I'm going to try at least to keep this as tight as possible. But if you're interested in certain sections, you can also just head into the description below and click on the chapter timestamps to jump forward to areas that are relevant uh to what you're looking
+Sources actually watched (frames + captions):
 
-for. Let me start here in the hub. We're in the Keep Hub platform as we speak. And the hub is a section where you'll be able to kind of use it as a library of workflows. Uh the workflows that you see here are templates that Keep users have shared publicly with the community. So these can actually be copied over to your own environment. Um as I'll do with an example here. Um let me go ahead and just type in AVA just to make it simple. And I'm going to use this uh workflow called Ava V3 crosschain liquidation
+1. **ETHGlobal Open Agents workshop** — [k6D7iIKKRiM](https://www.youtube.com/watch?v=k6D7iIKKRiM) (~19 min)  
+   Title: *KeeperHub: Onchain Agent Execution Infrastructure | ETHGlobal Open Agents Hackathon*  
+   Speaker: **Luca** (growth / DevRel at KeeperHub)
 
-dashboard. Going to say use template. And what will happen now is it will duplicate it and create it in my own private environment. And how to show that as well. You can see this is private. This is not shared. And that's exactly actually what the author of that workflow had done. They had decided that they wanted to share this one with the hub with the rest of the community to be able to make use of it. Now one thing worth flagging up front is well it matters for the hackathon is authors of
+2. **Tempo live product demo** — [KhtYnc1uRXw](https://www.youtube.com/watch?v=KhtYnc1uRXw) (~8:48)  
+   Title: *5 Tempo Payment Workflows, Built and Run Live*
 
-these workflows. They can also decide yeah to share these workflows to the hub but they can also publish uh these workflows as strategies instead and that's a button right next to it marketplace button where you can list on agent marketplace and what that means is you can then decide you know that this workflow should be a strategy and you can set a price on it. So the listed strategy doesn't actually end up on the hub directly because these steps are private. We don't want anyone just to
+Captions often mis-hear “KeeperHub” as “Keepab / Kebab / Keep up”. Below uses the correct product name.
 
-copy this strategy. Uh but the authors of the strategy can see it in the earnings window which is right here and other agents can also discover this workflow this strategy and pay to run it and the author will then consequently earn and you'll have your earnings listed in this environment. So consider it a bit like a marketplace for onchain strategies and keep hub is the execution layer of that marketplace. This is a quite important distinction just to remember throughout uh the workshop today. Now, if I actually go
+Working copies of watch extracts live under `docs/demo/watch-kh-workshop/` and `docs/demo/watch-khtync1u/` (gitignored media).
 
-back uh to the workflow example that we have here, I'm going to go ahead and press run. And what you'll see here is that this workflow will go ahead and run. So, when an agent calls one of these or if you run it yourself based on a Chromebased trigger, uh Keep will handle the transaction. uh it will handle retries, it will handle gas. Uh so if there's exponential increase in gas cost, it'll be able to do kind of retries over a specific period of time. It will also handle a simulation of the
+---
 
-transaction. Uh it will handle the signing. Uh and as you can see here under the runs, uh the audit trail being able to kind of see every single run and [clears throat] having all those steps listed uh for you to go ahead and actually be able to uncover. Uh I'm showing you this up front because the rest of the workshop will then have this as a reference point. So this is what I mean when I will eventually say, you know, what keep up does. This is it. And hopefully by the end of the workshop,
+## One-sentence thesis (both videos)
 
-you'll understand, you know, the surface area well enough to decide what you want to build um over the next nine days and also what qualifies uh for the price track. So let's get into it. Before I explain Keep in more detail, let me show you kind of where it fits into this agent stack. Uh so at the top we have these agent frameworks. We have Langraph, you know, open claw, elizo could also fit into here. This is kind of where the reasoning uh lives. Then we have the communication MCP from
+**Agents decide. KeeperHub executes** — retries, gas, simulation, signing, audit trail — so the transaction actually lands onchain. The team wants builders who **contribute to that execution layer**, not black-box apps that hide KeeperHub.
 
-anthropic. We all know A2A from Google. And then we have identity and wallets. Uh so ERC from Ethereum 804 is a great one uh kind of being the identity layer, the reputable layer uh or registry uh for agents. uh payments exploit 2 MP you know there's been a lot around them too uh the past few months and finally we then have the reliable execution layer kind of where where keep lies and this is where I mentioned already previously kind of retries gas simulation SLAs's order trail making sure that you actually have the
+---
 
-transaction land on chain and that's of course as you can see here the final box uh onchain settlement on EVM chains layer twos etc. Uh so the gap actually that we see in most agent stacks today is not so much the reasoning or the agent framework or the communication or even actually wallets now. It's actually that network congestion um actually ends up killing your agent. Uh this could be like a gas bike during liquidation and then your transaction sits in meool and then somebody else's lands. Um, it could
+# Video 1 — ETHGlobal workshop (what the team teaches)
 
-also be silent failures when your agent thinks the action actually succeeded but didn't and then you don't really have any sort of audit trail or any anything to kind of prove otherwise. So, Keep goes ahead and replaces that whole layer. Uh, the agent decides and Keypub executes as simple as this. And if a transaction fails, we retry. If gas spikes, our engine adapts. You get an audit trail of every attempt, every revert reason, every gas price used and also have the whole thing SLA backed.
+## Who / why
 
-So that's the layer. Now let me tell you a little bit about the team behind Keepab. Uh we already established that Keepab is the reliable execution layer for the onchain economy. Uh but we haven't really spoken much about the team. Uh the team behind Keepab are all mech x uh maker devops engineers also known as well sky protocol. Uh we're also a globally distributed team. So we'll also be able to help you guys through throughout all time zones during this hackathon. Uh we've been
+- Luca opens: first KeeperHub × ETHGlobal Open Agents hackathon; team is excited/nervous; will help in Discord 24/7.
+- Goal of the talk: give **tools + inspiration** to build **on top of KeeperHub infrastructure**, and clarify **what wins the prize track**.
 
-running production layer keepers uh for the past seven years. So we've been doing this uh way before like the whole term agent infrastructure was even a category. Um for you as a hacker uh what that means is simple. Keeper Hub is the default execution layer for agents operating on chain and we want you to help us make it even more of a default. Uh so we handle the parts that are hard to get right and catastrophic if you don't. Um worth naming what Keepob is and isn't. It can be used as you can see
+## Part A — Product surfaces they show on camera
 
-in the platform app.op.com. It can be used as a you know regular visual um workflow builder similar to kind of how you'd use naden for onenops. uh and plenty of users actually already use it as is today and I highly recommend that you also play around with in the same way. There's definitely a lot of use cases and as we've already uncovered templates in the hub that you can make use of. Um but we want to actually think of the long term and that's where we're pointing you guys
+### Hub (template library)
 
-towards and that is the frame of this hackathon. Uh consider um this sort of as the infrastructure that agents call programmatically. uh the same way turnkey is for wallets or alchemy is for RPC a component in this larger stack and that's the direction that the hackathon will be focused on. Very quickly before we get into the code uh three places that I recommend bookmarking include uh one the keepab channel in the ETH global discord. Uh we'll be there you know 24/7 we have a globally distributed team so we'll
+- Hub = public **workflow templates** shared by the community.
+- Demo: search “Aave” → **Aave V3 crosschain liquidation dashboard** → **Use template** → clones into a **private** workspace.
+- Authors can share to Hub for copy/reuse.
 
-answer no matter the time. uh to uh the Keep Discord community. We already have lots of material there uh that you can make use of. And three, probably the most important is our docs keep a hub page. Um to make it a lot easier, we created this link tree here that you can make use of. So you can actually just bookmark that. That might make it a little bit easier. And that's just found at keepab.com/links. The primary interface is the MCP server which is live today. If you prefer to write scripts from your terminal then
+### Marketplace / strategies (different from Hub)
 
-CLI server integration is also available. Uh we also have X42 and MVP compatibilities if in case you want to build a agent that is paying on chain. A quick note on wallets. If your agent needs a wallet for testing would recommend using agent cache uh to give your agent a wallet. Uh this is only for testing purposes and we're of course not responsible for agent cache security but it's easy and fast to get up and running. Um, let's head over to the documentation pages here. And you can
+- Next to Hub: **Marketplace** — publish a workflow as a **priced strategy**.
+- Strategy listing does **not** dump private steps into Hub (so people can’t just copy the IP).
+- Authors see earnings; other agents can **discover + pay to run**.
+- Framing: **marketplace for onchain strategies**; KeeperHub is the **execution layer of that marketplace**.
 
-always use the search function in the top right corner. And I'm just going to type in MCP. The MCP setup is is very straightforward. You can find all the instructions needed here. And if you run into any questions, again, we're available. Reach out to us. But once the MCP server is connected, uh, the agent sees the full tools uh, surface and you'll see type schemers. So if you're using Eliza OS, agent kit, lang chain or whatever, anything that basically speaks MCP, h the tools will show up natively.
+### Run + Runs (audit trail) — the reference demo
 
-Uh I want to give you guys like kind of a fast mental model of the surface. So let me just switch scenes here and pull up Claude. There it is. And what you see here is uh the Keeper Hub MCP server connected to my Claude instance. And I can go ahead and see all the different schemas that available. There are basically two types of interactions. We have direct execution which is when an agent calls an execute protocol action or an execute contract call and then keep hub goes ahead and lands that transaction. Retries gas sim
+Luca presses **Run** on the template and stresses what KeeperHub owns when something executes:
 
-all handled you know uses kind of for like reactive flows. Uh and then we also have workflows and this is a bit different from direct execution. Instead now an agent calls create workflow or AI generate workflow and hands over trigger conditions and actions. Uh keep hub then runs it continuously. Uh and you can use this for like kind of recurring strategy monitoring anything that should you know keep running uh when the agent is asleep. Um under both shapes uh you have like the same primitives. So triggers
+| Capability they name | Meaning for judges |
+| --- | --- |
+| Retries | Failed / congested txs don’t silently die |
+| Gas adaptation | Engine adapts when gas spikes |
+| Simulation | Preflight before broadcast |
+| Signing | Managed execution path |
+| Runs / audit trail | Every run + step visible |
 
-like schedule, web hook, uh onchain events, uh condition nodes, and then action nodes. And under the action nodes, you'd have every action that you'd expect like ESC20 transfers, protocol specific calls, I showed you the native ones earlier. So you know, a sky, compound, etc., etc. And then of course any like if you have like anything arbitrary, you can use like execute contract call uh for that. Uh, two things to internalize for the hackathon. Um, one, this surface is pluggable. Uh, so protocols you care
+This UI loop is the **baseline UX** they want every submission to respect:
 
-about that aren't first class yet, that's a plugin. Frameworks that don't speak keep a hub clearly yet or cleanly yet, that's a wrapper. And then of course, you know, miss missing developer primitives, that's a contribution. And then two, when you hear me say workflow, I mean uh the artifact that keeper hub actually runs. So I don't mean something you build as your part of your hackathon project. Uh you'll hand us the integrations and features and Keeper Hub actually runs uh the workflows.
+```text
+Workflow canvas → Run → Runs (steps green) → (onchain when applicable)
+```
 
-Uh so yeah, we're we're getting there slowly and steadily. Quick demo so that I can actually show you guys this in motion. I'm going to use Claude here with the Keep Hub MCP server connected. This same logic applies if you were to use an autonomous agent. Basically anything that speaks MCP. Uh the use case that I'm going to use is an agent watches an ERC uh 4626 vault and deposits idle USDC from a Treasury wallet whenever utilization drops below a threshold. So I'm going to go ahead and just type in the intent and
+## Part B — Where KeeperHub sits in the agent stack
 
-actually well past it in because I have it copied. And what will happen here is when I press let's go me open up the uh thread here. Then Claude uses the MCP tools that I showed earlier and we watch a workflow show up in Keepab. Obviously you can see here it will need a few details that I didn't share um ahead of this and it will take me through it. Obviously you know first one first things first you know which vault protocol is this for uh RV3 I didn't specify and I wanted this to run on
+Luca’s stack (top → bottom):
 
-Ethereum mainet and I want them to use placeholders uh for the treasury wallet. Uh now what will happen is this agent calls the AI generate workflow tool and then the create workflow tool and workflows will then render in the keep up canvas with crunch triggers, condition nodes, approval node, deposit nodes and and then also discord notification node. But let's skip this section whil instead of just waiting around and we'll jump directly into the app. All right, we're back in the app
+1. **Agent frameworks** — LangGraph, OpenClaw, Eliza, etc. (reasoning)
+2. **Communication** — MCP (Anthropic), A2A (Google)
+3. **Identity / wallets** — ERC-8004 as identity/reputation registry
+4. **Payments** — x402, MPP
+5. **Reliable execution** — **KeeperHub** (retries, gas, simulation, SLAs, audit trail)
+6. **Onchain settlement** — EVM / L2s
 
-now and as you can see we have this nice little nifty workflow created. Uh this is a chronbased workflow uh that runs on a schedule every hour. Uh we have a condition here that checks the vault utilization from here which is a codebased node and then we have approval for the ERC uh 4626 contract. Uh a uh deposit action and of course then a discord notification here once completed. Uh you might have noticed when I was clicking through these that we have placeholder addresses uh for your treasury wallet. Uh and this is
+### The gap they say kills agents today
 
-just for the sake of the demo. So obviously you know this would be listed with real addresses instead. And as uh you know all of this took about 40 seconds from yeah the intention to actually having a live workflow. And I would say that there's probably two things that you want to take away from it. You might take away more things but two main ones is that first you know this is what the keeper hub user experience is today. This is your baseline. Secondly uh every node here every graph every action type every
+Not frameworks or wallets — **execution reliability**:
 
-protocol integration every framework connection is something we've built. Uh which brings us to actually what we would love to see from you guys. All right 9 days and here's what we hope to see. Uh we're not looking for agents that use Keep Hub as a black spot or blackbox per se. Uh we're looking for contributions to Keep Hub itself. Uh so things we can merge, adopt u or ship to every Keepab user after May 3rd. Um three directions that you can take inspiration from. Um a new protocol or
+- Gas spike during liquidation → tx stuck in mempool → someone else lands
+- **Silent failures** — agent thinks it succeeded; no audit trail to prove otherwise
 
-chain integration. So this is potentially I would say the biggest bucket because there's so many different options here. But pre pick up potentially a protocol that we don't support as a first class integration yet or improve an existing one. It could be a lending market, a per venue, a liquid staking protocol bridge, a risk staking primitive. Yeah, there's lots of different ones. Uh we already support lots. So take inspiration from that and see what there is. for build the plug-in you know workflow nodes for it core
+Slogan they repeat:
 
-operations then there's also the second direction that you could also take framework integrations uh here think about like you know openclaw elizo lang chain anything in the agent framework space and a clean keep a hub plug-in tool wrapper for that framework um so builders using that framework uh get keep up natively uh without writing well without having to write like glue code in screen. Uh a winning submission here is something we could actually adopt as an official integration. Then of course uh there's another wide
+> **The agent decides. KeeperHub executes.**  
+> Fail → retry. Gas spike → adapt. Full audit of attempts / reverts / gas. SLA-backed.
 
-bucket and that is just generally any sort of new features or developer tooling inside of Keeper Hub. uh think about you know workflow nodes that we don't support yet better simulation debugging uh observability um testing harnesses improvements to the MCP server itself uh better new user onboarding this is always a very big one UX and in web 3 uh everyone's kryptonite uh but like let's say if you've hit a friction point in using Keep up yourself this week that friction point can
+## Part C — Team credibility they sell
 
-actually go ahead and be a contribution ution opportunity. Um, yeah, and maybe one uh specific call out inside this bucket uh could also be a great fit for this hackathon is at the start of this video I showed you a published workflow in the hub, but then also I showed you listing a strategy with a price attached. So a clean contribution here could also be wiring that up to the open agent economy uh like wrap a publish workflow in an ERC uh 804 registration so that any agent on that network can
+- Ex MakerDAO / Sky protocol devops; production keepers ~7 years
+- Globally distributed (hackathon support all timezones)
+- KeeperHub = default execution layer for onchain agents; hackers should help make it *more* default
 
-discover it expose that call behind like X42 or MVP as a payment rail uh and then make sure that you post reputation back on chain that after every run uh and then all of a sudden you kind of have keyhub as the sort of evidence layer and you know that agent can be found anywhere um to pay and uh actually go ahead and execute said strategy. So that's also a potential project that you you know we would want to see. Uh but again I don't want to put too many sort of restrictions. You know we are quite
+### What KeeperHub is / isn’t
 
-open-ended here and that's also why I have a price page open uh where you can see everything broken down. But if you're in doubt as well feel free to reach out to us. I've mentioned a few times now but we'll be in the youth global discord channel. We'll be in our own channel. We'll be in Telegram. uh X, wherever you want to write to us. Uh we'll be there all 9 days. And let me also wrap up maybe by apologizing. At the start of this video, I said I'll be super tight and keep this
+- **Is:** visual workflow builder (n8n-like for onchain ops) **and** programmatic infra agents call
+- Long-term framing for the hackathon: infra component like **Turnkey for wallets / Alchemy for RPC** — not “just a UI toy”
+- Interfaces: **MCP (primary)**, CLI, x402/MPP for paying agents
+- Testing wallets: they casually mention agent-cache style wallets for demos (not a security claim)
 
-as short as possible. Uh well, I kind of tried to do that, but I've already broken that promise, so apologies. But if you did make it this far, uh thank you very much for staying for the ride. I hope this was useful. And if you have, again, I'll say it one final time. If you do have any questions or anything that wasn't answered, you know, reach out to us before the hackathon even starts or during the hackathon whenever you're watching this video. But, um, thank you a lot and best of luck to
+## Part D — MCP + Claude demo (the emotional center of the workshop)
 
-everyone building and I we really appreciate you guys, you know, contributing and taking time out of your day to do this.
+### How agents connect
 
+1. Docs → search **MCP** → connect remote server (today: `https://app.keeperhub.com/mcp` per current docs)
+2. Claude Code / Claude Desktop / any MCP client → tools appear with schemas
+3. Same pattern for Eliza / AgentKit / LangChain / anything that speaks MCP
+
+### Two interaction shapes
+
+| Shape | Agent calls | KeeperHub does |
+| --- | --- | --- |
+| **Direct execution** | `execute_protocol_action`, `execute_contract_call`, transfers… | Land the tx (retry/gas/sim) — reactive |
+| **Workflows** | `create_workflow` / `ai_generate_workflow` | Persist trigger+actions; run continuously (cron/event) while agent sleeps |
+
+Shared primitives under both:
+
+- Triggers: schedule, webhook, onchain events  
+- Condition nodes  
+- Action nodes: ERC-20, protocol actions (Aave, Compound, Sky…), arbitrary `execute_contract_call`
+
+### Live Claude → canvas story (~40 seconds)
+
+Intent pasted into Claude (MCP connected):
+
+> Watch an ERC-4626 vault; when utilization drops below a threshold, deposit idle USDC from a treasury wallet; notify Discord.
+
+Flow shown:
+
+1. Claude asks clarifying questions (protocol = Aave V3, network = Ethereum mainnet, placeholders OK)
+2. Agent uses **AI generate workflow** + **create workflow**
+3. Canvas appears: hourly schedule → utilization check (code node) → condition → approve → deposit → Discord
+4. Placeholders called out honestly for demo
+
+**Takeaways Luca wants:**
+
+1. This is today’s KeeperHub UX baseline  
+2. Every node / action type / protocol integration / framework connection is something **they** built — so hackers should **extend** that surface
+
+## Part E — What the team loves (hackathon intent)
+
+Explicit: **not** looking for agents that use KeeperHub as a **black box**.
+
+Looking for **contributions they can merge / adopt / ship to every KeeperHub user**.
+
+### Direction 1 — Protocol / chain plugins (biggest bucket)
+
+- First-class nodes for protocols not supported yet (lending, perps, LST, bridges, risk primitives…)
+- Or deepen an existing integration
+
+### Direction 2 — Framework integrations
+
+- Clean KeeperHub plugin/wrapper for OpenClaw, Eliza, LangChain, etc.
+- Win condition: official-adoption quality — builders get KH natively without glue-code hell
+
+### Direction 3 — Features / DX inside KeeperHub
+
+Examples they name:
+
+- New workflow nodes  
+- Better simulation / debugging / observability  
+- Testing harnesses  
+- MCP server improvements  
+- **Onboarding / UX** (they call Web3 UX everyone’s kryptonite — friction you hit = contribution opportunity)
+
+### Specific callout — agent economy wiring
+
+They love a clean story that connects:
+
+Hub publish / priced strategy → **ERC-8004** discovery → **x402 / MPP** payment → reputation posted after runs  
+
+…so KeeperHub becomes execution + evidence for a discoverable paid strategy.
+
+### Tone
+
+Open-ended; prize page has the formal breakdown; Discord/Telegram/X for questions. They apologize for going long and thank builders who contribute.
+
+---
+
+# Video 2 — Tempo payment workflows live (what “good demo” looks like now)
+
+## Intent of the video
+
+Show **KeeperHub native on Tempo**: five **real** payment workflows, built mostly by **describing them to Claude (MCP)**, then **Run** on **Moderato / Tempo testnet** — “no code, no paid nodes” framing.
+
+This is the **demo aesthetic** judges internalize: NL → MCP → canvas → enable/run → Runs all green → explorer proof.
+
+## Workflow 1 — Deposit watch + Discord alert
+
+**Describe:** watch a Tempo deposit wallet for incoming path USD; alert when payment exceeds a size.
+
+**What happens:**
+
+- KeeperHub discovers Tempo actions via MCP  
+- Builds: **transfer trigger** (path USD on Tempo testnet) → **condition** (amount > 100) → **Discord alert**  
+- Fills network, token, deposit address from the prompt  
+- Enable workflow → send test payment from terminal → **Runs**: catch → threshold → alert, all green  
+- Emphasized: **executing on Tempo, not just a simulation**  
+- Open execution output: value, address, full breakdown
+
+## Workflow 2 — Forward with memo + expiry
+
+**Describe:** incoming payment carries memo; forward a fixed amount; expire if it doesn’t land in time.
+
+**What happens:**
+
+- Claude + MCP again  
+- Three steps: incoming transfer → payment expiry → transfer with memo (forward **25 path USD**, reuse memo)  
+- Default **disabled** until human enables (safety habit they show repeatedly)  
+- Test payment → all three complete → Tempo testnet explorer shows landed **memo and all**
+
+## Workflow 3 — Swap on demand
+
+**Describe:** sell 500 path USD for alpha USD via Tempo’s exchange with tight slippage (revert rather than bad fill).
+
+**What happens:**
+
+- Canvas: **Manual trigger** + **swap stablecoins** Tempo service  
+- Click Run → trigger + swap complete → fill within limit → explorer verify
+
+## Workflow 4 — Sign and hold (human control)
+
+**Describe / build in UI:** sign payment now but **hold** until release (person or schedule).
+
+**What happens:**
+
+- Tempo node **sign and hold payment** (amount, recipient, memo, scheduled release, valid-before window)  
+- Run → payment **parks as held** (not sent)  
+- Release requires **authenticator / human approval** before value leaves  
+- Then broadcast lands on testnet  
+
+Lesson they sell: **control** — nothing dangerous runs unsupervised; held payments are first-class.
+
+## Workflow 5 — Monthly / batch pay run
+
+**Describe:** list of recipients + amounts + shared memo.
+
+**What happens:**
+
+- KeeperHub flags if two payments share a recipient before build  
+- Result: single batch payout (demo: three Alpha USD payments, 450 total)  
+- Manual trigger + payouts node  
+- Execute → settle **together in one atomic transaction** on Tempo → explorer shows all three
+
+## Closing line of Tempo video
+
+> Describe the payment flow you need and run it reliably on chain.
+
+---
+
+# Cross-video: what KeeperHub “loves” (judge lens for EMBER)
+
+| They love | They dislike / downrank |
+| --- | --- |
+| Visible **KeeperHub canvas + Run + Runs** | Hidden dependency (only your app + explorer) |
+| **MCP / Claude** creating or driving workflows | Manual-only story with no agent surface |
+| **Real execution** (testnet/mainnet) with audit steps green | Simulation-only claims |
+| **Mergeable contributions** (plugins, fixtures, DX, MCP) | Black-box “we used KeeperHub once” apps |
+| Clear split: agent decides / KH executes | Pretending KH does your product’s brain |
+| Reliability narrative (retry, gas, sim, audit) | Silent failure with no proof |
+| Optional: marketplace / x402 / ERC-8004 economy wiring | Checkbox theater without evidence |
+
+---
+
+# Mapping to EMBER (honest)
+
+### Aligned with team love
+
+- Real KeeperHub workflows execute USDC on Base mainnet (primary + standby replay + anchor path)
+- MCP: inspect / validate / smoke execute / `get_execution` with matching IDs
+- Continuity story = reliability after **missed invocation** (complementary to KH retries of a *requested* run)
+- Contribution pack (execution recovery fixtures) aimed at mergeable CLI/DX
+
+### Must show like their demos (still the submission gap)
+
+Their videos always put **KeeperHub UI + agent MCP + Runs** on screen.  
+EMBER’s remaining first-place risk is a demo that is only EMBER site → BaseScan.
+
+Canonical beat sheet: `docs/DEMO_VIDEO_DORAHACKS.md`.
+
+### Do not confuse Tempo demo with EMBER scope
+
+Video 2 is **Tempo payment rails** (path/alpha USD, hold/release, batch atomic payout).  
+EMBER’s certified evidence is **Base mainnet USDC continuity** — same *demo pattern*, different chain/product surface. Do not claim Tempo features as shipped EMBER.
+
+---
+
+# Memorable quotes (paraphrased accurately)
+
+- “Agent decides. KeeperHub executes.”
+- Gap isn’t reasoning — it’s **landing the tx** under congestion and silent failure.
+- Hackathon: **contributions we can merge**, not black-box usage.
+- Baseline UX: intent → MCP → canvas in ~40s; then Run / Runs.
+- Tempo closer: “Describe the payment flow you need and run it reliably on chain.”
+
+---
+
+# Bookmark list Luca pushes
+
+- ETHGlobal Discord KeeperHub channel  
+- KeeperHub Discord  
+- Docs: https://docs.keeperhub.com/  
+- Link tree: https://keeperhub.com/links  
+- App: https://app.keeperhub.com/  
+- MCP docs: https://docs.keeperhub.com/ai-tools/mcp-server  
+
+---
+
+*Last synthesized: 2026-08-11 from `/watch` captions + keyframes of both URLs above.*
