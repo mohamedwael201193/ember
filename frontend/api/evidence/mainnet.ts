@@ -98,7 +98,19 @@ const data = {
   },
   "proofCid": "QmVr6yWDfuWbWE4m9UADtbJzSadqKXnUmpCHUERjsLWoyn",
   "anchorTx": "0x74ba1eac3e35c269175c06629782f66da454775141b6c94f14d608065c8d211f",
-  "rescueId": "3262643f2b4bec156242871d919663ceaec7696ed29cd63ffe02a59dcb4a7169"
+  "rescueId": "3262643f2b4bec156242871d919663ceaec7696ed29cd63ffe02a59dcb4a7169",
+  "primaryWorkflowId": "5goaid2zjgzyb32661se3",
+  "primaryExecutionId": "667ekg3qk5f45127eqjyy",
+  "primaryTransactionHash": "0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2",
+  "provenance": {
+    "source": "certified_mainnet_snapshot",
+    "label": "CERTIFIED MAINNET SNAPSHOT",
+    "timestamp": "2026-07-23T01:13:19.765Z",
+    "evidenceId": "docs/evidence/mainnet-payday-slots-2026-07-23.json",
+    "network": "mainnet",
+    "chainId": 8453,
+    "note": "Bundled certified Base mainnet evidence. Not a live spend path."
+  }
 } as const;
 
 export default function handler(_req: VercelRequest, res: VercelResponse) {
