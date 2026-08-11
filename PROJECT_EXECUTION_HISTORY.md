@@ -688,3 +688,14 @@ Re-promoted/redeployed ember-web to restore evidence provenance after an older p
 - CI: still BLOCKED — PAT has `repo` only, not `workflow`.
 - Demo video: rehearsal PASS; recording/upload still operator-owned.
 - Scorecard rescore: 123/150 (~8.2). Secrets rotation recommended after exposure in tooling.
+
+## 2026-08-12 01:11 +03:00 — KeeperHub CLI PR #97 review fixes
+
+- Addressed @suisuss CHANGES_REQUESTED on https://github.com/KeeperHub/cli/pull/97
+- Pushed `3505b09`: flat fixtures + `internal/execrecovery` loader/tests, reverted fail-closed, Idempotency-Key on writes, cold-start 404 wait, docs sync, BOM README removed
+- Title set to `test: #53 execution recovery contract pack v1`
+- Review reply posted; re-review request permission denied for non-collaborator
+- GitHub still: reviewDecision=CHANGES_REQUESTED; check-issue-link FAIL (issue #53 not `accepted`); CI workflow action_required (first-time contributor)
+- Local tests PASS for execrecovery + execute; unrelated doctor/agentic Windows keyring failures also present on clean upstream
+- EMBER prod read-only OK; MCP Org A workflows listed
+- Details: `PR_97_FINAL_VERIFICATION.md`
