@@ -1,5 +1,6 @@
-# Upstream PR draft — KeeperHub/cli
+# Upstream PR — KeeperHub/cli
 
+**Opened:** https://github.com/KeeperHub/cli/pull/97  
 Target: [`KeeperHub/cli` issue #53](https://github.com/KeeperHub/cli/issues/53)  
 Avoid overlap: [`KeeperHub/cli` PR #95](https://github.com/KeeperHub/cli/pull/95) (receipt `--require-verified`)
 
