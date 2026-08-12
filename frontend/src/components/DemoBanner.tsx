@@ -7,16 +7,22 @@ export function DemoBanner() {
   const evidence = useQuery({ queryKey: ["evidence"], queryFn: api.evidence });
   if (!isDemo) return null;
 
-  const label = evidence.data?.provenance?.label ?? "CERTIFIED MAINNET SNAPSHOT";
+  const label = evidence.data?.provenance?.label ?? "DEMO FIXTURE";
+  const isLocalFixture =
+    label.toUpperCase().includes("DEMO") || label.toUpperCase().includes("FIXTURE");
 
   return (
     <div className="border-b border-[var(--accent)]/30 bg-[var(--accent)]/10">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-2 md:px-6">
         <p className="text-sm text-[var(--fg)]">
-          <span className="font-display font-bold text-[var(--accent)]">{label}</span>
+          <span className="font-display font-bold text-[var(--accent)]">
+            {isLocalFixture ? "DEMO FIXTURE — NO REAL TRANSACTIONS" : label}
+          </span>
           <span className="text-[var(--fg-muted)]">
             {" "}
-            — historical verified evidence for the story. Not a live spend path.
+            {isLocalFixture
+              ? "— local sample data only. Not mainnet."
+              : "— historical verified evidence for the story. Not a live spend path."}
           </span>
         </p>
         <button

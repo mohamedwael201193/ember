@@ -58,3 +58,21 @@ temp/
 # Local /watch extracts (large media)
 docs/demo/watch-*/
 
+# Internal / private operator surface (keep locally; do not publish as DX docs)
+memory.md
+PROJECT_EXECUTION_HISTORY.md
+FINAL_PROMPT.md
+FIRST_PLACE_AUDIT.md
+FINAL_GAP_REPORT.md
+FINAL_BACKEND_CERTIFICATION.md
+IMPLEMENTATION_PLAN.md
+MAINNET_READINESS_REPORT.md
+PR_97_FINAL_VERIFICATION.md
+video.md
+DESIGN.cursor.md
+docs/DESIGN.cursor.md
+KEEPERHUB_HACKATHON_INTELLIGENCE*
+KEEPERHUB_MASTER_REFERENCE*
+private/
+.internal/
+

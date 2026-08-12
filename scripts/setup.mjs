@@ -207,7 +207,8 @@ async function main() {
     pnpm dev        # frontend + BFF + mock runtime + watcher
 
   Docs:
-    LOCAL_SETUP.md
+    docs/LOCAL_DEVELOPMENT.md
+    docs/MCP_QUICKSTART.md
     README.md
 ══════════════════════════════════════════════════
 `);

@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "keeperhub": {
+    "keeperhub-org-a": {
       "command": "npx",
       "args": [
         "-y",
@@ -8,6 +8,18 @@
         "https://app.keeperhub.com/mcp",
         "--header",
         "Authorization: Bearer ${KH_API_KEY_PRIMARY_OBSERVER}",
+        "--transport",
+        "http-only"
+      ]
+    },
+    "keeperhub-org-b": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote@latest",
+        "https://app.keeperhub.com/mcp",
+        "--header",
+        "Authorization: Bearer ${KH_API_KEY_STANDBY}",
         "--transport",
         "http-only"
       ]

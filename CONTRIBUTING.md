@@ -11,7 +11,7 @@ Thanks for helping make EMBER production-grade open source.
 
 ## Developer setup
 
-Follow [`LOCAL_SETUP.md`](./LOCAL_SETUP.md):
+Follow [`docs/LOCAL_DEVELOPMENT.md`](./docs/LOCAL_DEVELOPMENT.md):
 
 ```bash
 pnpm install

@@ -1,0 +1,51 @@
+{
+  "title": "EMBER public DX MCP verification",
+  "capturedAt": "2026-08-12T01:12:00.867Z",
+  "endpoint": "https://app.keeperhub.com/mcp",
+  "auth": "organization_scoped_kh_via_cursor_mcp",
+  "spend": "none",
+  "steps": [
+    {
+      "tool": "tools_documentation",
+      "org": "A",
+      "ok": true
+    },
+    {
+      "tool": "validate_workflow",
+      "org": "A",
+      "workflowId": "5goaid2zjgzyb32661se3",
+      "result": { "valid": true, "nodeCount": 2 }
+    },
+    {
+      "tool": "get_workflow",
+      "org": "B",
+      "workflowId": "pvhwggqr8318wac68jb62",
+      "name": "payday-stream-orgb-replay-mainnet",
+      "enabled": false
+    },
+    {
+      "tool": "execute_workflow",
+      "org": "A",
+      "workflowId": "vewqfp44zmpa9dtctlrdr",
+      "idempotency_key": "ember-dx-smoke-2026-08-12",
+      "executionId": "dy0alz2vlnujwimbbx8b0",
+      "acceptedStatus": "running"
+    },
+    {
+      "tool": "get_execution",
+      "executionId": "dy0alz2vlnujwimbbx8b0",
+      "status": "success",
+      "transactionHashes": [],
+      "output": {
+        "action": "web3/check-balance",
+        "network": "84532",
+        "balance": "0.12"
+      }
+    }
+  ],
+  "notes": [
+    "No mainnet USDC spend.",
+    "Production payroll workflows were not enabled.",
+    "One MCP connection remains one organization; Org B used a separate MCP server."
+  ]
+}
