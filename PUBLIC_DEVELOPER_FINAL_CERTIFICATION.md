@@ -76,7 +76,12 @@ Public DX docs under `docs/` (WHAT_IS_EMBER, MCP_*, AGENT_PROMPTS, LOCAL_DEVELOP
 
 ## 14. Tests
 
-Run in verification gate: `pnpm setup`, `pnpm doctor`, `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm security:secrets` (record outcomes in history after run).
+- `pnpm run setup` / `doctor`: PASS  
+- `format:check` / `lint` / `typecheck` / `build` / `security:secrets`: PASS  
+- `pnpm test`: one flaky sentinel integration timeout once; PASS on retry (82 tests)  
+- continuity-guardian setup/doctor/inspect: PASS  
+- `forge`: SKIP (not installed locally)  
+- GitHub Actions CI: workflow now on `main`; latest run failed — inspect separately (not claimed green)
 
 ## 15. MCP test evidence
 
@@ -84,10 +89,13 @@ Run in verification gate: `pnpm setup`, `pnpm doctor`, `pnpm format:check`, `pnp
 
 ## 16. Vercel verification
 
-HTTP 200 on https://ember-web-seven.vercel.app/
+HTTP 200 on https://ember-web-seven.vercel.app/  
+GitHub-linked project `ember-web` auto-deployed commits `0d094d5` and `02f27b7` to READY.  
+Note: CLI deploy to a different project named `frontend` is the wrong target — use `ember-web` / git push.
 
 ## 17. Render verification
 
+Triggered deploy `dep-d9tsl1m417fc73f6qjgg` on `ember-api`.  
 `/healthz` and `/readyz` OK. `/health` is not the health path (404).
 
 ## 18. PR #97 current state
@@ -102,7 +110,7 @@ Mapped in `docs/HACKATHON.md`. Filming still operator-owned.
 
 - [ ] Film ≤2:30 using DEMO_RUNBOOK  
 - [ ] Re-check PR #97 before claiming merge  
-- [ ] Push CI workflow with a PAT that includes `workflow` scope if GitHub Actions badge must turn green  
+- [ ] Fix GitHub Actions CI failure on `main` (workflow is now pushed)  
 - [ ] Rotate any credentials that ever appeared in local tooling dumps  
-- [ ] Optional: deploy frontend after DemoBanner change  
 - [ ] Do not enable production schedules for screenshots  
+- [ ] Prefer git-push deploy for `ember-web` (not the unrelated `frontend` Vercel project)
