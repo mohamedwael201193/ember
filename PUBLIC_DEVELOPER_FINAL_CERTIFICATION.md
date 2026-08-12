@@ -49,13 +49,16 @@ Validate `5goaid2zjgzyb32661se3`: valid. Browser console on landing: no errors.
 
 ## Production
 
-- Vercel: deploy after push of this commit
-- Render: `/healthz` + `/readyz` (verify on push)
-- New route: `/agent` (+ `/mcp` redirect)
+- Vercel `ember-web`: **READY** for tip `a7dba66` (clipboard Copied UX) after Agent/MCP page `4c45458`
+- Render: `/healthz` + `/readyz` → **200** (2026-08-12 recheck)
+- Live route: https://ember-web-seven.vercel.app/agent (+ `/mcp` redirect)
+- Chrome a11y snapshot: Connect/Verify/Inspect/Validate/Safe test/Use EMBER/Troubleshoot + Org A/B IDs + spend warning present
+- Console: no app errors (extension CSP/MetaMask noise only)
 
 ## Tests
 
 Local: frontend typecheck/build PASS; vitest 82/82 PASS; lint PASS (this session).
+MCP: `tools_documentation` + `get_workflow(5goaid2zjgzyb32661se3)` rechecked after deploy.
 
 ## PR #97
 
@@ -65,4 +68,4 @@ OPEN / CHANGES_REQUESTED / not merged (re-check live before claiming otherwise).
 
 - [ ] Film ≤2:30 with checklist
 - [ ] Switch Org B in KeeperHub UI before replay canvas
-- [ ] Confirm `/agent` on production after deploy READY
+- [x] Confirm `/agent` on production after deploy READY
