@@ -75,11 +75,11 @@ function CopyButton({ text, label }: { text: string; label?: string }) {
   const onCopy = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(text);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
     } catch {
-      /* ignore */
+      /* Clipboard may be blocked in some browsers; still acknowledge the click. */
     }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1600);
   }, [text]);
 
   return (
