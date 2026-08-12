@@ -21,6 +21,8 @@ const NAV = [
   { to: "/app/settings", label: "Settings" },
 ];
 
+// Agent/MCP is a public product surface (not under /app shell)
+
 export function AppShell() {
   const [open, setOpen] = useState(false);
   const { isDemo, setDemo } = useDemoMode();
@@ -164,6 +166,12 @@ export function AppShell() {
         >
           <ArrowLeft className="h-3 w-3" />
           Why EMBER
+        </Link>
+        <Link
+          to="/agent"
+          className="ml-4 text-xs text-[var(--fg-muted)] hover:text-[var(--fg)]"
+        >
+          Agent / MCP
         </Link>
         <span className="ml-3 font-mono text-[10px] text-[var(--fg-muted)]">
           {snap.data?.checkedAt

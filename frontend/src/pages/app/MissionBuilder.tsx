@@ -61,10 +61,14 @@ export function MissionBuilderPage() {
       </Link>
 
       <h1 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
-        Create a mission
+        Create a mission draft
       </h1>
       <p className="mt-2 text-[var(--fg-muted)]">
-        Six calm steps. Each one answers why EMBER keeps payroll alive.
+        Six calm steps. This wizard only saves a local draft on your device — it does not
+        deploy workflows or move funds. KeeperHub executes real payments.
+      </p>
+      <p className="mt-4 rounded-[4px] border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-xs text-amber-200">
+        CONFIGURATION ONLY — local draft. No KeeperHub write. No onchain spend.
       </p>
 
       <ol className="mt-10 flex flex-wrap gap-2">
@@ -221,7 +225,7 @@ export function MissionBuilderPage() {
               nav("/app/mission");
             }}
           >
-            Save draft · open overview
+            Save local draft
           </Button>
         )}
       </div>

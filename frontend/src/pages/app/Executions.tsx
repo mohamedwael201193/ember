@@ -32,7 +32,7 @@ export function ExecutionsPage() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
-            PAYDAY
+            Payments
           </h1>
           <p className="mt-2 max-w-lg text-[var(--fg-muted)]">
             Watch money move from the payer through KeeperHub to the employee — each
@@ -141,6 +141,10 @@ export function ExecutionsPage() {
       {!isDemo && (
         <section>
           <h2 className="font-display text-lg font-bold">Live observer</h2>
+          <p className="mt-1 text-xs text-[var(--fg-muted)]">
+            Read-only list from the connected runtime when available. Certified receipt cards
+            above remain the authoritative payment story.
+          </p>
           {live.isLoading && (
             <p className="mt-2 text-sm text-[var(--fg-muted)]">Listening…</p>
           )}
@@ -150,9 +154,9 @@ export function ExecutionsPage() {
             </p>
           )}
           {live.data != null && (
-            <p className="mt-2 text-sm text-[var(--fg-muted)]">
-              Live executions received. Prefer the receipt-backed cards for demos.
-            </p>
+            <pre className="mt-3 max-h-48 overflow-auto rounded-[4px] border border-[var(--border)] bg-[var(--bg)] p-3 font-mono text-[10px] text-[var(--fg-muted)]">
+              {JSON.stringify(live.data, null, 2)}
+            </pre>
           )}
         </section>
       )}

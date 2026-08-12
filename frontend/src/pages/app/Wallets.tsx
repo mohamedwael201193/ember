@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { SvgWalletNet } from "@/components/svg/SvgScene";
+import { ProvenanceBadge } from "@/components/ProvenanceBadge";
 
 const ROLES = [
   {
@@ -39,11 +40,15 @@ export function WalletsPage() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
-      <div>
-        <h1 className="font-display text-3xl font-bold tracking-tight">Wallets</h1>
-        <p className="mt-2 text-[var(--fg-muted)]">
-          Four roles. One mission. Who pays, who rescues, who receives, what protects.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight">Wallets</h1>
+          <p className="mt-2 text-[var(--fg-muted)]">
+            Four roles. One mission. Who pays, who rescues, who receives, what protects.
+            Balances shown here come from certified evidence — not a live wallet connect.
+          </p>
+        </div>
+        <ProvenanceBadge provenance={evidence.data?.provenance} />
       </div>
 
       <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4 md:p-6">

@@ -78,15 +78,15 @@ export function OverviewPage() {
             <StateGlow state={check?.state} />
           </div>
           <p className="mt-2 max-w-xl text-[var(--fg-muted)]">
-            EMBER keeps payroll alive when the primary agent dies. Watch the system
-            heartbeat in real time.
+            EMBER keeps payroll alive when the primary agent dies. Watch mission health and
+            certified payment evidence — provenance labels tell you what is live vs snapshot.
           </p>
         </div>
         <Link
           to="/app/mission/new"
           className="inline-flex h-10 items-center gap-2 rounded-[4px] bg-[var(--accent)] px-4 text-sm font-medium text-white"
         >
-          Create mission
+          Draft mission
           <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
@@ -94,7 +94,7 @@ export function OverviewPage() {
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="rounded-[4px] border border-[var(--border)] bg-[var(--surface)] p-4 md:p-6">
           <p className="mb-3 text-xs uppercase tracking-wider text-[var(--fg-muted)]">
-            Live topology
+            Architecture
           </p>
           <SvgArchitecture />
         </div>

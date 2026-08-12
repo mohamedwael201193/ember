@@ -35,6 +35,9 @@ const WalletsPage = lazy(() =>
 const SettingsPage = lazy(() =>
   import("@/pages/app/Settings").then((m) => ({ default: m.SettingsPage }))
 );
+const AgentPage = lazy(() =>
+  import("@/pages/Agent").then((m) => ({ default: m.AgentPage }))
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,6 +63,8 @@ export default function App() {
         <Suspense fallback={<Fall />}>
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/agent" element={<AgentPage />} />
+            <Route path="/mcp" element={<Navigate to="/agent" replace />} />
             <Route path="/app" element={<AppShell />}>
               <Route index element={<OverviewPage />} />
               <Route path="mission" element={<MissionPage />} />

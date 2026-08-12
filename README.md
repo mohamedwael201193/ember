@@ -11,7 +11,7 @@ EMBER keeps the mission alive.**
 
 EMBER is an open-source **onchain continuity layer** for autonomous payment missions. It sits beside KeeperHub — it does not replace it. KeeperHub is the execution engine that signs, simulates, pays gas, retries requested runs, and records an audit trail. EMBER detects **missed obligations** (slots that were never requested), recovers them through an isolated standby organization, journals the rescue exactly once, pins a public proof, and anchors that proof on Base.
 
-[Live app](https://ember-web-seven.vercel.app) · [What is EMBER?](./docs/WHAT_IS_EMBER.md) · [MCP quickstart](./docs/MCP_QUICKSTART.md) · [Architecture](./ARCHITECTURE.md) · [Evidence](./docs/evidence/README.md)
+[Live app](https://ember-web-seven.vercel.app) · [Agent / MCP](https://ember-web-seven.vercel.app/agent) · [What is EMBER?](./docs/WHAT_IS_EMBER.md) · [MCP quickstart](./docs/MCP_QUICKSTART.md) · [Architecture](./ARCHITECTURE.md) · [Evidence](./docs/evidence/README.md)
 
 [![Base mainnet](https://img.shields.io/badge/Base-mainnet%208453-0052FF)](https://basescan.org/tx/0xd26e61743539711fe103fc2b63ccb814725cf99c24fa417c966505a338341ea2)
 [![KeeperHub](https://img.shields.io/badge/KeeperHub-workflows%20%2B%20MCP-111)](https://app.keeperhub.com/workflows/5goaid2zjgzyb32661se3)
@@ -253,6 +253,9 @@ EMBER guides:
 - [`docs/AGENT_PROMPTS.md`](./docs/AGENT_PROMPTS.md)
 
 Safe no-spend smoke workflow: `vewqfp44zmpa9dtctlrdr` (`EMBER MCP Smoke Test` — Base Sepolia balance check).
+
+Interactive product guide: https://ember-web-seven.vercel.app/agent (`/mcp` redirects there).  
+Docs: [`docs/AGENT_MCP_USER_GUIDE.md`](./docs/AGENT_MCP_USER_GUIDE.md)
 
 ---
 

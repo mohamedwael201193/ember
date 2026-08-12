@@ -18,6 +18,20 @@ export function SettingsPage() {
       </div>
 
       <section className="rounded-[4px] border border-[var(--border)] p-5">
+        <h2 className="font-display text-lg font-bold">Connect your agent</h2>
+        <p className="mt-2 text-sm text-[var(--fg-muted)]">
+          External AI agents connect to KeeperHub MCP — not an EMBER MCP server. Copy Cursor /
+          Claude setup and safe prompts from the Agent page.
+        </p>
+        <a
+          href="/agent"
+          className="mt-4 inline-flex h-9 items-center rounded-[4px] border border-[var(--border)] px-3 text-sm text-[var(--fg)] hover:border-white/30"
+        >
+          Open Agent / MCP guide
+        </a>
+      </section>
+
+      <section className="rounded-[4px] border border-[var(--border)] p-5">
         <h2 className="font-display text-lg font-bold">Presentation mode</h2>
         <p className="mt-2 text-sm text-[var(--fg-muted)]">
           Demo Mode loads the verified snapshot instantly — ideal for recording. Live Mode

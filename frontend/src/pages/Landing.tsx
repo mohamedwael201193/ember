@@ -125,6 +125,9 @@ export function Landing() {
             <a href="#architecture" className="hover:text-white">
               System
             </a>
+            <Link to="/agent" className="hover:text-white">
+              Agent / MCP
+            </Link>
           </nav>
           <div className="flex items-center gap-2">
             <Link
@@ -158,15 +161,15 @@ export function Landing() {
                 to="/app"
                 className="inline-flex h-11 items-center gap-2 rounded-[4px] bg-[#18181b] px-5 text-sm font-medium text-white"
               >
-                See it live
+                Open console
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <a
-                href="#story"
+              <Link
+                to="/agent"
                 className="inline-flex h-11 items-center rounded-[4px] border border-[#18181b]/20 px-5 text-sm font-medium"
               >
-                Watch the story
-              </a>
+                Connect agent
+              </Link>
             </div>
             <dl className="hero-reveal mt-10 grid max-w-lg grid-cols-3 gap-px overflow-hidden rounded-[4px] border border-[#18181b]/10 bg-[#18181b]/10">
               {[
@@ -314,18 +317,19 @@ export function Landing() {
           <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[4px] border border-white/10 bg-[#111113] px-8 py-16 md:px-16">
             <div className="pointer-events-none absolute -right-16 top-0 h-64 w-64 rounded-full bg-[#ff5c1a]/20 blur-3xl" />
             <h2 className="font-display max-w-2xl text-4xl font-bold tracking-tight md:text-5xl">
-              Build a mission in minutes.
+              Draft a mission in minutes.
             </h2>
             <p className="mt-4 max-w-md text-[#a1a1aa]">
-              Guided wallet, payroll, and recovery. No blockchain homework.
+              Guided local configuration for payer, payroll, and backup. Drafts stay on your
+              device — KeeperHub still executes onchain payments.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <MagneticButton href="/app/mission/new">
-                Start mission builder
+                Draft a mission
                 <ArrowRight className="h-4 w-4" />
               </MagneticButton>
-              <MagneticButton href="/app" variant="ghost">
-                Open live console
+              <MagneticButton href="/agent" variant="ghost">
+                Connect agent / MCP
               </MagneticButton>
             </div>
           </div>

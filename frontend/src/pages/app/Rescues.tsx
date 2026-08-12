@@ -32,10 +32,14 @@ export function RescuesPage() {
   const reduce = useReducedMotion();
   const railRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const [confirmPractice, setConfirmPractice] = useState(false);
 
   const rescue = useMutation({
     mutationFn: () => api.rescue({ dryRun: true }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["snapshot"] }),
+    onSuccess: () => {
+      setConfirmPractice(false);
+      qc.invalidateQueries({ queryKey: ["snapshot"] });
+    },
   });
 
   const journal = evidence.data?.rescue;
@@ -93,13 +97,34 @@ export function RescuesPage() {
         <div className="flex flex-col items-end gap-2">
           <ProvenanceBadge provenance={evidence.data?.provenance} />
           {!isDemo && (
-            <Button
-              variant="outline"
-              onClick={() => rescue.mutate()}
-              disabled={rescue.isPending}
-            >
-              {rescue.isPending ? "Running…" : "Practice rescue"}
-            </Button>
+            <div className="flex flex-col items-end gap-2">
+              {!confirmPractice ? (
+                <Button variant="outline" onClick={() => setConfirmPractice(true)}>
+                  Practice rescue (dry-run)
+                </Button>
+              ) : (
+                <div className="max-w-xs rounded-[4px] border border-amber-500/40 bg-amber-500/10 p-3 text-left text-xs text-amber-100">
+                  <p className="font-medium">Server dry-run confirmation</p>
+                  <p className="mt-1 text-amber-100/80">
+                    Calls the EMBER runtime rescue endpoint with dryRun=true. Does not execute
+                    KeeperHub payroll or move USDC. Network: Base evidence only. Org: standby
+                    path is simulated.
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => rescue.mutate()}
+                      disabled={rescue.isPending}
+                    >
+                      {rescue.isPending ? "Running…" : "Confirm dry-run"}
+                    </Button>
+                    <Button variant="ghost" onClick={() => setConfirmPractice(false)}>
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
