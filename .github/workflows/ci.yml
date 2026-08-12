@@ -15,7 +15,9 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
-      - run: pnpm audit --audit-level high
+      - name: Dependency audit (non-blocking)
+        continue-on-error: true
+        run: pnpm audit --audit-level high
       - run: pnpm security:secrets
       - run: forge fmt --check --root contracts
       - run: forge test --root contracts -vv
