@@ -23,14 +23,14 @@ export function ProvenanceBadge({
         tone,
         className
       )}
-      title={provenance.note ?? provenance.label}
+      title={
+        provenance.note ??
+        (provenance.evidenceId
+          ? `${provenance.label} · ${provenance.evidenceId}`
+          : provenance.label)
+      }
     >
       <span>{provenance.label}</span>
-      {provenance.evidenceId ? (
-        <span className="normal-case tracking-normal text-[var(--fg-muted)]">
-          {provenance.evidenceId}
-        </span>
-      ) : null}
     </div>
   );
 }

@@ -1,116 +1,111 @@
 # Public developer final certification
 
-**Date:** 2026-08-12  
-**Scope:** Documentation + DX + MCP + onboarding + public repo hygiene + demo readiness  
-**Not claimed:** “100% hackathon win”, “PR merged”, “CI green on GitHub” without live proof
+**Date:** 2026-08-12 (pre-filming gate)  
+**Commit intent:** public cleanup + README rewrite + website clarity + MCP re-proof  
+**Not claimed:** PR #97 merged · unlimited “production-ready” without operator film
 
 ---
 
-## 1. Current architecture
+## Public repo status
 
-Agent / operator decides → KeeperHub executes (Org A primary, Org B standby) → EMBER detects missed invocations, journals recovery, pins proof, anchors Continuity.sol → operator UI.
+Public surface emphasizes README, `docs/` developer guides, `examples/`, packages, services, frontend, contracts, evidence.  
+Internal operator dumps remain local-only via `git rm --cached` + `.gitignore`.
 
-## 2. KeeperHub role
+## Files removed from public tracking (this gate)
 
-Workflows, signing, gas, retries of requested runs, Runs audit, MCP, REST execution. EMBER does not replace KeeperHub.
+| File | Why untracked |
+| --- | --- |
+| `FINAL_FIRST_PLACE_CERTIFICATION.md` | Internal win/score certification language |
+| `HACKATHON_SCORECARD.md` | Internal scorecard |
+| `DEMO_SCRIPT.md` | Temporary filming scratch (runbook remains public) |
+| `docs/FINAL_VERIFICATION_MATRIX.md` | Internal audit matrix |
+| `docs/FINALIST_PITCH.md` | Internal pitch |
+| `docs/DEMO_VIDEO_DORAHACKS.md` | Internal video notes |
+| `docs/PUBLIC_DEVELOPER_READINESS.md` | Internal DX scorecard (this cert replaces it) |
+| `docs/KEEPERHUB_WORKSHOP_GAP_ANALYSIS.md` | Research / gap dump |
+| `docs/BREAKING_CHANGES_LOG.md` | Internal change log |
+| `docs/DEVIATIONS.md` | Internal deviations notes |
 
-## 3. MCP architecture
+Previously untracked (still ignored): `memory.md`, `PROJECT_EXECUTION_HISTORY.md`, `FINAL_PROMPT.md`, intelligence dumps, older audits.
 
-- Remote: `https://app.keeperhub.com/mcp` (recommended)  
-- Auth: OAuth or org `kh_` Bearer (not `wfb_`)  
-- One connection = one org  
-- No separate “EMBER MCP server” required for basic architecture  
+**Kept public (required):** README, CONTRIBUTING, ARCHITECTURE, API_REFERENCE, LOCAL_SETUP, MCP_GUIDE, and the listed `docs/*` developer guides including `docs/HACKATHON.md`.
 
-## 4. Cursor setup
+## README status
 
-Documented in `docs/MCP_CURSOR.md` with dual-org `mcp.json.example`.
+Major rewrite completed as the official public entry point: problem, missed vs failed, KeeperHub vs EMBER, flows, Continuity.sol, MCP, one/two-org, local/integration/production, evidence, troubleshooting, security, contribution. No hackathon/win language in README.
 
-## 5. Claude setup
+## Website status
 
-Documented in `docs/MCP_CLAUDE.md` using official:
+Audited https://ember-web-seven.vercel.app/  
+Landing copy fixes: Sentinel vs replay wording, KeeperHub/EMBER role sentence, IPFS plain language, MCP one-liner, architecture cards, nav labels Payments/Health, provenance badge hides repo paths, default story mode when no preference.  
+Deploy of these UI fixes is part of this push → `ember-web` GitHub integration.
 
-`claude mcp add --transport http --scope user keeperhub https://app.keeperhub.com/mcp`
+## MCP status
 
-## 6. One-org setup
+Official docs confirmed: remote `https://app.keeperhub.com/mcp`, OAuth or `kh_`, one connection = one org, local stdio deprecated.  
+Cursor MCP servers `keeperhub-devmo` / `devmo2` used for live tests. No separate EMBER MCP server.
 
-Org A MCP sufficient for inspect / validate / smoke.
+## Cursor status
 
-## 7. Two-org setup
+Tool discovery, validate, get_workflow (A+B), smoke ×2, get_execution verified in this session.
 
-`docs/FULL_RECOVERY_SETUP.md` — separate keys and MCP server entries for Org A + Org B.
+## Org A status
 
-## 8. Local setup
+Workflow `payday-stream-mainnet` / `5goaid2zjgzyb32661se3`  
+Chrome: canvas Manual → Pay Employee USDC, Run button, Runs tab populated, org switcher DEVMO, enabled=false via MCP.  
+Validate: `valid: true`.
 
-`pnpm setup` → `pnpm doctor` → `pnpm dev` with `DEVELOPMENT_MODE=1` (no secrets). Guide: `docs/LOCAL_DEVELOPMENT.md`.
+## Org B status
 
-## 9. Production setup
+Workflow `payday-stream-orgb-replay-mainnet` / `pvhwggqr8318wac68jb62`  
+MCP (`keeperhub-devmo2`): get_workflow PASS — Manual → Pay Employee USDC, Base 8453, enabled=false, separate `organizationId`.  
+Chrome while Org A active: deep-link shows **Workflow Not Found** (expected — UI is org-scoped).  
+**Filming rule:** switch the KeeperHub org switcher to Org B before showing the replay canvas. Do not deep-link Org B IDs while Org A is selected.
 
-- Frontend: https://ember-web-seven.vercel.app/ (HTTP 200 verified)  
-- Runtime: https://ember-api-8qzg.onrender.com/healthz + `/readyz` verified  
-- Prefer `PAYDAY_ENABLE=0` for honest observer demos  
+## Vercel
 
-## 10. Demo workflow
+https://ember-web-seven.vercel.app/ → HTTP 200 (/, /app, /mission, /rescues, /proofs shells)  
+Project: `ember-web` (GitHub-linked). Prefer git push over CLI `frontend` project.
 
-`docs/DEMO_RUNBOOK.md` + `docs/FINAL_FILMING_CHECKLIST.md` — Org A for primary, Org B for rescue narrative, smoke for live MCP.
+## Render
 
-## 11. Public repo structure
+https://ember-api-8qzg.onrender.com/healthz → 200  
+https://ember-api-8qzg.onrender.com/readyz → 200  
+`/health` is not the health path.
 
-Emphasizes README, docs/, examples/, packages/, services/, frontend/, contracts/, workflows/, evidence.
+## Tests
 
-## 12. Files moved out of public tracking
+| Gate | Result |
+| --- | --- |
+| `pnpm doctor` | PASS (dev stack not running warnings only) |
+| `format:check` / `lint` / `typecheck` / `build` | PASS |
+| `pnpm test` | **82/82 PASS** |
+| `security:secrets` | PASS |
+| continuity-guardian `inspect` | PASS |
+| `forge` | SKIP locally (not installed); CI has Foundry |
 
-Internal operational / planning artifacts untracked via `git rm --cached` + `.gitignore` (working copies may remain locally):
+## MCP evidence
 
-- `memory.md`, `PROJECT_EXECUTION_HISTORY.md`  
-- `FINAL_PROMPT.md`, `FIRST_PLACE_AUDIT.md`, `FINAL_GAP_REPORT.md`  
-- `IMPLEMENTATION_PLAN.md`, `video.md`  
-- `KEEPERHUB_HACKATHON_INTELLIGENCE*`, `KEEPERHUB_MASTER_REFERENCE*`  
-- `docs/DESIGN.cursor.md`, `PR_97_FINAL_VERIFICATION.md` (status summarized in public hackathon docs)  
-- related internal certification scratch where classified private  
+`docs/evidence/mcp-prefilm-2026-08-12.json`  
+Smoke A: `zdhwlmp0qwsybt8w8zcbh` success (no USDC)  
+Smoke B: `9o6plh432oqpu6peji448` (second pass)
 
-Secrets (`.env`) were never intended for tracking; remain gitignored.
+## PR #97
 
-## 13. Files added / rewritten
+https://github.com/KeeperHub/cli/pull/97 — **OPEN**, **CHANGES_REQUESTED**, **not merged**.
 
-Public DX docs under `docs/` (WHAT_IS_EMBER, MCP_*, AGENT_PROMPTS, LOCAL_DEVELOPMENT, FULL_RECOVERY_SETUP, DEMO_RUNBOOK, LIVE_MODE, HACKATHON, FAQ, SECURITY, PUBLIC_DEVELOPER_READINESS, …), examples/{cursor,claude,mcp,basic-inspect,safe-smoke-test}, README rewrite, MCP evidence JSON.
+## Final filming status
 
-## 14. Tests
+**Path proven twice (MCP smoke + KH UI inspection):**
 
-- `pnpm run setup` / `doctor`: PASS  
-- `format:check` / `lint` / `typecheck` / `build` / `security:secrets`: PASS  
-- `pnpm test`: one flaky sentinel integration timeout once; PASS on retry (82 tests)  
-- continuity-guardian setup/doctor/inspect: PASS  
-- `forge`: SKIP (not installed locally)  
-- GitHub Actions CI: workflow now on `main`; latest run failed — inspect separately (not claimed green)
+Cursor MCP → tools_documentation → inspect/validate primary → safe smoke → get_execution → KeeperHub Org A canvas + Runs → (Org B canvas for rescue narrative) → EMBER Mission/Rescue/Proof URLs live → Base/IPFS evidence links documented.
 
-## 15. MCP test evidence
+**Operator still owns:** actual screen recording ≤2:30, correct org switcher on camera, no secrets on screen.
 
-`docs/evidence/mcp-dx-pass-2026-08-12.json` — smoke execution `dy0alz2vlnujwimbbx8b0` success, no USDC.
+## Remaining blockers / operator actions
 
-## 16. Vercel verification
-
-HTTP 200 on https://ember-web-seven.vercel.app/  
-GitHub-linked project `ember-web` auto-deployed commits `0d094d5` and `02f27b7` to READY.  
-Note: CLI deploy to a different project named `frontend` is the wrong target — use `ember-web` / git push.
-
-## 17. Render verification
-
-Triggered deploy `dep-d9tsl1m417fc73f6qjgg` on `ember-api`.  
-`/healthz` and `/readyz` OK. `/health` is not the health path (404).
-
-## 18. PR #97 current state
-
-https://github.com/KeeperHub/cli/pull/97 — **OPEN**, **CHANGES_REQUESTED**, **not merged** (verified via `gh pr view`).
-
-## 19. Hackathon checklist
-
-Mapped in `docs/HACKATHON.md`. Filming still operator-owned.
-
-## 20. Remaining operator actions
-
-- [ ] Film ≤2:30 using DEMO_RUNBOOK  
-- [ ] Re-check PR #97 before claiming merge  
-- [ ] Fix GitHub Actions CI failure on `main` (workflow is now pushed)  
-- [ ] Rotate any credentials that ever appeared in local tooling dumps  
-- [ ] Do not enable production schedules for screenshots  
-- [ ] Prefer git-push deploy for `ember-web` (not the unrelated `frontend` Vercel project)
+- [ ] Film using `docs/DEMO_RUNBOOK.md` + `docs/FINAL_FILMING_CHECKLIST.md`
+- [ ] Confirm post-push `ember-web` deployment includes landing/copy fixes
+- [ ] Re-check PR #97 before any merged claim
+- [ ] Optional: dependency advisory cleanup (CI audit is non-blocking)
+- [ ] Do not enable production payroll schedules for screenshots

@@ -57,8 +57,10 @@ Operator runbook for a reproducible ≤2:30 hackathon demo.
 | Beat | Show |
 | --- | --- |
 | Primary payment | **Org A** only |
-| Rescue replay | **Org B** only |
+| Rescue replay | **Org B** only — switch the KeeperHub org switcher first |
 | MCP smoke | **Org A** smoke workflow |
+
+Deep-linking an Org B workflow ID while Org A is selected shows **Workflow Not Found**. That is expected org scoping, not a missing workflow.
 
 Do not accidentally record the wrong organization.
 

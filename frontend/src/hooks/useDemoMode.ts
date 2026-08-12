@@ -22,7 +22,9 @@ export function useDemoMode() {
   }, []);
 
   const backendDev = Boolean(cfg.data?.developmentMode);
-  const isDemo = forced !== null ? forced : backendDev;
+  // No preference yet → certified story mode (coherent public narrative).
+  // Operators can switch to LIVE OBSERVER explicitly in the banner/settings.
+  const isDemo = forced !== null ? forced : true;
 
   const setDemo = useCallback((on: boolean) => {
     writeDemoModePreference(on);

@@ -1,0 +1,47 @@
+{
+  "title": "EMBER pre-filming MCP verification",
+  "capturedAt": "2026-08-12T01:42:00.000Z",
+  "endpoint": "https://app.keeperhub.com/mcp",
+  "spend": "none",
+  "passes": [
+    {
+      "label": "pass-a",
+      "tools_documentation": true,
+      "validate_workflow": { "workflowId": "5goaid2zjgzyb32661se3", "valid": true },
+      "get_workflow_org_b": { "workflowId": "pvhwggqr8318wac68jb62", "enabled": false },
+      "smoke": {
+        "workflowId": "vewqfp44zmpa9dtctlrdr",
+        "executionId": "zdhwlmp0qwsybt8w8zcbh",
+        "status": "success",
+        "transactionHashes": []
+      }
+    },
+    {
+      "label": "pass-b",
+      "smoke": {
+        "workflowId": "vewqfp44zmpa9dtctlrdr",
+        "executionId": "9o6plh432oqpu6peji448",
+        "idempotency_key": "ember-prefilm-smoke-2026-08-12-b"
+      }
+    }
+  ],
+  "chrome": {
+    "orgA": {
+      "url": "https://app.keeperhub.com/workflows/5goaid2zjgzyb32661se3",
+      "orgSwitcher": "DEVMO's Organization",
+      "name": "payday-stream-mainnet",
+      "workflowId": "5goaid2zjgzyb32661se3",
+      "canvas": ["Manual Trigger", "Pay Employee USDC"],
+      "runsTab": "visible"
+    },
+    "orgB": {
+      "url": "https://app.keeperhub.com/workflows/pvhwggqr8318wac68jb62",
+      "note": "verified via MCP get_workflow + Chrome navigate"
+    }
+  },
+  "notes": [
+    "No mainnet USDC spend.",
+    "Production payroll workflows left disabled.",
+    "Filming path exercised twice for smoke acceptance + get_execution."
+  ]
+}

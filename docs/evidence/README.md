@@ -32,6 +32,7 @@ Provenance: **CERTIFIED MAINNET SNAPSHOT**
 | Anchor tx | [`0x74ba1eac…211f`](https://basescan.org/tx/0x74ba1eac3e35c269175c06629782f66da454775141b6c94f14d608065c8d211f) | same |
 | MCP → KH → Base chain | `get_execution` on `667ekg3qk5f45127eqjyy` | `mcp-continuity-demo-2026-08-11.json` |
 | MCP DX pass (no spend) | smoke exec `dy0alz2vlnujwimbbx8b0` | `mcp-dx-pass-2026-08-12.json` |
+| MCP pre-film (×2 smoke) | `zdhwlmp0qwsybt8w8zcbh`, `9o6plh432oqpu6peji448` | `mcp-prefilm-2026-08-12.json` |
 
 Identity check (must match across surfaces):
 

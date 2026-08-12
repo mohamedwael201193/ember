@@ -64,7 +64,11 @@ Get execution <EXECUTION_ID> via get_execution. Summarize status, node outcomes,
 
 ---
 
-## 7. Explain failure
+## 7. Explain status / failure
+
+```text
+Get execution <EXECUTION_ID> via get_execution. Summarize status, node outcomes, errors, transactionHashes, and whether this was a read or write path. Do not re-execute.
+```
 
 ```text
 Explain why KeeperHub execution <EXECUTION_ID> failed using get_execution logs. Propose a fix. Do not retry writes unless I explicitly confirm.
@@ -80,7 +84,7 @@ Using list_action_schemas and ai_generate_workflow, propose a Base Sepolia read-
 
 ---
 
-## 9. Two-org EMBER recovery setup
+## 9. Inspect Org A / Org B
 
 ```text
 Inspect both Ember KeeperHub organizations (keeperhub-org-a and keeperhub-org-b) and explain which is primary and which is standby. List the primary payroll and replay workflow IDs. Do not execute anything.
@@ -92,7 +96,19 @@ Explain how EMBER uses Org A for primary payday and Org B for standby replay. Co
 
 ---
 
-## 10. Troubleshoot MCP
+## 10. Test recovery (read-only by default)
+
+```text
+Using only read tools: get_workflow on Org A primary 5goaid2zjgzyb32661se3 and Org B replay pvhwggqr8318wac68jb62. Explain the recovery path EMBER would take if a slot was never requested. Do not execute any workflow.
+```
+
+```text
+WARNING: This can move real USDC on Org B. Only if I already typed I CONFIRM ORG B REPLAY: execute pvhwggqr8318wac68jb62 once with a unique idempotency_key and poll get_execution. Otherwise refuse and stay read-only.
+```
+
+---
+
+## 11. Troubleshoot MCP
 
 ```text
 I cannot see EMBER workflows. Diagnose: auth method, org scoping, wrong key type (kh_ vs wfb_), and whether I need a second MCP server for Org B. Do not execute workflows.
@@ -100,7 +116,7 @@ I cannot see EMBER workflows. Diagnose: auth method, org scoping, wrong key type
 
 ---
 
-## 11. Run local verification
+## 12. Run local verification
 
 ```text
 From the EMBER repo root, tell me the exact commands for pnpm setup, pnpm doctor, pnpm test, and pnpm build. Explain what DEVELOPMENT_MODE=1 means. Do not request secrets.
@@ -108,7 +124,7 @@ From the EMBER repo root, tell me the exact commands for pnpm setup, pnpm doctor
 
 ---
 
-## 12. Verify production
+## 13. Verify production
 
 ```text
 Verify production without writes: GET https://ember-web-seven.vercel.app/ and https://ember-api-8qzg.onrender.com/healthz and /readyz. Summarize status. Do not trigger KeeperHub spends.
@@ -116,7 +132,7 @@ Verify production without writes: GET https://ember-web-seven.vercel.app/ and ht
 
 ---
 
-## 13. Prepare demo
+## 14. Prepare demo
 
 ```text
 Prepare a ≤2:30 demo path using docs/DEMO_RUNBOOK.md and docs/FINAL_FILMING_CHECKLIST.md. Prefer MCP inspect + validate + smoke, KeeperHub canvas/Runs for Org A, certified mainnet evidence for payment story, and Org B only for rescue narrative. No new mainnet spends.

@@ -13,10 +13,10 @@ import { ProvenanceBadge } from "@/components/ProvenanceBadge";
 const NAV = [
   { to: "/app", end: true, label: "Console" },
   { to: "/app/mission", label: "Mission" },
-  { to: "/app/executions", label: "PAYDAY" },
+  { to: "/app/executions", label: "Payments" },
   { to: "/app/rescues", label: "Rescue" },
   { to: "/app/proofs", label: "Proofs" },
-  { to: "/app/operations", label: "Ops" },
+  { to: "/app/operations", label: "Health" },
   { to: "/app/wallets", label: "Wallets" },
   { to: "/app/settings", label: "Settings" },
 ];

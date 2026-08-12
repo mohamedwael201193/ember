@@ -102,7 +102,7 @@ export function Landing() {
       " "
     );
   const wakeWords =
-    "EMBER wakes. Observer sees the miss. Sentinel restores the stream.".split(
+    "EMBER wakes. Observer sees the miss. Standby replay restores payroll.".split(
       " "
     );
 
@@ -149,8 +149,9 @@ export function Landing() {
               When the agent dies, the mission lives.
             </h1>
             <p className="hero-reveal mt-6 max-w-md text-base leading-relaxed text-[#52525b]">
-              Detect unpaid payroll from receipts, restore it from a standby org through
-              KeeperHub, and seal proof on Base mainnet — so AI money keeps moving.
+              KeeperHub runs the payment workflows on Base. EMBER watches receipts, detects
+              missed obligations, triggers a standby org to replay them, and seals proof
+              onchain — so autonomous money keeps moving.
             </p>
             <div className="hero-reveal mt-8 flex flex-wrap gap-3">
               <Link
@@ -268,6 +269,8 @@ export function Landing() {
               </h2>
               <p className="mt-4 max-w-md text-[#a1a1aa]">
                 Hash, CID, and chain anchor must agree. Continuity is visible, not claimed.
+                The proof file is stored on IPFS — a public content-addressed network —
+                so anyone can download and verify it.
               </p>
             </div>
             <SvgProofChain />
@@ -284,17 +287,18 @@ export function Landing() {
               Four layers, one promise.
             </h2>
             <p className="arch-panel mt-4 max-w-xl text-[#a1a1aa]">
-              You watch from the console. KeeperHub runs the workflows. Four agents do the
-              work. Base and IPFS keep the receipts.
+              You watch from the console. KeeperHub runs the workflows. Continuity agents
+              detect, recover, and prove. Base and IPFS keep the receipts. External AI
+              agents connect through KeeperHub MCP — not a separate EMBER MCP server.
             </p>
             <div className="arch-panel mt-14">
               <SvgArchitecture />
             </div>
             <div className="arch-panel mt-10 grid gap-3 md:grid-cols-3">
               {[
-                { t: "PAYDAY", d: "Primary stream pays on a fixed cadence." },
-                { t: "Sentinel", d: "Guardian that replays only what receipts prove missed." },
-                { t: "Mainnet", d: "Base chain records the sealed proof." },
+                { t: "Primary payroll", d: "Scheduled USDC payments while the agent is healthy." },
+                { t: "Sentinel", d: "Detects unpaid slots and opens a journaled rescue." },
+                { t: "Standby replay", d: "A separate org pays only what receipts prove missed." },
               ].map((c) => (
                 <div key={c.t} className="rounded-[4px] border border-white/10 p-6">
                   <h3 className="font-display text-xl font-bold">{c.t}</h3>
